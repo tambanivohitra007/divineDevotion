@@ -28,14 +28,24 @@
         <li v-if="filteredContent.length === 0 && searchQuery" class="text-muted small p-2">No matches found.</li>
         <li v-if="filteredContent.length === 0 && !searchQuery && savedContent.length > 0" class="text-muted small p-2">No content saved yet.</li>
         <li
-          v-for="(content, index) in filteredContent"
-          :key="index"
+          v-for="(content) in filteredContent"
+          :key="content.id || content.topic" 
           class="saved-devotion-card"
           @click="viewSavedContent(content)"
         >
-          <h6 class="saved-devotion-topic">{{ content.topic || "Saved Content" }}</h6>
+          <h6 class="saved-devotion-topic">
+            {{ content.topic || "Saved Content" }}
+            <span class="content-type-flag" :class="'flag-' + content.type">
+              {{ content.type === 'devotion' ? 'Devo' : 'Idea' }}
+            </span>
+          </h6>
           <p class="saved-devotion-excerpt">{{truncateText(content.text, 30)}}</p>
-          <button class="btn btn-sm btn-outline-danger delete-saved-btn" @click.stop="handleDeleteContent(getOriginalIndex(content))">
+          <button 
+            class="btn btn-sm btn-outline-danger delete-saved-btn" 
+            @click.stop="handleDeleteContent(content.id)" 
+            v-if="content.id"
+            title="Delete content"
+          >
             <i class="bi bi-trash3"></i>
           </button>
         </li>
@@ -169,15 +179,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, watchEffect, onMounted, onUnmounted } from 'vue'; // Added onUnmounted
+import { ref, computed, watch, watchEffect, onMounted, onUnmounted } from 'vue';
 import DevotionDisplay from './components/DevotionDisplay.vue';
 import useOpenAI from './composables/useOpenAI';
-import useDevotions, { type StoredContent } from './composables/useDevotions'; // Updated import
+// Correctly import useContentStorage and StoredContent type
+import useContentStorage, { type StoredContent } from './composables/useDevotions'; 
 
 const selectedContentType = ref<'devotion' | 'faithIntegration'>('devotion');
 const topicInput = ref(''); // Renamed from devotionTopic
 
 const currentContent = ref<StoredContent>({
+  id: '',
   text: '',
   verses: [],
   topic: '',
@@ -185,7 +197,7 @@ const currentContent = ref<StoredContent>({
 });
 
 const { generateOpenAIContent, isLoading, error: generationError } = useOpenAI(); // Renamed function
-const { savedContent, saveContent, deleteContent } = useDevotions(); // Renamed functions
+const { savedContent, saveContent, deleteContent, loadContent } = useContentStorage(); // Updated import and usage
 
 const showSaveConfirmation = ref(false);
 const searchQuery = ref('');
@@ -228,6 +240,7 @@ watchEffect(() => {
 // Apply the theme when the component is mounted
 // This ensures the theme is set correctly on initial load based on localStorage or default
 onMounted(() => {
+  loadContent(); // Ensure content is loaded on mount
   // Mobile check and sidebar state
   checkMobile(); // Call once to set initial state for isMobile
   if (isMobile.value) {
@@ -305,38 +318,38 @@ const filteredContent = computed(() => { // Renamed from filteredDevotions
   );
 });
 
-const getOriginalIndex = (contentToFind: StoredContent): number => { // Updated type
-  return savedContent.value.findIndex(d => 
-    d.text === contentToFind.text && 
-    d.topic === contentToFind.topic && 
-    d.type === contentToFind.type
-  );
+const getOriginalIndex = (contentToFind: StoredContent): number => {
+  // This function might not be needed if deleting by ID, but ensure StoredContent has an id
+  if (!contentToFind.id) return -1;
+  return savedContent.value.findIndex(d => d.id === contentToFind.id);
 };
 
-const handleGenerateContent = async () => { // Renamed from handleGenerateDevotion
+const handleGenerateContent = async () => {
   if (!topicInput.value.trim()) return;
-  currentContent.value = { text: '', verses: [], topic: '', type: selectedContentType.value }; // Initialize with selected type
+  const newId = `content-${Date.now()}`; // Generate ID here
+  currentContent.value = { id: newId, text: '', verses: [], topic: '', type: selectedContentType.value }; // Initialize with selected type and ID
   try {
-    // Pass selectedContentType to the composable
     const result = await generateOpenAIContent(topicInput.value, selectedContentType.value);
     currentContent.value = { 
+      id: newId, // Persist ID
       text: result.text, 
-      verses: result.verses || [], // Ensure verses is an array, even if undefined for faithIntegration
+      verses: result.verses || [], 
       topic: topicInput.value, 
       type: selectedContentType.value 
     };
   } catch (err) {
     console.error('Error generating content in component:', err);
-    // generationError is already handled by the composable
   }
 };
 
-const handleSaveCurrentContent = () => { // Renamed from handleSaveCurrentDevotion
+
+const handleSaveCurrentContent = () => {
   if (currentContent.value.text) {
+    if (!currentContent.value.id) {
+      currentContent.value.id = `content-${Date.now()}`;
+    }
     const isAlreadySaved = savedContent.value.some(
-      (d) => d.text === currentContent.value.text && 
-             d.topic === currentContent.value.topic &&
-             d.type === currentContent.value.type
+      (d) => d.id === currentContent.value.id || (d.text === currentContent.value.text && d.topic === currentContent.value.topic && d.type === currentContent.value.type)
     );
     if (!isAlreadySaved) {
       saveContent({ ...currentContent.value }); 
@@ -345,25 +358,26 @@ const handleSaveCurrentContent = () => { // Renamed from handleSaveCurrentDevoti
         showSaveConfirmation.value = false;
       }, 3000);
     } else {
-      showSaveConfirmation.value = true; 
-      setTimeout(() => {
-        showSaveConfirmation.value = false;
+      shareAlertMessage.value = 'This content is already saved.';
+      showShareAlert.value = true;
+       setTimeout(() => {
+        showShareAlert.value = false;
       }, 3000);
     }
   }
 };
 
-const handleDeleteContent = (index: number) => { // Renamed from handleDeleteDevotion
-  if (index > -1) {
-    const itemToDelete = savedContent.value[index];
-    if (currentContent.value.topic === itemToDelete?.topic && 
-        currentContent.value.text === itemToDelete?.text &&
-        currentContent.value.type === itemToDelete?.type) {
-        currentContent.value = { text: '', verses: [], topic: '', type: selectedContentType.value };
-    }
-    deleteContent(index);
+const handleDeleteContent = (id?: string) => { 
+  if (!id) return;
+
+  const itemToDelete = savedContent.value.find(item => item.id === id);
+
+  if (itemToDelete && currentContent.value.id === itemToDelete.id) {
+      currentContent.value = { id: `content-${Date.now()}`, text: '', verses: [], topic: '', type: selectedContentType.value };
   }
+  deleteContent(id); 
 };
+
 
 const viewSavedContent = (content: StoredContent) => { // Renamed from viewSavedDevotion, updated type
   currentContent.value = { ...content };
@@ -656,6 +670,10 @@ onUnmounted(() => {
   color: var(--dark-text-muted);
   margin-bottom: 0;
   line-height: 1.4;
+  margin-right: 35px; /* Add space for the delete button */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Add ellipsis for overflowed text */
+  white-space: nowrap; /* Keep text on a single line for ellipsis to work */
 }
 
 .delete-saved-btn {
@@ -1173,4 +1191,32 @@ onUnmounted(() => {
   opacity: 0.8;
 }
 
+.content-type-flag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.flag-devotion {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+[data-bs-theme="light"] .flag-devotion {
+   background-color: var(--primary-color);
+   color: white;
+}
+
+.flag-faithIntegration {
+  background-color: #ffc107; 
+  color: #333;
+}
+
+[data-bs-theme="light"] .flag-faithIntegration {
+  background-color: #ffc107; 
+  color: #333;
+}
 </style>
