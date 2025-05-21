@@ -34,12 +34,12 @@
           @click="viewSavedContent(content)"
         >
           <h6 class="saved-devotion-topic">
-            {{ content.topic || "Saved Content" }}
-            <span class="content-type-flag" :class="'flag-' + content.type">
-              {{ content.type === 'devotion' ? 'Devo' : 'Idea' }}
-            </span>
+            {{ content.topic || "Saved Content" }}            
           </h6>
           <p class="saved-devotion-excerpt">{{truncateText(content.text, 30)}}</p>
+          <span class="content-type-flag" :class="'flag-' + content.type">
+              {{ content.type === 'devotion' ? 'Devo' : 'Idea' }}
+            </span>
           <button 
             class="btn btn-sm btn-outline-danger delete-saved-btn" 
             @click.stop="handleDeleteContent(content.id)" 
@@ -517,6 +517,13 @@ onUnmounted(() => {
   --save-btn-text-light: #ffffff;
   --save-btn-hover-shadow-light: 0 4px 15px rgba(0, 0, 0, 0.2);
   --themed-placeholder-color: rgba(0, 0, 0, 0.55); /* Muted dark gray for light theme placeholders */
+
+  /* New variables for sidebar items in light theme */
+  --sidebar-item-bg: #ffffff;
+  --sidebar-item-hover-bg: #f0f0f0; /* Light grey for hover */
+  --sidebar-item-border-color: #dee2e6;
+  --sidebar-item-text-color: #212529;
+  --sidebar-item-muted-text-color: #6c757d;
 }
 
 /* Dark Theme (Bootstrap default or custom overrides) */
@@ -525,13 +532,19 @@ onUnmounted(() => {
   --bs-body-color: #e0e0e0;
   --bs-border-color: #101011;
   --bs-card-bg: #1f4068;
-  --bs-card-border: #2a2a2a;
   --bs-hover-bg: #2a3b57;
   --sidebar-bg-dark: linear-gradient(to bottom, #1a1919, #212529);
   --save-btn-bg-dark: linear-gradient(to right, #11998e, #38ef7d);
   --save-btn-text-dark: #ffffff;
   --save-btn-hover-shadow-dark: 0 4px 15px rgba(0, 0, 0, 0.3);
   --themed-placeholder-color: rgba(255, 255, 255, 0.45); /* Muted light gray for dark theme placeholders */
+
+  /* New variables for sidebar items in dark theme */
+  --sidebar-item-bg: #27273a; /* Slightly lighter than body bg */
+  --sidebar-item-hover-bg: #3a3a52; /* Hover for the above */
+  --sidebar-item-border-color: #40405a;
+  --sidebar-item-text-color: var(--bs-body-color);
+  --sidebar-item-muted-text-color: rgba(224, 224, 224, 0.65);
 }
 
 /* Sidebar Styles */
@@ -643,31 +656,35 @@ onUnmounted(() => {
 }
 
 .saved-devotion-card {
-  background-color: var(--dark-card);
+  background-color: var(--sidebar-item-bg);
   padding: 12px 15px;
   margin-bottom: 10px;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.2s ease;
-  border: 1px solid var(--dark-border);
+  border: 1px solid var(--sidebar-item-border-color);
   position: relative; /* For absolute positioning of delete button */
 }
 
 .saved-devotion-card:hover {
-  background-color: var(--dark-hover-bg);
+  background-color: var(--sidebar-item-hover-bg);
   transform: translateY(-2px);
 }
 
 .saved-devotion-topic {
   font-size: 0.95rem;
   font-weight: 500;
-  color: var(--dark-text);
+  color: var(--sidebar-item-text-color);
   margin-bottom: 5px;
+  margin-right: 35px; /* Add space for the delete button */
+  overflow: hidden; /* Prevent overflow */
+  text-overflow: ellipsis; /* Add ellipsis for overflowed text */
+  white-space: nowrap; /* Keep text on a single line */
 }
 
 .saved-devotion-excerpt {
   font-size: 0.8rem;
-  color: var(--dark-text-muted);
+  color: var(--sidebar-item-muted-text-color);
   margin-bottom: 0;
   line-height: 1.4;
   margin-right: 35px; /* Add space for the delete button */
