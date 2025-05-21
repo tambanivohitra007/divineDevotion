@@ -65,7 +65,7 @@
             Request Your Devotion
           </h2>
           <p class="card-text text-muted small">
-            Enter a topic or feeling, and let AI craft a personalized devotion grounded in the Bible, Ellen G. White's writings, and SDA beliefs.
+            Enter a topic or feeling, and let AI craft a personalized devotion grounded in the Bible.
           </p>
         </div>
         <div class="card-body">
@@ -360,29 +360,33 @@ const formattedDevotionForDisplay = computed(() => {
 
 /* General App Styles */
 :root {
-  --primary-color: #007bff;
-  --primary-gradient: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
-  --success-gradient: linear-gradient(to right, #11998e 0%, #38ef7d 100%);
+  --primary-color: #1ec5d5;
+  --primary-gradient: linear-gradient(to right, #118dcb 0%, #0f254c 100%);
+  --success-gradient: linear-gradient(to right, #f7f426 0%, #38efc1 100%);
 }
 
 /* Light Theme (Bootstrap default or custom overrides) */
 [data-bs-theme="light"] {
-  --sidebar-bg-light: linear-gradient(to right, #70e1f5, #ffd194);
-  /* You might want to adjust text colors for the sidebar in light mode if default Bootstrap ones don't fit well */
-  /* --sidebar-text-color-light: #your_choice; */
+  --sidebar-bg-light: linear-gradient(to bottom, #70e1f5, #ffd194);
+  --save-btn-bg-light: linear-gradient(to right, #56ab2f, #a8e063);
+  --save-btn-text-light: #ffffff;
+  --save-btn-hover-shadow-light: 0 4px 15px rgba(0, 0, 0, 0.2);
+  --themed-placeholder-color: rgba(0, 0, 0, 0.55); /* Muted dark gray for light theme placeholders */
 }
 
 /* Dark Theme (Bootstrap default or custom overrides) */
 [data-bs-theme="dark"] {
-  --bs-body-bg: #1a1a2e; /* Deep blue/purple */
-  --bs-body-color: #e0e0e0; /* Light text for dark backgrounds */
+  --bs-body-bg: #1a1a2e;
+  --bs-body-color: #e0e0e0;
   --bs-border-color: #101011;
-  --bs-card-bg: #1f4068; /* Card background */
+  --bs-card-bg: #1f4068;
   --bs-card-border: #2a2a2a;
   --bs-hover-bg: #2a3b57;
-
-  /* Custom sidebar gradient for dark mode */
   --sidebar-bg-dark: linear-gradient(to bottom, #1a1919, #212529);
+  --save-btn-bg-dark: linear-gradient(to right, #11998e, #38ef7d);
+  --save-btn-text-dark: #ffffff;
+  --save-btn-hover-shadow-dark: 0 4px 15px rgba(0, 0, 0, 0.3);
+  --themed-placeholder-color: rgba(255, 255, 255, 0.45); /* Muted light gray for dark theme placeholders */
 }
 
 /* Sidebar Styles */
@@ -484,7 +488,8 @@ const formattedDevotionForDisplay = computed(() => {
   color: var(--dark-text);
 }
 .search-bar .form-control::placeholder {
-  color: var(--dark-placeholder);
+  color: var(--themed-placeholder-color);
+  font-weight: 300;
 }
 
 .saved-devotions-list {
@@ -585,9 +590,9 @@ const formattedDevotionForDisplay = computed(() => {
   border: 1px solid var(--dark-input-border);
   color: var(--dark-text);
 }
-
 .card .form-control::placeholder {
-  color: var(--dark-placeholder);
+  color: var(--themed-placeholder-color);
+  font-weight: 300;
 }
 
 .card .form-control:focus {
@@ -693,35 +698,62 @@ const formattedDevotionForDisplay = computed(() => {
   box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
 }
 .form-control::placeholder {
-  color: var(--dark-placeholder);
+  color: var(--themed-placeholder-color);
+  font-weight: 300;
+  /* Default placeholder font-size will be inherited from the input itself, which is usually desired */
+  /* For specific sizing, target the input directly, e.g., #devotionTopicInput::placeholder */
 }
 
+/* Specific styling for the devotion topic input placeholder */
+#devotionTopicInput.form-control-lg::placeholder {
+  font-size: 1rem; /* Smaller than the input's 1.25rem default */
+  /* color and font-weight are inherited from .form-control::placeholder */
+}
 
 .btn-gradient, .btn-gradient-success {
   border: none;
-  color: white;
   padding: 0.6rem 1.2rem;
   font-weight: 500;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-image 0.3s ease, color 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
+
 .btn-gradient {
   background-image: var(--primary-gradient);
+  color: white; /* Generate button text color */
 }
-.btn-gradient-success {
-  background-image: var(--success-gradient);
-}
+
+/* .btn-gradient-success will have its background and color defined by theme-specific rules */
 
 .btn-gradient:hover, .btn-gradient-success:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  /* box-shadow will be themed */
 }
+
 .btn-gradient:disabled, .btn-gradient-success:disabled {
   opacity: 0.65;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+}
+
+[data-bs-theme="light"] .btn-gradient-success {
+  background-image: var(--save-btn-bg-light);
+  color: var(--save-btn-text-light);
+}
+
+[data-bs-theme="light"] .btn-gradient-success:hover {
+  box-shadow: var(--save-btn-hover-shadow-light);
+}
+
+[data-bs-theme="dark"] .btn-gradient-success {
+  background-image: var(--save-btn-bg-dark);
+  color: var(--save-btn-text-dark);
+}
+
+[data-bs-theme="dark"] .btn-gradient-success:hover {
+  box-shadow: var(--save-btn-hover-shadow-dark);
 }
 
 .current-devotion .card { /* Assuming DevotionDisplay renders a card */
