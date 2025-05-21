@@ -71,15 +71,12 @@
         <div class="card-body">
           <form @submit.prevent="handleGenerateDevotion">
             <div class="mb-3">
-              <label for="devotionTopicInput" class="form-label">Devotion Topic</label>
               <textarea
                 id="devotionTopicInput"
                 class="form-control form-control-lg"
-                placeholder="e.g., Finding peace in anxiety, Guidance on faith, Sabbath rest..."
-                v-model="devotionTopic"
                 rows="3"
-                style="resize: none;"
-                :disabled="isLoading"
+                placeholder="E.g., 'finding peace in hardship', 'gratitude', or 'guidance for a tough decision'"
+                v-model="devotionTopic"
                 aria-label="Enter your devotion topic or request"
               ></textarea>
             </div>
@@ -130,9 +127,12 @@
               </blockquote>
             </div>
             <DevotionDisplay :devotion="formattedDevotionForDisplay" />
-            <div class="text-center mt-4 pt-3 border-top border-secondary">
-              <button class="btn btn-gradient-success btn-lg" @click="handleSaveCurrentDevotion">
-                <i class="bi bi-heart-fill me-2"></i>Save This Devotion
+            <div class="actions-toolbar text-center mt-4 pt-3 border-top border-secondary">
+              <button class="btn btn-gradient-success btn-sm me-2" @click="handleSaveCurrentDevotion">
+                <i class="bi bi-heart-fill me-2"></i>Save Devotion
+              </button>
+              <button class="btn btn-outline-info btn-sm" @click="handleShareDevotion" title="Share this devotion">
+                <i class="bi bi-share-fill me-2"></i>Share
               </button>
             </div>
           </div>
@@ -149,6 +149,11 @@
       <div v-if="showSaveConfirmation" class="alert alert-success-custom alert-dismissible fade show mt-3" role="alert">
         <i class="bi bi-check-circle-fill me-2"></i>Devotion saved successfully!
         <button type="button" class="btn-close btn-close-white" @click="showSaveConfirmation = false" aria-label="Close"></button>
+      </div>
+
+      <div v-if="showShareAlert" class="alert alert-info-custom alert-dismissible fade show mt-3" role="alert">
+        <i class="bi bi-info-circle-fill me-2"></i>{{ shareAlertMessage }}
+        <button type="button" :class="isDarkMode ? 'btn-close btn-close-white' : 'btn-close'" @click="showShareAlert = false" aria-label="Close"></button>
       </div>
     </div>
   </div>
@@ -172,6 +177,9 @@ const { savedDevotions, saveDevotion, deleteDevotion } = useDevotions();
 
 const showSaveConfirmation = ref(false);
 const searchQuery = ref('');
+
+const showShareAlert = ref(false);
+const shareAlertMessage = ref('');
 
 // Mobile responsiveness
 const isMobile = ref(false);
@@ -321,6 +329,64 @@ const viewSavedDevotion = (devotion: Devotion) => {
     isSidebarCollapsed.value = true;
   }
 };
+
+// Helper function to copy text to clipboard
+const copyToClipboard = async (text: string, context: 'fallback' | 'direct' = 'direct') => {
+  try {
+    await navigator.clipboard.writeText(text);
+    if (context === 'fallback') {
+      shareAlertMessage.value = 'Sharing failed, devotion copied to clipboard!';
+    } else {
+      shareAlertMessage.value = 'Devotion copied to clipboard!';
+    }
+    showShareAlert.value = true;
+  } catch (err) {
+    console.error('Failed to copy: ', err);
+    shareAlertMessage.value = 'Failed to copy devotion to clipboard.';
+    showShareAlert.value = true; // Show error
+  } finally {
+    // Common timeout for the alert
+    setTimeout(() => {
+      showShareAlert.value = false;
+    }, 3000);
+  }
+};
+
+// Function to handle sharing the devotion
+const handleShareDevotion = async () => {
+  if (!currentDevotion.value.text) return;
+
+  const title = currentDevotion.value.topic ? `Devotion: ${currentDevotion.value.topic}` : 'A Divine Devotion';
+  // Combine text and verses for sharing
+  let shareText = currentDevotion.value.text;
+  if (currentDevotion.value.verses && currentDevotion.value.verses.length > 0) {
+    const versesText = currentDevotion.value.verses.join("\n");
+    shareText += `\n\nKey Verses:\n${versesText}`;
+  }
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: title,
+        text: shareText,
+        // url: window.location.href, // Removed URL from sharing
+      });
+      shareAlertMessage.value = 'Devotion shared successfully!';
+      showShareAlert.value = true;
+      setTimeout(() => { showShareAlert.value = false; }, 3000);
+    } catch (err) {
+      if ((err as DOMException).name !== 'AbortError') {
+        console.error('Error sharing, falling back to clipboard: ', err);
+        await copyToClipboard(shareText, 'fallback'); 
+      }
+      // If AbortError, user cancelled, do nothing.
+    }
+  } else {
+    // Fallback to copying to clipboard
+    await copyToClipboard(shareText, 'direct');
+  }
+};
+
 
 const truncateText = (text: string, length: number) => {
   if (text.length <= length) {
@@ -738,6 +804,14 @@ const formattedDevotionForDisplay = computed(() => {
   box-shadow: none;
 }
 
+/* Styles for action buttons and alerts */
+.actions-toolbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem; /* Spacing between buttons */
+}
+
 [data-bs-theme="light"] .btn-gradient-success {
   background-image: var(--save-btn-bg-light);
   color: var(--save-btn-text-light);
@@ -756,21 +830,46 @@ const formattedDevotionForDisplay = computed(() => {
   box-shadow: var(--save-btn-hover-shadow-dark);
 }
 
-.current-devotion .card { /* Assuming DevotionDisplay renders a card */
-  background-color: var(--dark-card);
-  border: 1px solid var(--dark-border);
-}
-
-.alert-danger {
-  background-color: #5c2121; /* Darker red for dark mode */
-  color: #f8d7da;
-  border-color: #8c3232;
-}
-
 .alert-success-custom {
   background-color: #1e4620; /* Darker green for dark mode */
   color: #d1e7dd;
   border-color: #2a602c;
+}
+
+/* Custom info alert for share confirmation */
+.alert-info-custom {
+  background-color: #0c5460; /* Darker cyan for dark mode */
+  color: #d1ecf1;
+  border-color: #138496;
+}
+
+[data-bs-theme="light"] .alert-success-custom {
+  background-color: #d4edda;
+  color: #155724;
+  border-color: #c3e6cb;
+}
+
+[data-bs-theme="light"] .alert-info-custom {
+  background-color: #cce5ff; /* Light blue for light theme */
+  color: #004085;
+  border-color: #b8daff;
+}
+
+/* Ensure close button is visible on light backgrounds for custom alerts */
+[data-bs-theme="light"] .alert-success-custom .btn-close,
+[data-bs-theme="light"] .alert-info-custom .btn-close {
+  filter: none; 
+}
+
+/* Ensure share button icon and text are visible in both themes */
+[data-bs-theme="dark"] .btn-outline-info {
+  color: #39c0ed; /* A slightly brighter cyan for dark theme */
+  border-color: #39c0ed;
+}
+[data-bs-theme="dark"] .btn-outline-info:hover {
+  color: var(--bs-body-bg); /* Or a specific dark text color */
+  background-color: #39c0ed;
+  border-color: #39c0ed;
 }
 
 /* Styles for the new card structure */
