@@ -9,8 +9,7 @@
       </h6>
       <ul class="list-group list-group-flush">
         <li v-for="(verse, index) in devotion.verses" :key="index" class="list-group-item px-0 py-2">
-          <!-- Added data-verse-ref for consistency with inline links -->
-          <a :href="getVerseCdnLink(verse)"
+          <a :href="getBibleGatewayLink(verse)"
              target="_blank"
              rel="noopener noreferrer"
              class="text-decoration-none verse-link list-item-verse-link"
@@ -68,7 +67,7 @@ const formattedDevotionText = computed(() => {
     }
     // Ensure the link uses the exact matched string for display and data-verse-ref
     // and getTooltipTitle, as fetchVerseText will be called with this exact string.
-    return `<a href="${getVerseCdnLink(matchedVerse)}"
+    return `<a href="${getBibleGatewayLink(matchedVerse)}"
                target="_blank"
                rel="noopener noreferrer"
                class="text-decoration-none verse-link inline-verse-link"
@@ -81,14 +80,16 @@ const formattedDevotionText = computed(() => {
   });
 });
 
-const getVerseCdnLink = (verse: string): string => {
+const getBibleGatewayLink = (verse: string): string => {
   const parsed = parseVerseReference(verse);
   if (!parsed) {
-    console.warn(`Could not generate CDN link for unparsable verse: ${verse}. Using placeholder link.`);
-    return '#';
+    console.warn(`Could not generate Bible Gateway link for unparsable verse: ${verse}. Using placeholder link.`);
+    return '#'; // Fallback for unparsable verses
   }
-  const { book, chapter, startVerse } = parsed;
-  return `https://cdn.jsdelivr.net/gh/wldeh/bible-api/bibles/${KJV_BIBLE_ID}/books/${book}/chapters/${chapter}/verses/${startVerse}.json`;
+  // Bible Gateway URL format: https://www.biblegateway.com/passage/?search=John+3:16&version=KJV
+  // The verse reference needs to be URL encoded.
+  const encodedVerse = encodeURIComponent(verse);
+  return `https://www.biblegateway.com/passage/?search=${encodedVerse}&version=KJV`;
 };
 
 const parseVerseReference = (verse: string): ParsedVerse | null => {

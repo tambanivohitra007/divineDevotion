@@ -1,52 +1,57 @@
 // src/composables/useDevotions.ts
 import { ref, onMounted } from 'vue';
 
-interface Devotion {
+// Renamed from Devotion to StoredContent and added a type field
+export interface StoredContent {
   text: string;
   verses: string[];
   topic?: string;
+  type: 'devotion' | 'faithIntegration'; // Added content type
+  id?: string; // Optional: for unique identification, e.g., timestamp or UUID
 }
 
-const SAVED_DEVOTIONS_KEY = 'savedDevotions';
+const SAVED_CONTENT_KEY = 'savedContent'; // Renamed key
 
-export default function useDevotions() {
-  const savedDevotions = ref<Devotion[]>([]);
+export default function useContentStorage() { // Renamed composable
+  const savedContent = ref<StoredContent[]>([]); // Renamed ref
 
-  const loadDevotions = () => {
-    const storedDevotions = localStorage.getItem(SAVED_DEVOTIONS_KEY);
-    if (storedDevotions) {
+  const loadContent = () => { // Renamed function
+    const storedContent = localStorage.getItem(SAVED_CONTENT_KEY);
+    if (storedContent) {
       try {
-        savedDevotions.value = JSON.parse(storedDevotions);
+        savedContent.value = JSON.parse(storedContent);
       } catch (e) {
-        console.error("Failed to parse saved devotions from localStorage:", e);
-        savedDevotions.value = []; // Reset if parsing fails
+        console.error("Failed to parse saved content from localStorage:", e);
+        savedContent.value = []; // Reset if parsing fails
       }
     }
   };
 
-  const saveDevotion = (devotion: Devotion) => {
-    // Avoid saving duplicates if necessary, or decide how to handle them
-    // For simplicity, this adds any new save, even if similar content exists
-    const newSavedDevotions = [...savedDevotions.value, devotion];
-    localStorage.setItem(SAVED_DEVOTIONS_KEY, JSON.stringify(newSavedDevotions));
-    savedDevotions.value = newSavedDevotions;
+  const saveContent = (contentItem: StoredContent) => { // Renamed function
+    // Add a unique ID if not present (e.g., timestamp)
+    if (!contentItem.id) {
+      contentItem.id = `content-${Date.now()}`;
+    }
+    const newSavedContent = [...savedContent.value, contentItem];
+    localStorage.setItem(SAVED_CONTENT_KEY, JSON.stringify(newSavedContent));
+    savedContent.value = newSavedContent;
   };
 
-  const deleteDevotion = (index: number) => {
-    const newSavedDevotions = savedDevotions.value.filter((_, i) => i !== index);
-    localStorage.setItem(SAVED_DEVOTIONS_KEY, JSON.stringify(newSavedDevotions));
-    savedDevotions.value = newSavedDevotions;
+  const deleteContent = (id: string) => { // Updated to delete by ID
+    const newSavedContent = savedContent.value.filter(item => item.id !== id);
+    localStorage.setItem(SAVED_CONTENT_KEY, JSON.stringify(newSavedContent));
+    savedContent.value = newSavedContent;
   };
 
-  // Load saved devotions when the composable is first used
+  // Load saved content when the composable is first used
   onMounted(() => {
-    loadDevotions();
+    loadContent();
   });
 
   return {
-    savedDevotions,
-    saveDevotion,
-    loadDevotions,
-    deleteDevotion,
+    savedContent, // Export renamed ref
+    saveContent,    // Export renamed function
+    loadContent,    // Export renamed function
+    deleteContent,  // Export renamed function
   };
 }

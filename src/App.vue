@@ -15,7 +15,7 @@
         <i v-else-if="!isMobile && !isSidebarCollapsed" class="bi bi-arrow-left-square-fill"></i> <!-- Left arrow for desktop when open -->
         <!-- This button is now hidden if !isMobile && isSidebarCollapsed -->
       </button>
-      <h2 class="sidebar-title"><span v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">My Devotions</span></h2>
+      <h2 class="sidebar-title"><span v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">My Saved Content</span></h2>
       <div class="search-bar mb-3" v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">
         <input
           type="text"
@@ -25,25 +25,25 @@
         />
       </div>
       <ul class="list-unstyled saved-devotions-list" v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">
-        <li v-if="filteredDevotions.length === 0 && searchQuery" class="text-muted small p-2">No matches found.</li>
-        <li v-if="filteredDevotions.length === 0 && !searchQuery && savedDevotions.length > 0" class="text-muted small p-2">No devotions saved yet.</li>
+        <li v-if="filteredContent.length === 0 && searchQuery" class="text-muted small p-2">No matches found.</li>
+        <li v-if="filteredContent.length === 0 && !searchQuery && savedContent.length > 0" class="text-muted small p-2">No content saved yet.</li>
         <li
-          v-for="(devotion, index) in filteredDevotions"
+          v-for="(content, index) in filteredContent"
           :key="index"
           class="saved-devotion-card"
-          @click="viewSavedDevotion(devotion)"
+          @click="viewSavedContent(content)"
         >
-          <h6 class="saved-devotion-topic">{{ devotion.topic || "Saved Devotion" }}</h6>
-          <p class="saved-devotion-excerpt">{{truncateText(devotion.text, 30)}}</p>
-          <button class="btn btn-sm btn-outline-danger delete-saved-btn" @click.stop="handleDeleteDevotion(getOriginalIndex(devotion))">
+          <h6 class="saved-devotion-topic">{{ content.topic || "Saved Content" }}</h6>
+          <p class="saved-devotion-excerpt">{{truncateText(content.text, 30)}}</p>
+          <button class="btn btn-sm btn-outline-danger delete-saved-btn" @click.stop="handleDeleteContent(getOriginalIndex(content))">
             <i class="bi bi-trash3"></i>
           </button>
         </li>
       </ul>
       <!-- Desktop collapsed icons -->
       <div class="sidebar-collapsed-icons" v-if="isSidebarCollapsed && !isMobile">
-        <i class="bi bi-search" @click="toggleSidebar" title="Search Devotions"></i>
-        <i class="bi bi-card-list" @click="toggleSidebar" title="View Devotions"></i>
+        <i class="bi bi-search" @click="toggleSidebar" title="Search Content"></i>
+        <i class="bi bi-card-list" @click="toggleSidebar" title="View Content"></i>
       </div>
     </div>
 
@@ -57,39 +57,48 @@
         <p class="lead">Your AI-powered spiritual companion</p>
       </header>
 
-      <!-- Devotion Generator Section - Updated to Card UI -->
-      <div class="card shadow-lg mb-5 mx-auto devotion-generator-card" style="max-width: 42rem;">
+      <!-- Content Generator Section -->
+      <div class="card shadow-lg mb-5 mx-auto devotion-generator-card" style="max-width: 60rem;">
         <div class="card-header bg-transparent py-3">
           <h2 class="card-title h4 d-flex align-items-center gap-2 mb-1">
-            <i class="bi bi-stars text-primary" style="font-size: 1.5rem;"></i>
-            Request Your Devotion
+            <i :class="selectedContentType === 'devotion' ? 'bi bi-stars text-primary' : 'bi bi-lightbulb-fill text-primary'" style="font-size: 1.5rem;"></i>
+            {{ generatorCardTitle }}
           </h2>
           <p class="card-text text-muted small">
-            Enter a topic or feeling, and let AI craft a personalized devotion grounded in the Bible.
+            {{ generatorCardSubtitle }}
           </p>
         </div>
         <div class="card-body">
-          <form @submit.prevent="handleGenerateDevotion">
+          <ul class="nav nav-tabs nav-fill mb-3" id="contentTypeTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" :class="{ active: selectedContentType === 'devotion' }" id="devotion-tab" @click="selectedContentType = 'devotion'" type="button" role="tab" aria-controls="devotion-panel" aria-selected="selectedContentType === 'devotion'">Devotion</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" :class="{ active: selectedContentType === 'faithIntegration' }" id="faith-integration-tab" @click="selectedContentType = 'faithIntegration'" type="button" role="tab" aria-controls="faith-integration-panel" aria-selected="selectedContentType === 'faithIntegration'">Faith & Learning Idea</button>
+            </li>
+          </ul>
+
+          <form @submit.prevent="handleGenerateContent">
             <div class="mb-3">
               <textarea
-                id="devotionTopicInput"
+                id="topicInput"
                 class="form-control form-control-lg"
                 rows="3"
-                placeholder="E.g., 'finding peace in hardship', 'gratitude', or 'guidance for a tough decision'"
-                v-model="devotionTopic"
-                aria-label="Enter your devotion topic or request"
+                :placeholder="topicInputPlaceholder"
+                v-model="topicInput"
+                aria-label="Enter your topic or request"
               ></textarea>
             </div>
             <button
               type="submit"
               class="btn btn-gradient btn-lg w-100"
-              :disabled="isLoading || !devotionTopic.trim()"
+              :disabled="isLoading || !topicInput.trim()"
             >
               <span v-if="isLoading">
                 <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                 Generating...
               </span>
-              <span v-else><i class="bi bi-stars me-2"></i>Generate Devotion</span>
+              <span v-else><i :class="selectedContentType === 'devotion' ? 'bi bi-stars me-2' : 'bi bi-lightbulb me-2'"></i>{{ generateButtonText }}</span>
             </button>
           </form>
           <div v-if="generationError" class="alert alert-danger mt-3" role="alert">
@@ -98,11 +107,11 @@
         </div>
       </div>
 
-      <!-- Devotion Display Section - Updated to Card UI -->
-      <div v-if="isLoading || (currentDevotion.text && !generationError)" class="card shadow-lg mb-5 mx-auto current-devotion-card" style="max-width: 42rem;">
+      <!-- Content Display Section -->
+      <div v-if="isLoading || (currentContent.text && !generationError)" class="card shadow-lg mb-5 mx-auto current-devotion-card" style="max-width: 60rem;">
         <div class="card-header bg-transparent py-3">
           <h3 class="card-title h4 d-flex align-items-center gap-2 mb-0">
-             <i class="bi bi-journal-text me-2" style="font-size: 1.5rem;"></i>Your Devotion
+             <i :class="currentContent.type === 'devotion' ? 'bi bi-journal-text me-2' : 'bi bi-lightbulb me-2'" style="font-size: 1.5rem;"></i>Your {{ currentContent.type === 'devotion' ? 'Devotion' : 'Faith & Learning Idea' }}
           </h3>
         </div>
         <div class="card-body">
@@ -110,7 +119,7 @@
             <div class="spinner-border text-primary mb-2" style="width: 3rem; height: 3rem;" role="status">
               <span class="visually-hidden">Loading...</span>
             </div>
-            <p class="lead mt-2">Generating your devotion...</p>
+            <p class="lead mt-2">Generating your content...</p>
             <div class="placeholder-glow mt-4">
               <span class="placeholder col-9 mb-2 py-2"></span>
               <span class="placeholder col-12 mb-2 py-2"></span>
@@ -119,19 +128,19 @@
             </div>
           </div>
           
-          <div v-else-if="currentDevotion.text && !generationError">
-            <div v-if="currentDevotion.verses && currentDevotion.verses.length > 0" class="first-verse-highlight">
-              <span class="verse-reference-bold">{{ currentDevotion.verses[0] }}</span>
+          <div v-else-if="currentContent.text && !generationError">
+            <div v-if="currentContent.type === 'devotion' && currentContent.verses && currentContent.verses.length > 0" class="first-verse-highlight">
+              <span class="verse-reference-bold">{{ currentContent.verses[0] }}</span>
               <blockquote v-if="firstVerseText" class="verse-text-blockquote">
                 “{{ firstVerseText }}”
               </blockquote>
             </div>
-            <DevotionDisplay :devotion="formattedDevotionForDisplay" />
+            <DevotionDisplay :devotion="formattedContentForDisplay" :content-type="currentContent.type || 'devotion'" />
             <div class="actions-toolbar text-center mt-4 pt-3 border-top border-secondary">
-              <button class="btn btn-gradient-success btn-sm me-2" @click="handleSaveCurrentDevotion">
-                <i class="bi bi-heart-fill me-2"></i>Save Devotion
+              <button class="btn btn-gradient-success btn-sm me-2" @click="handleSaveCurrentContent">
+                <i class="bi bi-heart-fill me-2"></i>Save {{ currentContent.type === 'devotion' ? 'Devotion' : 'Idea' }}
               </button>
-              <button class="btn btn-outline-info btn-sm" @click="handleShareDevotion" title="Share this devotion">
+              <button class="btn btn-outline-info btn-sm" @click="handleShareContent" title="Share this content">
                 <i class="bi bi-share-fill me-2"></i>Share
               </button>
             </div>
@@ -140,14 +149,14 @@
       </div>
       
       <!-- Placeholder for when nothing is generated and not loading, and no error -->
-      <section v-else-if="!isLoading && !currentDevotion.text && !generationError" class="text-center placeholder-section mx-auto p-5 rounded">
+      <section v-else-if="!isLoading && !currentContent.text && !generationError" class="text-center placeholder-section mx-auto p-5 rounded">
         <i class="bi bi-lightbulb-fill"></i>
-        <p class="lead">Enter a topic above to generate your first devotion.</p>
-        <p class="text-muted">Or, select a saved devotion from the sidebar.</p>
+        <p class="lead">Select a type and enter a topic above to generate content.</p>
+        <p class="text-muted">Or, select saved content from the sidebar.</p>
       </section>
 
       <div v-if="showSaveConfirmation" class="alert alert-success-custom alert-dismissible fade show mt-3" role="alert">
-        <i class="bi bi-check-circle-fill me-2"></i>Devotion saved successfully!
+        <i class="bi bi-check-circle-fill me-2"></i>Content saved successfully!
         <button type="button" class="btn-close btn-close-white" @click="showSaveConfirmation = false" aria-label="Close"></button>
       </div>
 
@@ -163,17 +172,20 @@
 import { ref, computed, watch, watchEffect, onMounted, onUnmounted } from 'vue'; // Added onUnmounted
 import DevotionDisplay from './components/DevotionDisplay.vue';
 import useOpenAI from './composables/useOpenAI';
-import useDevotions, { type Devotion } from './composables/useDevotions'; // Ensure Devotion type is exported and imported
+import useDevotions, { type StoredContent } from './composables/useDevotions'; // Updated import
 
-const devotionTopic = ref('');
-const currentDevotion = ref<Devotion>({
+const selectedContentType = ref<'devotion' | 'faithIntegration'>('devotion');
+const topicInput = ref(''); // Renamed from devotionTopic
+
+const currentContent = ref<StoredContent>({
   text: '',
   verses: [],
   topic: '',
+  type: 'devotion',
 });
 
-const { generateOpenAIDevotion, isLoading, error: generationError } = useOpenAI();
-const { savedDevotions, saveDevotion, deleteDevotion } = useDevotions();
+const { generateOpenAIContent, isLoading, error: generationError } = useOpenAI(); // Renamed function
+const { savedContent, saveContent, deleteContent } = useDevotions(); // Renamed functions
 
 const showSaveConfirmation = ref(false);
 const searchQuery = ref('');
@@ -232,8 +244,29 @@ onUnmounted(() => {
   window.removeEventListener('resize', checkMobile);
 });
 
-// Fetch the text of the first verse when currentDevotion.verses changes
-watch(() => currentDevotion.value.verses && currentDevotion.value.verses[0], async (verse) => {
+// Computed properties for dynamic UI text
+const generatorCardTitle = computed(() => {
+  return selectedContentType.value === 'devotion' ? 'Request Your Devotion' : 'Generate Faith & Learning Idea';
+});
+
+const generatorCardSubtitle = computed(() => {
+  return selectedContentType.value === 'devotion' 
+    ? 'Enter a topic or feeling, and let AI craft a personalized devotion grounded in the Bible.' 
+    : 'Describe a topic or subject, and let AI suggest ways to integrate faith and learning.';
+});
+
+const topicInputPlaceholder = computed(() => {
+  return selectedContentType.value === 'devotion' 
+    ? "E.g., 'finding peace in hardship', 'gratitude', or 'guidance for a tough decision'"
+    : "E.g., 'teaching biology through a faith lens', 'integrating ethics in computer science', or 'faith perspectives on history'";
+});
+
+const generateButtonText = computed(() => {
+  return selectedContentType.value === 'devotion' ? 'Generate Devotion' : 'Generate Idea';
+});
+
+// Fetch the text of the first verse when currentContent.verses changes
+watch(() => (currentContent.value.type === 'devotion' && currentContent.value.verses && currentContent.value.verses[0]), async (verse) => {
   if (!verse) {
     firstVerseText.value = '';
     return;
@@ -261,48 +294,58 @@ watch(() => currentDevotion.value.verses && currentDevotion.value.verses[0], asy
   }
 }, { immediate: true });
 
-const filteredDevotions = computed(() => {
+const filteredContent = computed(() => { // Renamed from filteredDevotions
   if (!searchQuery.value) {
-    return savedDevotions.value;
+    return savedContent.value;
   }
-  return savedDevotions.value.filter(devotion =>
-    (devotion.topic && devotion.topic.toLowerCase().includes(searchQuery.value.toLowerCase())) ||
-    (devotion.text && devotion.text.toLowerCase().includes(searchQuery.value.toLowerCase()))
+  return savedContent.value.filter(item =>
+    (item.topic && item.topic.toLowerCase().includes(searchQuery.value.toLowerCase())) ||
+    (item.text && item.text.toLowerCase().includes(searchQuery.value.toLowerCase()))
+    // Optionally, filter by type: || (item.type && item.type.toLowerCase().includes(searchQuery.value.toLowerCase()))
   );
 });
 
-const getOriginalIndex = (devotionToFind: Devotion): number => {
-  return savedDevotions.value.findIndex(d => d.text === devotionToFind.text && d.topic === devotionToFind.topic);
+const getOriginalIndex = (contentToFind: StoredContent): number => { // Updated type
+  return savedContent.value.findIndex(d => 
+    d.text === contentToFind.text && 
+    d.topic === contentToFind.topic && 
+    d.type === contentToFind.type
+  );
 };
 
-
-const handleGenerateDevotion = async () => {
-  if (!devotionTopic.value.trim()) return;
-  currentDevotion.value = { text: '', verses: [], topic: '' };
+const handleGenerateContent = async () => { // Renamed from handleGenerateDevotion
+  if (!topicInput.value.trim()) return;
+  currentContent.value = { text: '', verses: [], topic: '', type: selectedContentType.value }; // Initialize with selected type
   try {
-    const result = await generateOpenAIDevotion(devotionTopic.value);
-    currentDevotion.value = { text: result.text, verses: result.verses, topic: devotionTopic.value };
+    // Pass selectedContentType to the composable
+    const result = await generateOpenAIContent(topicInput.value, selectedContentType.value);
+    currentContent.value = { 
+      text: result.text, 
+      verses: result.verses || [], // Ensure verses is an array, even if undefined for faithIntegration
+      topic: topicInput.value, 
+      type: selectedContentType.value 
+    };
   } catch (err) {
-    console.error('Error generating devotion in component:', err);
+    console.error('Error generating content in component:', err);
+    // generationError is already handled by the composable
   }
 };
 
-const handleSaveCurrentDevotion = () => {
-  if (currentDevotion.value.text) {
-    // Check if it's already saved to prevent exact duplicates from current reflection
-    const isAlreadySaved = savedDevotions.value.some(
-      (d) => d.text === currentDevotion.value.text && d.topic === currentDevotion.value.topic
+const handleSaveCurrentContent = () => { // Renamed from handleSaveCurrentDevotion
+  if (currentContent.value.text) {
+    const isAlreadySaved = savedContent.value.some(
+      (d) => d.text === currentContent.value.text && 
+             d.topic === currentContent.value.topic &&
+             d.type === currentContent.value.type
     );
     if (!isAlreadySaved) {
-      saveDevotion({ ...currentDevotion.value }); // Save a copy
+      saveContent({ ...currentContent.value }); 
       showSaveConfirmation.value = true;
       setTimeout(() => {
         showSaveConfirmation.value = false;
       }, 3000);
     } else {
-      // Optionally, provide feedback that it's already saved
-      console.log("This devotion is already saved.");
-       showSaveConfirmation.value = true; // Or a different message
+      showSaveConfirmation.value = true; 
       setTimeout(() => {
         showSaveConfirmation.value = false;
       }, 3000);
@@ -310,23 +353,56 @@ const handleSaveCurrentDevotion = () => {
   }
 };
 
-const handleDeleteDevotion = (index: number) => {
+const handleDeleteContent = (index: number) => { // Renamed from handleDeleteDevotion
   if (index > -1) {
-    // If the deleted devotion is currently being viewed, clear the view
-    if (currentDevotion.value.topic === savedDevotions.value[index]?.topic && currentDevotion.value.text === savedDevotions.value[index]?.text) {
-        currentDevotion.value = { text: '', verses: [], topic: ''};
+    const itemToDelete = savedContent.value[index];
+    if (currentContent.value.topic === itemToDelete?.topic && 
+        currentContent.value.text === itemToDelete?.text &&
+        currentContent.value.type === itemToDelete?.type) {
+        currentContent.value = { text: '', verses: [], topic: '', type: selectedContentType.value };
     }
-    deleteDevotion(index);
+    deleteContent(index);
   }
 };
 
-const viewSavedDevotion = (devotion: Devotion) => {
-  currentDevotion.value = { ...devotion }; // View a copy
-  // if (isSidebarCollapsed.value) { // Optional: expand sidebar when a devotion is clicked from collapsed state
-  //   // isSidebarCollapsed.value = false;
-  // }
-  if (isMobile.value && !isSidebarCollapsed.value) { // Close sidebar on mobile after selection
+const viewSavedContent = (content: StoredContent) => { // Renamed from viewSavedDevotion, updated type
+  currentContent.value = { ...content };
+  selectedContentType.value = content.type || 'devotion'; // Update tab selection
+  if (isMobile.value && !isSidebarCollapsed.value) {
     isSidebarCollapsed.value = true;
+  }
+};
+
+const handleShareContent = async () => { // Renamed from handleShareDevotion
+  if (!currentContent.value.text) return;
+
+  const title = currentContent.value.topic 
+    ? `${currentContent.value.type === 'devotion' ? 'Devotion' : 'Faith & Learning Idea'}: ${currentContent.value.topic}` 
+    : `A Divine ${currentContent.value.type === 'devotion' ? 'Devotion' : 'Idea'}`;
+  
+  let shareText = currentContent.value.text;
+  if (currentContent.value.type === 'devotion' && currentContent.value.verses && currentContent.value.verses.length > 0) {
+    const versesText = currentContent.value.verses.join("\n");
+    shareText += `\n\nKey Verses:\n${versesText}`;
+  }
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: title,
+        text: shareText,
+      });
+      shareAlertMessage.value = 'Content shared successfully!';
+      showShareAlert.value = true;
+      setTimeout(() => { showShareAlert.value = false; }, 3000);
+    } catch (err) {
+      if ((err as DOMException).name !== 'AbortError') {
+        console.error('Error sharing, falling back to clipboard: ', err);
+        await copyToClipboard(shareText, 'fallback'); 
+      }
+    }
+  } else {
+    await copyToClipboard(shareText, 'direct');
   }
 };
 
@@ -335,14 +411,14 @@ const copyToClipboard = async (text: string, context: 'fallback' | 'direct' = 'd
   try {
     await navigator.clipboard.writeText(text);
     if (context === 'fallback') {
-      shareAlertMessage.value = 'Sharing failed, devotion copied to clipboard!';
+      shareAlertMessage.value = 'Sharing failed, content copied to clipboard!';
     } else {
-      shareAlertMessage.value = 'Devotion copied to clipboard!';
+      shareAlertMessage.value = 'Content copied to clipboard!';
     }
     showShareAlert.value = true;
   } catch (err) {
     console.error('Failed to copy: ', err);
-    shareAlertMessage.value = 'Failed to copy devotion to clipboard.';
+    shareAlertMessage.value = 'Failed to copy content to clipboard.';
     showShareAlert.value = true; // Show error
   } finally {
     // Common timeout for the alert
@@ -352,41 +428,25 @@ const copyToClipboard = async (text: string, context: 'fallback' | 'direct' = 'd
   }
 };
 
-// Function to handle sharing the devotion
-const handleShareDevotion = async () => {
-  if (!currentDevotion.value.text) return;
-
-  const title = currentDevotion.value.topic ? `Devotion: ${currentDevotion.value.topic}` : 'A Divine Devotion';
-  // Combine text and verses for sharing
-  let shareText = currentDevotion.value.text;
-  if (currentDevotion.value.verses && currentDevotion.value.verses.length > 0) {
-    const versesText = currentDevotion.value.verses.join("\n");
-    shareText += `\n\nKey Verses:\n${versesText}`;
+// Format content for display
+const formattedContentForDisplay = computed(() => { // Renamed from formattedDevotionForDisplay
+  if (!currentContent.value.text) return currentContent.value;
+  
+  let text = currentContent.value.text;
+  // Bold title only for devotions, or make it conditional if titles apply to faithIntegration too
+  if (currentContent.value.type === 'devotion') {
+    text = text.replace(/^(?:\*\*([^*]+)\*\*|([^:]+?))(:|—|--)(\s|$)/, (match, p1, p2, p3, p4) => {
+      const titleContent = p1 || p2;
+      return `<strong class="devotion-title-intro">${titleContent.trim()}${p3}</strong>${p4}`;
+    });
   }
 
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: title,
-        text: shareText,
-        // url: window.location.href, // Removed URL from sharing
-      });
-      shareAlertMessage.value = 'Devotion shared successfully!';
-      showShareAlert.value = true;
-      setTimeout(() => { showShareAlert.value = false; }, 3000);
-    } catch (err) {
-      if ((err as DOMException).name !== 'AbortError') {
-        console.error('Error sharing, falling back to clipboard: ', err);
-        await copyToClipboard(shareText, 'fallback'); 
-      }
-      // If AbortError, user cancelled, do nothing.
-    }
-  } else {
-    // Fallback to copying to clipboard
-    await copyToClipboard(shareText, 'direct');
-  }
-};
-
+  return {
+    ...currentContent.value,
+    text,
+    verses: currentContent.value.verses || [], // Ensure verses is an array
+  };
+});
 
 const truncateText = (text: string, length: number) => {
   if (text.length <= length) {
@@ -399,26 +459,31 @@ const toggleSidebar = () => {
   isSidebarCollapsed.value = !isSidebarCollapsed.value;
 };
 
-// Format devotion for display: bold title, bold+italic verses in list
-const formattedDevotionForDisplay = computed(() => {
-  if (!currentDevotion.value.text) return currentDevotion.value;
-  
-  let text = currentDevotion.value.text;
-  // Regex to find a line that looks like a title (ends with :, —, or --)
-  // It captures optional markdown bolding around the title text.
-  text = text.replace(/^(?:\\*\\*([^*]+)\\*\\*|([^:]+?))(:|—|--)(\\s|$)/, (match, p1, p2, p3, p4) => {
-    const titleContent = p1 || p2; // p1 is content from **bold**, p2 is non-bold
-    // Using a class for the title styling
-    return `<strong class="devotion-title-intro">${titleContent.trim()}${p3}</strong>${p4}`;
-  });
-
-  return {
-    ...currentDevotion.value,
-    text, // The modified text with the bolded title
-    verses: currentDevotion.value.verses, // Verses are passed as-is, DevotionDisplay handles their styling
-  };
+// Watch for changes in isDarkMode, update data-bs-theme attribute, and save to localStorage
+watchEffect(() => {
+  const theme = isDarkMode.value ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-bs-theme', theme);
+  localStorage.setItem('theme', theme);
 });
 
+// Apply the theme when the component is mounted
+// This ensures the theme is set correctly on initial load based on localStorage or default
+onMounted(() => {
+  // Mobile check and sidebar state
+  checkMobile(); // Call once to set initial state for isMobile
+  if (isMobile.value) {
+    isSidebarCollapsed.value = true; // Ensure sidebar is collapsed on mobile initial load
+  }
+  window.addEventListener('resize', checkMobile);
+
+  // Theme initialization
+  const theme = isDarkMode.value ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-bs-theme', theme);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkMobile);
+});
 </script>
 
 <style>
@@ -771,7 +836,7 @@ const formattedDevotionForDisplay = computed(() => {
 }
 
 /* Specific styling for the devotion topic input placeholder */
-#devotionTopicInput.form-control-lg::placeholder {
+#topicInput.form-control-lg::placeholder { /* Corrected ID from #devotionTopicInput to #topicInput */
   font-size: 1rem; /* Smaller than the input's 1.25rem default */
   /* color and font-weight are inherited from .form-control::placeholder */
 }
