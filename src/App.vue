@@ -1,14 +1,22 @@
 <template>
-  <div id="app" :class="{ 'sidebar-collapsed': isSidebarCollapsed }">
-    <button @click="toggleTheme" style="position: fixed; top: 10px; right: 10px; z-index: 2000; padding: 0.5rem 1rem; background-color: var(--bs-body-bg); color: var(--bs-body-color); border: 1px solid var(--bs-border-color); border-radius: 5px; cursor: pointer;">
-      Toggle Theme ({{ isDarkMode ? 'Dark' : 'Light' }})
+  <div id="app" :class="{ 'sidebar-collapsed': isSidebarCollapsed, 'mobile-view': isMobile }">
+    <div v-if="isMobile && !isSidebarCollapsed" class="sidebar-overlay" @click="toggleSidebar"></div>
+    <button @click="toggleTheme" class="btn theme-toggle-btn" :title="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+      <i :class="isDarkMode ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill'"></i>
     </button>
     <div class="sidebar">
-      <button class="btn btn-sm btn-outline-light sidebar-toggle-btn top-right-absolute" @click="toggleSidebar">
-        <i :class="isSidebarCollapsed ? 'bi bi-arrow-right-square-fill' : 'bi bi-arrow-left-square-fill'"></i>
+      <button 
+        class="btn btn-sm btn-outline-light sidebar-toggle-btn top-right-absolute" 
+        @click="toggleSidebar"
+        v-if="!(isSidebarCollapsed && !isMobile)"
+      >
+        <!-- Icon changes based on desktop/mobile and collapsed state -->
+        <i v-if="isMobile && !isSidebarCollapsed" class="bi bi-x-lg"></i> <!-- Close icon for mobile overlay when open -->
+        <i v-else-if="!isMobile && !isSidebarCollapsed" class="bi bi-arrow-left-square-fill"></i> <!-- Left arrow for desktop when open -->
+        <!-- This button is now hidden if !isMobile && isSidebarCollapsed -->
       </button>
-      <h2 class="sidebar-title"><span v-if="!isSidebarCollapsed">My Devotions</span></h2>
-      <div class="search-bar mb-3" v-if="!isSidebarCollapsed">
+      <h2 class="sidebar-title"><span v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">My Devotions</span></h2>
+      <div class="search-bar mb-3" v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">
         <input
           type="text"
           class="form-control form-control-sm"
@@ -16,7 +24,7 @@
           v-model="searchQuery"
         />
       </div>
-      <ul class="list-unstyled saved-devotions-list" v-if="!isSidebarCollapsed">
+      <ul class="list-unstyled saved-devotions-list" v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">
         <li v-if="filteredDevotions.length === 0 && searchQuery" class="text-muted small p-2">No matches found.</li>
         <li v-if="filteredDevotions.length === 0 && !searchQuery && savedDevotions.length > 0" class="text-muted small p-2">No devotions saved yet.</li>
         <li
@@ -32,15 +40,17 @@
           </button>
         </li>
       </ul>
-      <div class="sidebar-collapsed-icons" v-if="isSidebarCollapsed">
+      <!-- Desktop collapsed icons -->
+      <div class="sidebar-collapsed-icons" v-if="isSidebarCollapsed && !isMobile">
         <i class="bi bi-search" @click="toggleSidebar" title="Search Devotions"></i>
         <i class="bi bi-card-list" @click="toggleSidebar" title="View Devotions"></i>
       </div>
     </div>
 
     <div class="main-content">
+      <!-- This button is now primarily for opening sidebar on mobile, or expanding on desktop if it was collapsed -->
       <button class="btn btn-sm btn-outline-light sidebar-toggle-btn-main" @click="toggleSidebar" v-if="isSidebarCollapsed">
-        <i class="bi bi-arrow-right-square-fill"></i>
+         <i class="bi bi-list"></i> <!-- Hamburger icon for mobile -->
       </button>
       <header class="text-center mb-5">
         <h1 class="display-4 app-title">DivineDevotion</h1>
@@ -145,7 +155,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, watchEffect, onMounted } from 'vue'; // Added onMounted
+import { ref, computed, watch, watchEffect, onMounted, onUnmounted } from 'vue'; // Added onUnmounted
 import DevotionDisplay from './components/DevotionDisplay.vue';
 import useOpenAI from './composables/useOpenAI';
 import useDevotions, { type Devotion } from './composables/useDevotions'; // Ensure Devotion type is exported and imported
@@ -162,7 +172,15 @@ const { savedDevotions, saveDevotion, deleteDevotion } = useDevotions();
 
 const showSaveConfirmation = ref(false);
 const searchQuery = ref('');
-const isSidebarCollapsed = ref(false);
+
+// Mobile responsiveness
+const isMobile = ref(false);
+const checkMobile = () => {
+  isMobile.value = window.innerWidth <= 768;
+};
+
+// Initialize isSidebarCollapsed. On initial load, if it's mobile, it should be collapsed.
+const isSidebarCollapsed = ref(window.innerWidth <= 768);
 const firstVerseText = ref('');
 
 // Initialize isDarkMode from localStorage or default to true (dark mode)
@@ -190,8 +208,20 @@ watchEffect(() => {
 // Apply the theme when the component is mounted
 // This ensures the theme is set correctly on initial load based on localStorage or default
 onMounted(() => {
+  // Mobile check and sidebar state
+  checkMobile(); // Call once to set initial state for isMobile
+  if (isMobile.value) {
+    isSidebarCollapsed.value = true; // Ensure sidebar is collapsed on mobile initial load
+  }
+  window.addEventListener('resize', checkMobile);
+
+  // Theme initialization
   const theme = isDarkMode.value ? 'dark' : 'light';
   document.documentElement.setAttribute('data-bs-theme', theme);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkMobile);
 });
 
 // Fetch the text of the first verse when currentDevotion.verses changes
@@ -284,8 +314,11 @@ const handleDeleteDevotion = (index: number) => {
 
 const viewSavedDevotion = (devotion: Devotion) => {
   currentDevotion.value = { ...devotion }; // View a copy
-  if (isSidebarCollapsed.value) { // Optional: expand sidebar when a devotion is clicked from collapsed state
-    // isSidebarCollapsed.value = false;
+  // if (isSidebarCollapsed.value) { // Optional: expand sidebar when a devotion is clicked from collapsed state
+  //   // isSidebarCollapsed.value = false;
+  // }
+  if (isMobile.value && !isSidebarCollapsed.value) { // Close sidebar on mobile after selection
+    isSidebarCollapsed.value = true;
   }
 };
 
@@ -334,7 +367,7 @@ const formattedDevotionForDisplay = computed(() => {
 
 /* Light Theme (Bootstrap default or custom overrides) */
 [data-bs-theme="light"] {
-  --sidebar-bg-light: #f7f3ea;
+  --sidebar-bg-light: linear-gradient(to right, #70e1f5, #ffd194);
   /* You might want to adjust text colors for the sidebar in light mode if default Bootstrap ones don't fit well */
   /* --sidebar-text-color-light: #your_choice; */
 }
@@ -343,13 +376,13 @@ const formattedDevotionForDisplay = computed(() => {
 [data-bs-theme="dark"] {
   --bs-body-bg: #1a1a2e; /* Deep blue/purple */
   --bs-body-color: #e0e0e0; /* Light text for dark backgrounds */
-  --bs-border-color: #303050;
+  --bs-border-color: #101011;
   --bs-card-bg: #1f4068; /* Card background */
-  --bs-card-border: #303050;
+  --bs-card-border: #2a2a2a;
   --bs-hover-bg: #2a3b57;
 
   /* Custom sidebar gradient for dark mode */
-  --sidebar-bg-dark: linear-gradient(to right, #2c3e50, #212529);
+  --sidebar-bg-dark: linear-gradient(to bottom, #1a1919, #212529);
 }
 
 /* Sidebar Styles */
@@ -777,4 +810,171 @@ const formattedDevotionForDisplay = computed(() => {
   font-weight: bold;
   font-style: italic;
 }
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 280px; /* Or a percentage like 80vw */
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1100; /* Higher than theme toggle and overlay */
+    box-shadow: 2px 0 10px rgba(0,0,0,0.2); /* Add shadow for overlay effect */
+  }
+
+  /* When sidebar should be visible on mobile (app has mobile-view and is not sidebar-collapsed) */
+  #app.mobile-view:not(.sidebar-collapsed) .sidebar {
+    transform: translateX(0);
+  }
+  
+  /* Sidebar content visibility on mobile when open */
+  #app.mobile-view:not(.sidebar-collapsed) .sidebar .sidebar-title span,
+  #app.mobile-view:not(.sidebar-collapsed) .sidebar .search-bar,
+  #app.mobile-view:not(.sidebar-collapsed) .sidebar .saved-devotions-list {
+    display: block; /* Or flex, depending on original display type */
+  }
+  
+  /* Hide desktop-specific collapsed icons on mobile */
+  #app.mobile-view .sidebar-collapsed-icons {
+    display: none !important;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 1rem 1rem; /* Reduced padding for mobile */
+  }
+
+  /* Sidebar toggle button in main content (hamburger) */
+  .sidebar-toggle-btn-main {
+    display: none; /* Hidden by default, shown by #app.mobile-view.sidebar-collapsed */
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1005; 
+    font-size: 1.5rem; /* Make hamburger larger */
+  }
+
+  /* Theme toggle button position adjustment */
+  button[style*="position: fixed"][style*="top: 10px"][style*="right: 10px"] {
+    top: 12px;
+    right: 12px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .devotion-generator-card, .current-devotion-card {
+    margin-left: auto; /* Keep mx-auto behavior */
+    margin-right: auto;
+    max-width: 100%; /* Allow full width within padding */
+  }
+
+  .app-title {
+    font-size: 1.8rem; /* Adjust title font size */
+    margin-top: 2.5rem; /* Add margin to avoid overlap with fixed buttons */
+  }
+  .main-content .lead {
+    font-size: 0.9rem; /* Adjust lead text size */
+  }
+
+  .main-content header {
+    margin-bottom: 1.5rem !important; /* Reduced margin */
+  }
+  .card {
+    margin-bottom: 1.5rem !important; /* Reduced margin for cards */
+  }
+  .card-body, .card-header {
+    padding: 0.75rem; /* Reduced padding inside cards */
+  }
+  .form-control-lg {
+    font-size: 1rem; /* Adjust textarea font size */
+  }
+  .btn-lg {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .first-verse-highlight {
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem !important;
+  }
+  .first-verse-highlight .verse-reference-bold {
+    font-size: 1.05rem;
+  }
+  .first-verse-highlight .verse-text-blockquote {
+    font-size: 0.95rem;
+  }
+
+  .placeholder-section {
+    padding: 2rem 1rem !important; /* Adjust padding */
+  }
+  .placeholder-section .bi-lightbulb-fill {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem !important;
+  }
+  
+  /* Ensure the close button (X) in the sidebar is easily tappable */
+  #app.mobile-view .sidebar .sidebar-toggle-btn.top-right-absolute {
+    top: 10px;
+    right: 10px;
+    font-size: 1.3rem;
+  }
+}
+
+/* Ensure that when sidebar is collapsed on desktop, the main toggle button uses the correct icon */
+#app:not(.mobile-view).sidebar-collapsed .sidebar-toggle-btn-main i {
+  /* This will be bi-arrow-right-square-fill from the template if not mobile */
+   content: '\F13A'; /* Fallback if class doesn't update, though Vue should handle it */
+}
+#app.mobile-view.sidebar-collapsed .sidebar-toggle-btn-main i::before {
+  content: "\F479"; /* Bootstrap icon for list/hamburger */
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 1099; /* Below sidebar, above content */
+}
+
+#app.mobile-view:not(.sidebar-collapsed) .sidebar-overlay {
+  display: block;
+}
+
+.theme-toggle-btn {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 2000;
+  padding: 0.375rem 0.75rem; /* Standard Bootstrap btn padding */
+  font-size: 1.25rem; /* Adjust icon size */
+  line-height: 1; /* Ensure icon is centered vertically */
+  /* background-color: var(--bs-body-bg); Using btn classes will handle this */
+  /* color: var(--bs-body-color); */
+  /* border: 1px solid var(--bs-border-color); */
+  /* border-radius: 5px; */
+}
+
+[data-bs-theme="light"] .theme-toggle-btn {
+  background-color: var(--bs-light);
+  color: var(--bs-dark);
+  border: 1px solid var(--bs-gray-400);
+}
+
+[data-bs-theme="dark"] .theme-toggle-btn {
+  background-color: var(--bs-dark);
+  color: var(--bs-light);
+  border: 1px solid var(--bs-gray-700);
+}
+
+.theme-toggle-btn:hover {
+  opacity: 0.8;
+}
+
 </style>
