@@ -1,45 +1,52 @@
 <template>
   <div class="devotion-display-content">
     <div class="main-devotion-text lh-lg" v-html="formattedDevotionText"></div>
-    <hr v-if="devotion.verses && devotion.verses.length > 0" class="my-4">
-    <div v-if="devotion.verses && devotion.verses.length > 0" class="verses-section">
-      <h6 class="verses-section-title mb-3">
-        <i class="bi bi-book-half me-2"></i>
-        Bible Verses:
-      </h6>
-      <ul class="list-group list-group-flush">
-        <li v-for="(verse, index) in devotion.verses" :key="index" class="list-group-item px-0 py-2">
-          <a :href="getBibleGatewayLink(verse)"
-             target="_blank"
-             rel="noopener noreferrer"
-             class="text-decoration-none verse-link list-item-verse-link"
-             :data-verse-ref="verse"
-             data-bs-toggle="tooltip"
-             data-bs-placement="top"
-             data-bs-custom-class="bible-verse-tooltip"
-             :title="getTooltipTitle(verse)"
-             @mouseover.once="fetchVerseText(verse)"
-             @focus.once="fetchVerseText(verse)" 
-          >
-            <i class="bi bi-link-45deg me-1"></i>
-            {{ verse }}
-          </a>
-        </li>
-      </ul>
-    </div>
+    <template v-if="props.contentType === 'devotion' && props.devotion.verses && props.devotion.verses.length > 0">
+      <hr class="my-4">
+      <div class="verses-section">
+        <h6 class="verses-section-title mb-3">
+          <i class="bi bi-book-half me-2"></i>
+          Bible Verses:
+        </h6>
+        <ul class="list-group list-group-flush">
+          <li v-for="(verse, index) in props.devotion.verses" :key="index" class="list-group-item px-0 py-2">
+            <a :href="getBibleGatewayLink(verse)"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="text-decoration-none verse-link list-item-verse-link"
+               :data-verse-ref="verse"
+               data-bs-toggle="tooltip"
+               data-bs-placement="top"
+               data-bs-custom-class="bible-verse-tooltip"
+               :title="getTooltipTitle(verse)"
+               @mouseover.once="fetchVerseText(verse)"
+               @focus.once="fetchVerseText(verse)" 
+            >
+              <i class="bi bi-link-45deg me-1"></i>
+              {{ verse }}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, ref, watch, nextTick, computed } from 'vue'; // Added computed
+import { defineProps, ref, watch, nextTick, computed } from 'vue';
 
-interface Devotion {
+// Renamed Devotion to DisplayableContent and made verses optional
+interface DisplayableContent {
   text: string;
-  verses: string[];
+  verses?: string[]; // Verses are optional
   topic?: string;
 }
 
-const props = defineProps<{ devotion: Devotion }>();
+const props = defineProps<{
+  devotion: DisplayableContent; // Prop name remains 'devotion' as passed from App.vue
+  contentType: 'devotion' | 'faithIntegration';
+}>();
+
 const verseTooltipContents = ref<Record<string, string>>({});
 
 declare var bootstrap: any;
@@ -54,7 +61,7 @@ interface ParsedVerse {
 
 // Regex to find Bible verses in text. Handles books like "1 John", "Song of Solomon".
 // Example refs: "John 3:16", "1 John 3:16-18", "Song of Solomon 2:1".
-const bibleVerseGlobalRegex = /\\b(\\d*\\s*[A-Za-z]+(?:(?:\\s+)[A-Za-z]+)*\\s+\\d+:\\d+(?:-\\d+)?)\\b/g;
+const bibleVerseGlobalRegex = /\\b(\\d*\\s*[A-Za-z]+(?:(?:\\s+)[A-Zael]+)*\\s+\\d+:\\d+(?:-\\d+)?)\\b/g;
 
 const formattedDevotionText = computed(() => {
   const text = props.devotion.text;

@@ -1,29 +1,37 @@
-# Divine Devotion - AI-Powered Devotional Generator
+# Divine Devotion - AI-Powered Spiritual Content Generator
 
 [![Vue.js](https://img.shields.io/badge/Vue.js-3-4FC08D?style=for-the-badge&logo=vue.js)](https://vuejs.org/)
 [![Vite](https://img.shields.io/badge/Vite-4-646CFF?style=for-the-badge&logo=vite)](https://vitejs.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap)](https://getbootstrap.com/)
 [![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4-412991?style=for-the-badge&logo=openai)](https://openai.com/)
+[![PWA](https://img.shields.io/badge/PWA-Enabled-5A0FC8?style=for-the-badge&logo=pwa)](https://web.dev/progressive-web-apps/)
 
-Divine Devotion is a web application that generates spiritually uplifting devotionals using the power of AI. It aims to provide comfort, guidance, and a moment of reflection based on user-provided topics, strictly adhering to teachings from the Holy Bible, Ellen G. White's writings, and official Seventh-day Adventist (SDA) doctrines.
+Divine Devotion is a web application that generates spiritually uplifting content using the power of AI. It can create personalized **Devotionals** or **Faith & Learning Integration Ideas** for educators. All content aims to be strictly rooted in and aligned with: (1) The Holy Bible, (2) The complete, published writings of Ellen G. White, and (3) The official doctrines and fundamental beliefs of the Seventh-day Adventist Church.
 
 ## ✨ Features
 
-*   **AI-Powered Devotionals:** Generate unique devotionals on various topics.
+*   **AI-Powered Content Generation:**
+    *   **Devotionals:** Generate unique devotionals on various topics.
+    *   **Faith & Learning Ideas:** Get AI-generated suggestions for integrating faith into educational topics.
 *   **SDA Aligned Content:** Content is carefully generated to align with SDA beliefs, the Bible, and Ellen G. White's writings.
-*   **Light/Dark Mode Toggle:** Switch between light and dark themes for comfortable reading, powered by Bootstrap 5.3.
-*   **Save Your Favorites:** Store generated devotionals locally in your browser for later access.
-*   **Responsive Design:** Enjoy a seamless experience across different devices.
+*   **Light/Dark Mode Toggle:** Switch between light and dark themes for comfortable reading, powered by Bootstrap 5.3. Theme preference is saved.
+*   **Save Your Favorites:** Store generated content (devotionals or ideas) locally in your browser.
+*   **Collapsible Sidebar:** Easily access saved content and search through them.
+*   **Responsive Design:** Enjoy a seamless experience across desktop and mobile devices.
 *   **Secure API Key Handling:** OpenAI API key is managed via environment variables.
+*   **PWA Enabled:** Installable as a Progressive Web App for an app-like experience.
+*   **Share Content:** Easily share generated content using the Web Share API (with clipboard fallback).
+*   **Clickable Bible Verses:** Bible verses in devotionals link directly to Bible Gateway for further study.
 
 ## 🛠️ Tech Stack
 
 *   **Frontend:** Vue 3 (Composition API), Vite, TypeScript
-*   **Styling:** Bootstrap 5.3, Custom CSS
-*   **AI:** OpenAI API (gpt-4.1-nano or preferred model)
-*   **State Management:** Vue Reactivity (ref, reactive)
-*   **Persistence:** Browser `localStorage` for theme preference and saved devotions.
+*   **Styling:** Bootstrap 5.3, Custom CSS Variables for Theming
+*   **AI:** OpenAI API (e.g., gpt-4.1-nano)
+*   **State Management:** Vue Reactivity (`ref`, `computed`, `watchEffect`)
+*   **Persistence:** Browser `localStorage` for theme preference and saved content.
+*   **PWA:** `vite-plugin-pwa`
 
 ## 🚀 Getting Started
 
@@ -66,12 +74,17 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 ## 📖 Usage
 
-1.  **Enter a Topic:** In the input field, type a topic for which you'd like a devotional (e.g., "Faith", "Hope", "Love").
-2.  **Generate Devotional:** Click the "Generate" button. The AI will create a devotional based on your topic.
-3.  **View and Read:** The generated devotional text and relevant Bible verses will be displayed.
-4.  **Save Devotional:** If you like the devotional, click the "Save" button to store it in your browser.
-5.  **View Saved Devotions:** Access your saved devotionals in the "Saved Devotions" section.
-6.  **Toggle Theme:** Use the theme toggle button (usually a sun/moon icon) to switch between light and dark modes. Your preference will be saved.
+1.  **Select Content Type:** Choose between generating a "Devotion" or a "Faith & Learning Idea" using the tabs.
+2.  **Enter a Topic:** In the input field, type a topic relevant to your selected content type.
+    *   For Devotions: e.g., "Finding peace in hardship", "Gratitude".
+    *   For Faith & Learning Ideas: e.g., "Teaching biology through a faith lens", "Ethics in computer science".
+3.  **Generate Content:** Click the "Generate" button. The AI will create content based on your input.
+4.  **View and Read:** The generated text (and relevant Bible verses for devotions) will be displayed.
+5.  **Save Content:** If you like the generated piece, click the "Save" button to store it.
+6.  **View Saved Content:** Access your saved items in the sidebar. You can search and filter them.
+7.  **Toggle Theme:** Use the theme toggle button (sun/moon icon) to switch between light and dark modes.
+8.  **Share:** Use the "Share" button to share the current content.
+9.  **PWA Installation:** If your browser supports it, you may be prompted to install Divine Devotion as an app.
 
 ## 🤝 Contributing
 
@@ -91,5 +104,6 @@ This project is currently not licensed. You are free to use, modify, and distrib
 
 ---
 
-We hope Divine Devotion brings you moments of peace and spiritual insight.
+We hope Divine Devotion brings you moments of peace, spiritual insight, and useful ideas for faith integration.
 If you encounter any issues or have feedback, please open an issue on GitHub.
+Last Updated: May 22, 2025
