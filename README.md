@@ -4,7 +4,7 @@
 [![Vite](https://img.shields.io/badge/Vite-4-646CFF?style=for-the-badge&logo=vite)](https://vitejs.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap)](https://getbootstrap.com/)
-[![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4-412991?style=for-the-badge&logo=openai)](https://openai.com/)
+[![Gemini](https://img.shields.io/badge/Google-Gemini-4285F4?style=for-the-badge&logo=google)](https://ai.google.dev/)
 [![PWA](https://img.shields.io/badge/PWA-Enabled-5A0FC8?style=for-the-badge&logo=pwa)](https://web.dev/progressive-web-apps/)
 
 Divine Devotion is a web application that generates spiritually uplifting content using the power of AI. It can create personalized **Devotionals** or **Faith & Learning Integration Ideas** for educators. All content aims to be strictly rooted in and aligned with: (1) The Holy Bible, (2) The complete, published writings of Ellen G. White, and (3) The official doctrines and fundamental beliefs of the Seventh-day Adventist Church.
@@ -19,7 +19,7 @@ Divine Devotion is a web application that generates spiritually uplifting conten
 *   **Save Your Favorites:** Store generated content (devotionals or ideas) locally in your browser.
 *   **Collapsible Sidebar:** Easily access saved content and search through them.
 *   **Responsive Design:** Enjoy a seamless experience across desktop and mobile devices.
-*   **Secure API Key Handling:** OpenAI API key is managed via environment variables.
+*   **Secure API Key Handling:** Google Gemini API key is managed via environment variables.
 *   **PWA Enabled:** Installable as a Progressive Web App for an app-like experience.
 *   **Share Content:** Easily share generated content using the Web Share API (with clipboard fallback).
 *   **Clickable Bible Verses:** Bible verses in devotionals link directly to Bible Gateway for further study.
@@ -28,7 +28,7 @@ Divine Devotion is a web application that generates spiritually uplifting conten
 
 *   **Frontend:** Vue 3 (Composition API), Vite, TypeScript
 *   **Styling:** Bootstrap 5.3, Custom CSS Variables for Theming
-*   **AI:** OpenAI API (e.g., gpt-4.1-nano)
+*   **AI:** Google Gemini API (gemini-1.5-flash-latest)
 *   **State Management:** Vue Reactivity (`ref`, `computed`, `watchEffect`)
 *   **Persistence:** Browser `localStorage` for theme preference and saved content.
 *   **PWA:** `vite-plugin-pwa`
@@ -58,9 +58,9 @@ Follow these instructions to get a copy of the project up and running on your lo
     ```
 
 3.  **Set up Environment Variables:**
-    Create a `.env` file in the root of your project and add your OpenAI API key:
+    Create a `.env` file in the root of your project and add your Google Gemini API key:
     ```env
-    VITE_OPENAI_API_KEY=your_openai_api_key_here
+    VITE_GEMINI_API_KEY=your_gemini_api_key_here
     ```
     *Note: The `.env` file is already included in `.gitignore` to prevent accidental commits of your API key.*
 
@@ -106,4 +106,4 @@ This project is currently not licensed. You are free to use, modify, and distrib
 
 We hope Divine Devotion brings you moments of peace, spiritual insight, and useful ideas for faith integration.
 If you encounter any issues or have feedback, please open an issue on GitHub.
-Last Updated: May 22, 2025
+Last Updated: June 3, 2025

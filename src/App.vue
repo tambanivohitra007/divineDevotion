@@ -1,9 +1,6 @@
 <template>
   <div id="app" :class="{ 'sidebar-collapsed': isSidebarCollapsed, 'mobile-view': isMobile }">
     <div v-if="isMobile && !isSidebarCollapsed" class="sidebar-overlay" @click="toggleSidebar"></div>
-    <button @click="toggleTheme" class="btn theme-toggle-btn" :title="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
-      <i :class="isDarkMode ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill'"></i>
-    </button>
     <div class="sidebar">
       <button 
         class="btn btn-sm btn-outline-light sidebar-toggle-btn top-right-absolute" 
@@ -15,7 +12,7 @@
         <i v-else-if="!isMobile && !isSidebarCollapsed" class="bi bi-arrow-left-square-fill"></i> <!-- Left arrow for desktop when open -->
         <!-- This button is now hidden if !isMobile && isSidebarCollapsed -->
       </button>
-      <h2 class="sidebar-title"><span v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">My Saved Content</span></h2>
+      <h2 class="sidebar-title"><span v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">Saved</span></h2>
       <div class="search-bar mb-3" v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">
         <input
           type="text"
@@ -50,75 +47,35 @@
           </button>
         </li>
       </ul>
-      <!-- Desktop collapsed icons -->
-      <div class="sidebar-collapsed-icons" v-if="isSidebarCollapsed && !isMobile">
-        <i class="bi bi-search" @click="toggleSidebar" title="Search Content"></i>
-        <i class="bi bi-card-list" @click="toggleSidebar" title="View Content"></i>
+      
+      <!-- Theme toggle button at bottom of sidebar -->
+      <div class="sidebar-bottom" v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">
+        <button @click="toggleTheme" class="btn theme-toggle-btn-sidebar" :title="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+          <i :class="isDarkMode ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill'"></i>
+          <span v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)" class="ms-2">
+            {{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}
+          </span>
+        </button>
       </div>
     </div>
-
+  </div>
     <div class="main-content">
       <!-- This button is now primarily for opening sidebar on mobile, or expanding on desktop if it was collapsed -->
       <button class="btn btn-sm btn-outline-light sidebar-toggle-btn-main" @click="toggleSidebar" v-if="isSidebarCollapsed">
          <i class="bi bi-list"></i> <!-- Hamburger icon for mobile -->
       </button>
-      <header class="text-center mb-5">
+      
+      <!-- Header -->
+      <header class="text-center mb-4">
         <h1 class="display-4 app-title">DivineDevotion</h1>
         <p class="lead">Your AI-powered spiritual companion</p>
       </header>
 
-      <!-- Content Generator Section -->
-      <div class="card shadow-lg mb-5 mx-auto devotion-generator-card" style="max-width: 60rem;">
-        <div class="card-header bg-transparent py-3">
-          <h2 class="card-title h4 d-flex align-items-center gap-2 mb-1">
-            <i :class="selectedContentType === 'devotion' ? 'bi bi-stars text-primary' : 'bi bi-lightbulb-fill text-primary'" style="font-size: 1.5rem;"></i>
-            {{ generatorCardTitle }}
-          </h2>
-          <p class="card-text text-muted small">
-            {{ generatorCardSubtitle }}
-          </p>
-        </div>
-        <div class="card-body">
-          <ul class="nav nav-tabs nav-fill mb-3" id="contentTypeTab" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button class="nav-link" :class="{ active: selectedContentType === 'devotion' }" id="devotion-tab" @click="selectedContentType = 'devotion'" type="button" role="tab" aria-controls="devotion-panel" aria-selected="selectedContentType === 'devotion'">Devotion</button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button class="nav-link" :class="{ active: selectedContentType === 'faithIntegration' }" id="faith-integration-tab" @click="selectedContentType = 'faithIntegration'" type="button" role="tab" aria-controls="faith-integration-panel" aria-selected="selectedContentType === 'faithIntegration'">Faith & Learning Idea</button>
-            </li>
-          </ul>
-
-          <form @submit.prevent="handleGenerateContent">
-            <div class="mb-3">
-              <textarea
-                id="topicInput"
-                class="form-control form-control-lg"
-                rows="3"
-                :placeholder="topicInputPlaceholder"
-                v-model="topicInput"
-                aria-label="Enter your topic or request"
-              ></textarea>
-            </div>
-            <button
-              type="submit"
-              class="btn btn-gradient btn-lg w-100"
-              :disabled="isLoading || !topicInput.trim()"
-            >
-              <span v-if="isLoading">
-                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                Generating...
-              </span>
-              <span v-else><i :class="selectedContentType === 'devotion' ? 'bi bi-stars me-2' : 'bi bi-lightbulb me-2'"></i>{{ generateButtonText }}</span>
-            </button>
-          </form>
-          <div v-if="generationError" class="alert alert-danger mt-3" role="alert">
-            <strong>Error:</strong> {{ generationError }}
-          </div>
-        </div>
-      </div>
+      <!-- Main Content Area -->
+      <div class="content-area">
 
       <!-- Content Display Section -->
-      <div v-if="isLoading || (currentContent.text && !generationError)" class="card shadow-lg mb-5 mx-auto current-devotion-card" style="max-width: 60rem;">
+      <div v-if="isLoading || (currentContent.text && !generationError)" class="card shadow-lg mx-auto current-devotion-card">
         <div class="card-header bg-transparent py-3">
           <h3 class="card-title h4 d-flex align-items-center gap-2 mb-0">
              <i :class="currentContent.type === 'devotion' ? 'bi bi-journal-text me-2' : 'bi bi-lightbulb me-2'" style="font-size: 1.5rem;"></i>Your {{ currentContent.type === 'devotion' ? 'Devotion' : 'Faith & Learning Idea' }}
@@ -142,7 +99,7 @@
             <div v-if="currentContent.type === 'devotion' && currentContent.verses && currentContent.verses.length > 0" class="first-verse-highlight">
               <span class="verse-reference-bold">{{ currentContent.verses[0] }}</span>
               <blockquote v-if="firstVerseText" class="verse-text-blockquote">
-                “{{ firstVerseText }}”
+                "{{ firstVerseText }}"
               </blockquote>
             </div>
             <DevotionDisplay :devotion="formattedContentForDisplay" :content-type="currentContent.type || 'devotion'" />
@@ -159,12 +116,16 @@
       </div>
       
       <!-- Placeholder for when nothing is generated and not loading, and no error -->
-      <section v-else-if="!isLoading && !currentContent.text && !generationError" class="text-center placeholder-section mx-auto p-5 rounded">
-        <i class="bi bi-lightbulb-fill"></i>
-        <p class="lead">Select a type and enter a topic above to generate content.</p>
-        <p class="text-muted">Or, select saved content from the sidebar.</p>
+      <section v-else-if="!isLoading && !currentContent.text && !generationError" class="text-center placeholder-section mx-auto p-5 rounded welcome-area">
+        <div class="welcome-content">
+          <i class="bi bi-lightbulb-fill welcome-icon"></i>
+          <h2 class="welcome-title">Welcome to DivineDevotion</h2>
+          <p class="lead welcome-text">Generate personalized devotions and faith-based learning ideas</p>
+          <p class="text-muted">Choose a content type and enter your topic below to begin</p>
+        </div>
       </section>
 
+      <!-- Alerts -->
       <div v-if="showSaveConfirmation" class="alert alert-success-custom alert-dismissible fade show mt-3" role="alert">
         <i class="bi bi-check-circle-fill me-2"></i>Content saved successfully!
         <button type="button" class="btn-close btn-close-white" @click="showSaveConfirmation = false" aria-label="Close"></button>
@@ -175,13 +136,65 @@
         <button type="button" :class="isDarkMode ? 'btn-close btn-close-white' : 'btn-close'" @click="showShareAlert = false" aria-label="Close"></button>
       </div>
     </div>
+
+    <!-- Bottom Input Area (Gemini-like) -->
+    <div class="bottom-input-area">
+      <div class="input-container">
+        <!-- Content Type Selector -->
+        <div class="content-type-selector mb-3">
+          <div class="btn-group w-100" role="group" aria-label="Content type selection">
+            <input type="radio" class="btn-check" name="contentType" id="devotion-radio" autocomplete="off" :checked="selectedContentType === 'devotion'" @change="selectedContentType = 'devotion'">
+            <label class="btn btn-outline-primary" for="devotion-radio">
+              <i class="bi bi-stars me-2"></i>Devotion
+            </label>
+
+            <input type="radio" class="btn-check" name="contentType" id="faithIntegration-radio" autocomplete="off" :checked="selectedContentType === 'faithIntegration'" @change="selectedContentType = 'faithIntegration'">
+            <label class="btn btn-outline-primary" for="faithIntegration-radio">
+              <i class="bi bi-lightbulb-fill me-2"></i>Faith & Learning
+            </label>
+          </div>
+        </div>
+
+        <!-- Input Form -->
+        <form @submit.prevent="handleGenerateContent" class="input-form">
+          <div class="input-group">
+            <textarea
+              id="topicInput"
+              class="form-control bottom-textarea"
+              rows="1"
+              :placeholder="topicInputPlaceholder"
+              v-model="topicInput"
+              aria-label="Enter your topic or request"
+              @input="autoResizeTextarea"
+              ref="textareaRef"
+            ></textarea>
+            <button
+              type="submit"
+              class="btn btn-primary send-btn"
+              :disabled="isLoading || !topicInput.trim()"
+              title="Generate content"
+            >
+              <span v-if="isLoading">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              </span>
+              <span v-else>
+                <i class="bi bi-send-fill"></i>
+              </span>
+            </button>
+          </div>
+          <div v-if="generationError" class="alert alert-danger mt-2" role="alert">
+            <strong>Error:</strong> {{ generationError }}
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch, watchEffect, onMounted, onUnmounted } from 'vue';
 import DevotionDisplay from './components/DevotionDisplay.vue';
-import useOpenAI from './composables/useOpenAI';
+import useGemini from './composables/useGemini';
 // Correctly import useContentStorage and StoredContent type
 import useContentStorage, { type StoredContent } from './composables/useDevotions'; 
 
@@ -196,7 +209,7 @@ const currentContent = ref<StoredContent>({
   type: 'devotion',
 });
 
-const { generateOpenAIContent, isLoading, error: generationError } = useOpenAI(); // Renamed function
+const { generateGeminiContent, isLoading, error: generationError } = useGemini(); // Gemini function
 const { savedContent, saveContent, deleteContent, loadContent } = useContentStorage(); // Updated import and usage
 
 const showSaveConfirmation = ref(false);
@@ -204,6 +217,9 @@ const searchQuery = ref('');
 
 const showShareAlert = ref(false);
 const shareAlertMessage = ref('');
+
+// Ref for the textarea
+const textareaRef = ref<HTMLTextAreaElement>();
 
 // Mobile responsiveness
 const isMobile = ref(false);
@@ -258,24 +274,10 @@ onUnmounted(() => {
 });
 
 // Computed properties for dynamic UI text
-const generatorCardTitle = computed(() => {
-  return selectedContentType.value === 'devotion' ? 'Request Your Devotion' : 'Generate Faith & Learning Idea';
-});
-
-const generatorCardSubtitle = computed(() => {
-  return selectedContentType.value === 'devotion' 
-    ? 'Enter a topic or feeling, and let AI craft a personalized devotion grounded in the Bible.' 
-    : 'Describe a topic or subject, and let AI suggest ways to integrate faith and learning.';
-});
-
 const topicInputPlaceholder = computed(() => {
   return selectedContentType.value === 'devotion' 
     ? "E.g., 'finding peace in hardship', 'gratitude', or 'guidance for a tough decision'"
     : "E.g., 'teaching biology through a faith lens', 'integrating ethics in computer science', or 'faith perspectives on history'";
-});
-
-const generateButtonText = computed(() => {
-  return selectedContentType.value === 'devotion' ? 'Generate Devotion' : 'Generate Idea';
 });
 
 // Fetch the text of the first verse when currentContent.verses changes
@@ -318,18 +320,14 @@ const filteredContent = computed(() => { // Renamed from filteredDevotions
   );
 });
 
-const getOriginalIndex = (contentToFind: StoredContent): number => {
-  // This function might not be needed if deleting by ID, but ensure StoredContent has an id
-  if (!contentToFind.id) return -1;
-  return savedContent.value.findIndex(d => d.id === contentToFind.id);
-};
+// Removed getOriginalIndex function as it was unused
 
 const handleGenerateContent = async () => {
   if (!topicInput.value.trim()) return;
   const newId = `content-${Date.now()}`; // Generate ID here
   currentContent.value = { id: newId, text: '', verses: [], topic: '', type: selectedContentType.value }; // Initialize with selected type and ID
   try {
-    const result = await generateOpenAIContent(topicInput.value, selectedContentType.value);
+    const result = await generateGeminiContent(topicInput.value, selectedContentType.value);
     currentContent.value = { 
       id: newId, // Persist ID
       text: result.text, 
@@ -449,7 +447,7 @@ const formattedContentForDisplay = computed(() => { // Renamed from formattedDev
   let text = currentContent.value.text;
   // Bold title only for devotions, or make it conditional if titles apply to faithIntegration too
   if (currentContent.value.type === 'devotion') {
-    text = text.replace(/^(?:\*\*([^*]+)\*\*|([^:]+?))(:|—|--)(\s|$)/, (match, p1, p2, p3, p4) => {
+    text = text.replace(/^(?:\*\*([^*]+)\*\*|([^:]+?))(:|—|--)(\s|$)/, (_match, p1, p2, p3, p4) => {
       const titleContent = p1 || p2;
       return `<strong class="devotion-title-intro">${titleContent.trim()}${p3}</strong>${p4}`;
     });
@@ -471,6 +469,14 @@ const truncateText = (text: string, length: number) => {
 
 const toggleSidebar = () => {
   isSidebarCollapsed.value = !isSidebarCollapsed.value;
+};
+
+// Auto-resize textarea function for bottom input
+const autoResizeTextarea = () => {
+  if (textareaRef.value) {
+    textareaRef.value.style.height = 'auto';
+    textareaRef.value.style.height = `${Math.min(textareaRef.value.scrollHeight, 200)}px`;
+  }
 };
 
 // Watch for changes in isDarkMode, update data-bs-theme attribute, and save to localStorage
@@ -503,77 +509,91 @@ onUnmounted(() => {
 <style>
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 
-/* General App Styles */
+/* Modern Divine Devotion App Styles */
 :root {
-  --primary-color: #1ec5d5;
-  --primary-gradient: linear-gradient(to right, #118dcb 0%, #0f254c 100%);
-  --success-gradient: linear-gradient(to right, #f7f426 0%, #38efc1 100%);
+  /* Color System */
+  --divine-primary: #6366f1;
+  --divine-secondary: #8b5cf6;
+  --divine-accent: #06b6d4;
+  --divine-success: #10b981;
+  --divine-warning: #f59e0b;
+  --divine-error: #ef4444;
+  
+  /* Glass Morphism */
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  
+  /* Gradients */
+  --gradient-divine: linear-gradient(135deg, var(--divine-primary) 0%, var(--divine-secondary) 50%, var(--divine-accent) 100%);
+  --gradient-success: linear-gradient(135deg, var(--divine-success) 0%, var(--divine-accent) 100%);
+  --gradient-glow: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
+  
+  /* Shadows & Effects */
+  --shadow-divine: 0 20px 40px rgba(99, 102, 241, 0.3);
+  --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.4);
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.1);
+  
+  /* Animation */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-/* Light Theme (Bootstrap default or custom overrides) */
+/* Theme System */
 [data-bs-theme="light"] {
-  --sidebar-bg-light: linear-gradient(to bottom, #70e1f5, #ffd194);
-  --save-btn-bg-light: linear-gradient(to right, #56ab2f, #a8e063);
-  --save-btn-text-light: #ffffff;
-  --save-btn-hover-shadow-light: 0 4px 15px rgba(0, 0, 0, 0.2);
-  --themed-placeholder-color: rgba(0, 0, 0, 0.55); /* Muted dark gray for light theme placeholders */
-
-  /* New variables for sidebar items in light theme */
-  --sidebar-item-bg: #ffffff;
-  --sidebar-item-hover-bg: #f0f0f0; /* Light grey for hover */
-  --sidebar-item-border-color: #dee2e6;
-  --sidebar-item-text-color: #212529;
-  --sidebar-item-muted-text-color: #6c757d;
+  --glass-bg: rgba(255, 255, 255, 0.25);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --surface-primary: rgba(255, 255, 255, 0.9);
+  --surface-secondary: rgba(248, 250, 252, 0.8);
+  --bg-primary: rgba(255, 255, 255, 0.8);
+  --border-color: rgba(0, 0, 0, 0.1);
 }
 
-/* Dark Theme (Bootstrap default or custom overrides) */
 [data-bs-theme="dark"] {
-  --bs-body-bg: #1a1a2e;
-  --bs-body-color: #e0e0e0;
-  --bs-border-color: #101011;
-  --bs-card-bg: #1f4068;
-  --bs-hover-bg: #2a3b57;
-  --sidebar-bg-dark: linear-gradient(to bottom, #1a1919, #212529);
-  --save-btn-bg-dark: linear-gradient(to right, #11998e, #38ef7d);
-  --save-btn-text-dark: #ffffff;
-  --save-btn-hover-shadow-dark: 0 4px 15px rgba(0, 0, 0, 0.3);
-  --themed-placeholder-color: rgba(255, 255, 255, 0.45); /* Muted light gray for dark theme placeholders */
-
-  /* New variables for sidebar items in dark theme */
-  --sidebar-item-bg: #27273a; /* Slightly lighter than body bg */
-  --sidebar-item-hover-bg: #3a3a52; /* Hover for the above */
-  --sidebar-item-border-color: #40405a;
-  --sidebar-item-text-color: var(--bs-body-color);
-  --sidebar-item-muted-text-color: rgba(224, 224, 224, 0.65);
+  --glass-bg: rgba(0, 0, 0, 0.2);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --surface-primary: rgba(17, 24, 39, 0.8);
+  --surface-secondary: rgba(31, 41, 55, 0.6);
+  --bg-primary: rgba(0, 0, 0, 0.4);
+  --border-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Sidebar Styles */
+/* Modern Sidebar Design */
 .sidebar {
-  width: 300px;
-  /* background-color: var(--bs-card-bg); */ /* Replaced by theme-specific backgrounds */
-  padding: 20px;
-  border-right: 1px solid var(--bs-border-color);
-  display: flex;
-  flex-direction: column;
+  width: 350px;
+  padding: 2rem;
   height: 100vh;
   position: fixed;
   left: 0;
   top: 0;
-  transition: width 0.3s ease, padding 0.3s ease, transform 0.3s ease;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid var(--glass-border);
+  transition: var(--transition-smooth);
   z-index: 1000;
+  box-shadow: var(--shadow-card);
+  overflow-y: auto;
 }
 
-[data-bs-theme="dark"] .sidebar {
-  background-image: var(--sidebar-bg-dark);
-}
-
-[data-bs-theme="light"] .sidebar {
-  background-color: var(--sidebar-bg-light);
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--gradient-divine);
+  opacity: 0.8;
 }
 
 #app.sidebar-collapsed .sidebar {
-  width: 60px; /* Collapsed width */
-  padding: 20px 10px;
+  width: 80px;
+  padding: 2rem 1rem;
 }
 
 #app.sidebar-collapsed .sidebar .sidebar-title span,
@@ -582,658 +602,779 @@ onUnmounted(() => {
   display: none;
 }
 
+/* Hide sidebar bottom container when collapsed */
+#app.sidebar-collapsed .sidebar .sidebar-bottom {
+  display: none;
+}
+
+/* Adjust main content margin when sidebar is collapsed */
+#app.sidebar-collapsed .main-content {
+  margin-left: 80px;
+}
+
 .sidebar-toggle-btn {
-  /* position: absolute; */
-  /* top: 10px; */
-  /* right: 10px; */
-  z-index: 1001;
-  font-size: 1.2rem;
-  padding: 0.2rem 0.5rem;
-  margin-bottom: 1rem; /* Space below toggle button */
-  align-self: flex-end; /* Push to the right */
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  align-self: flex-end;
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-card);
 }
 
-#app.sidebar-collapsed .sidebar-toggle-btn {
-  align-self: center; /* Center when collapsed */
+.sidebar-toggle-btn:hover {
+  background: var(--gradient-glow);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
 }
 
+/* Position the sidebar toggle button absolutely in the top-right of sidebar */
 .top-right-absolute {
-    position: absolute;
-    top: 15px;
-    right: 15px;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1110;
 }
 
-#app.sidebar-collapsed .top-right-absolute {
-    position: static; /* Revert to flow when collapsed */
-    align-self: center;
+/* Sidebar bottom container for theme toggle */
+.sidebar-bottom {
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  right: 2rem;
 }
 
-
-.sidebar-collapsed-icons {
-  display: none; /* Hidden by default */
-  flex-direction: column;
+/* Theme toggle button in sidebar */
+.theme-toggle-btn-sidebar {
+  width: 100%;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 0.75rem;
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-card);
+  display: flex;
   align-items: center;
-  gap: 20px; /* Space between icons */
-  margin-top: 20px;
+  justify-content: flex-start;
+  font-size: 0.9rem;
 }
 
-#app.sidebar-collapsed .sidebar-collapsed-icons {
-  display: flex; /* Shown when sidebar is collapsed */
+.theme-toggle-btn-sidebar:hover {
+  background: var(--gradient-glow);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+  color: var(--text-primary);
 }
 
-.sidebar-collapsed-icons i {
-  font-size: 1.8rem;
-  cursor: pointer;
-  color: var(--dark-text-muted);
-  transition: color 0.2s ease;
+.theme-toggle-btn-sidebar i {
+  font-size: 1.1rem;
 }
 
-.sidebar-collapsed-icons i:hover {
-  color: var(--primary-color);
+/* Main content toggle button (hamburger menu) */
+.sidebar-toggle-btn-main {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1000;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-card);
 }
 
+.sidebar-toggle-btn-main:hover {
+  background: var(--gradient-glow);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
 
 .sidebar-title {
-  font-size: 1.5rem;
-  font-weight: 300;
-  margin-bottom: 1.5rem;
-  color: var(--dark-text);
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  background: var(--gradient-divine);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
 }
 
+/* Modern Search Bar */
 .search-bar .form-control {
-  background-color: var(--dark-input-bg);
-  border: 1px solid var(--dark-input-border);
-  color: var(--dark-text);
-}
-.search-bar .form-control::placeholder {
-  color: var(--themed-placeholder-color);
-  font-weight: 300;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  border-radius: 16px;
+  padding: 0.75rem 1rem;
+  backdrop-filter: blur(10px);
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-card);
 }
 
+.search-bar .form-control:focus {
+  border-color: var(--divine-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  transform: translateY(-1px);
+}
+
+.search-bar .form-control::placeholder {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+/* Modern Content Cards */
 .saved-devotions-list {
   flex-grow: 1;
-  overflow-y: auto; /* Allows scrolling within the list if it overflows */
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--divine-primary) transparent;
 }
 
 .saved-devotion-card {
-  background-color: var(--sidebar-item-bg);
-  padding: 12px 15px;
-  margin-bottom: 10px;
-  border-radius: 8px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(15px);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  border-radius: 20px;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-  border: 1px solid var(--sidebar-item-border-color);
-  position: relative; /* For absolute positioning of delete button */
+  transition: var(--transition-bounce);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.saved-devotion-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-divine);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.saved-devotion-card:hover::before {
+  opacity: 1;
 }
 
 .saved-devotion-card:hover {
-  background-color: var(--sidebar-item-hover-bg);
-  transform: translateY(-2px);
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: var(--shadow-divine);
 }
 
 .saved-devotion-topic {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--sidebar-item-text-color);
-  margin-bottom: 5px;
-  margin-right: 35px; /* Add space for the delete button */
-  overflow: hidden; /* Prevent overflow */
-  text-overflow: ellipsis; /* Add ellipsis for overflowed text */
-  white-space: nowrap; /* Keep text on a single line */
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  margin-right: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .saved-devotion-excerpt {
-  font-size: 0.8rem;
-  color: var(--sidebar-item-muted-text-color);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
   margin-bottom: 0;
-  line-height: 1.4;
-  margin-right: 35px; /* Add space for the delete button */
-  overflow: hidden; /* Hide overflow */
-  text-overflow: ellipsis; /* Add ellipsis for overflowed text */
-  white-space: nowrap; /* Keep text on a single line for ellipsis to work */
+  line-height: 1.5;
+  margin-right: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .delete-saved-btn {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  color: #ff6b6b; /* Light red for visibility */
-  border-color: #ff6b6b;
-  padding: 2px 5px;
-  font-size: 0.7rem;
+  top: 12px;
+  right: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--divine-error);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 0.375rem;
+  font-size: 0.75rem;
+  border-radius: 8px;
+  transition: var(--transition-smooth);
 }
+
 .delete-saved-btn:hover {
-  background-color: #ff6b6b;
+  background: var(--divine-error);
   color: white;
+  transform: scale(1.1);
 }
 
 
+/* Main Content Area */
 .main-content {
-  margin-left: 300px; /* Same as sidebar width */
-  padding: 2rem 3rem;
+  margin-left: 350px;
+  padding: 2rem 3rem 10rem;
   flex-grow: 1;
-  /* overflow-y: auto; */ /* Let specific lists scroll */
-  height: 100vh; /* Ensure it takes full viewport height */
-  transition: margin-left 0.3s ease;
+  height: 100vh;
+  transition: var(--transition-smooth);
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
-#app.sidebar-collapsed .main-content {
-  margin-left: 60px; /* Collapsed sidebar width */
+.content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 60rem;
+  margin: 0 auto;
+  width: 100%;
+  overflow-y: auto;
+  padding-bottom: 10rem;
 }
 
-/* General Card Styling */
-.card {
-  background-color: var(--dark-card);
-  border: 1px solid var(--dark-border);
-  color: var(--dark-text);
+/* Bottom Input Area (Gemini-like) */
+.bottom-input-area {
+  position: fixed;
+  bottom: 0;
+  left: 350px;
+  right: 0;
+  width: auto;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--glass-border);
+  padding: 1.5rem 0;
+  z-index: 100;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+  transition: var(--transition-smooth);
 }
 
-.card-header {
-  background-color: transparent !important; /* Ensure transparency over Bootstrap defaults */
-  border-bottom: 1px solid var(--dark-border);
-  color: var(--dark-text);
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+/* Adjust bottom input area when sidebar is collapsed */
+#app.sidebar-collapsed .bottom-input-area {
+  left: 30px;
 }
 
-.card-body {
-  color: var(--dark-text);
+.input-container {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 0 2rem;
 }
 
-.card-title.h4 { /* Targeting .card-title specifically if it's an h4 */
-  font-weight: 400; 
-  color: var(--dark-text);
-}
-.card-text.text-muted {
-  color: var(--dark-text-muted) !important;
-}
-
-/* Form elements within cards */
-.card .form-control {
-  background-color: var(--dark-input-bg);
-  border: 1px solid var(--dark-input-border);
-  color: var(--dark-text);
-}
-.card .form-control::placeholder {
-  color: var(--themed-placeholder-color);
-  font-weight: 300;
+.content-type-selector .btn-group {
+  background: var(--glass-bg);
+  border-radius: 16px;
+  padding: 0.5rem;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
 }
 
-.card .form-control:focus {
-  background-color: var(--dark-input-bg);
-  border-color: var(--primary-color);
-  color: var(--dark-text);
-  box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25); /* Assumes Bootstrap 5 --bs-primary-rgb is available */
+.content-type-selector .btn-check:checked + .btn {
+  background: var(--gradient-divine);
+  border-color: var(--divine-primary);
+  color: white;
+  box-shadow: var(--shadow-glow);
 }
 
-.card .form-label {
-  color: var(--dark-text); 
-  font-weight: 500;
-}
-
-/* Styling for the first verse highlight section */
-.first-verse-highlight {
-  background-color: var(--dark-surface);
-  border: 1px solid var(--dark-border);
-  border-left: 4px solid var(--primary-color);
-  padding: 1rem 1.25rem;
-  margin-bottom: 1.5rem !important; 
-  border-radius: 0.375rem; 
-}
-
-.first-verse-highlight .verse-reference-bold {
-  font-weight: bold;
-  font-size: 1.15rem;
-  color: var(--primary-color); 
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-.first-verse-highlight .verse-text-blockquote {
-  font-size: 1.05rem;
-  border-left: none;
-  padding-left: 0;
-  margin-top: 0.25rem;
-  margin-bottom: 0;
-  background-color: transparent;
-  color: var(--dark-text-muted);
-}
-
-/* Placeholder Section Styling */
-.placeholder-section {
-  max-width: 42rem; 
-  background-color: var(--dark-card); 
-  border: 1px solid var(--dark-border); 
-  /* p-5 class (padding: 3rem) is kept on the element */
-  color: var(--dark-text-muted);
-  /* rounded class is kept on the element */
-  /* text-center class is kept on the element */
-}
-
-.placeholder-section .lead {
-  color: var(--dark-text);
-  font-size: 1.1rem; 
-  margin-bottom: 0.5rem !important;
-}
-.placeholder-section .text-muted { 
-   color: var(--dark-text-muted) !important;
-   font-size: 0.9rem;
-}
-
-.placeholder-section .bi-lightbulb-fill {
-  font-size: 3rem; 
-  color: var(--primary-color);
-  opacity: 0.6; 
-  margin-bottom: 1rem !important; 
-}
-
-/* Style for the bolded title from formattedDevotionForDisplay */
-:deep(.devotion-title-intro) {
-  font-weight: bold;
-  /* Add any other specific styling for the title intro here if needed */
-}
-
-.sidebar-toggle-btn-main {
-    position: fixed;
-    top: 15px;
-    left: 15px; /* Positioned based on collapsed sidebar */
-    z-index: 1005;
-    font-size: 1.2rem;
-    padding: 0.2rem 0.5rem;
-}
-
-.app-title {
-  color: var(--dark-text);
-  font-weight: 300;
-}
-.main-content .lead {
-  color: var(--dark-text-muted);
-}
-
-.form-control {
-  background-color: var(--dark-input-bg);
-  color: var(--dark-text);
-  border: 1px solid var(--dark-input-border);
-}
-.form-control:focus {
-  background-color: var(--dark-input-bg);
-  color: var(--dark-text);
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
-}
-.form-control::placeholder {
-  color: var(--themed-placeholder-color);
-  font-weight: 300;
-  /* Default placeholder font-size will be inherited from the input itself, which is usually desired */
-  /* For specific sizing, target the input directly, e.g., #devotionTopicInput::placeholder */
-}
-
-/* Specific styling for the devotion topic input placeholder */
-#topicInput.form-control-lg::placeholder { /* Corrected ID from #devotionTopicInput to #topicInput */
-  font-size: 1rem; /* Smaller than the input's 1.25rem default */
-  /* color and font-weight are inherited from .form-control::placeholder */
-}
-
-.btn-gradient, .btn-gradient-success {
+.content-type-selector .btn {
   border: none;
-  padding: 0.6rem 1.2rem;
+  color: var(--text-secondary);
+  background: transparent;
+  border-radius: 12px;
+  transition: var(--transition-smooth);
   font-weight: 500;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background-image 0.3s ease, color 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-.btn-gradient {
-  background-image: var(--primary-gradient);
-  color: white; /* Generate button text color */
+.content-type-selector .btn:hover:not(.btn-check:checked + .btn) {
+  background: var(--gradient-glow);
+  color: var(--text-primary);
 }
 
-/* .btn-gradient-success will have its background and color defined by theme-specific rules */
-
-.btn-gradient:hover, .btn-gradient-success:hover {
-  transform: translateY(-2px);
-  /* box-shadow will be themed */
+.input-form .input-group {
+  position: relative;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 0.5rem;
+  transition: border-color 0.2s ease;
+  height: 100px;
 }
 
-.btn-gradient:disabled, .btn-gradient-success:disabled {
-  opacity: 0.65;
+.input-form .input-group:focus-within {
+  border-color: var(--divine-primary);
+}
+
+.bottom-textarea {
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  resize: none;
+  min-height: 60px;
+  max-height: 200px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: var(--transition-smooth);
+}
+
+.bottom-textarea:focus {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+}
+
+.bottom-textarea::placeholder {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.send-btn {
+  background: var(--gradient-divine);
+  border: none;
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-bounce);
+  box-shadow: var(--shadow-card);
+  margin-left: 0.5rem;
+}
+
+.send-btn:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: var(--shadow-glow);
+}
+
+.send-btn:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
   transform: none;
-  box-shadow: none;
 }
 
-/* Styles for action buttons and alerts */
-.actions-toolbar {
+/* Welcome Area Styling */
+.welcome-area {
+  flex: 1;
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 0.75rem; /* Spacing between buttons */
+  justify-content: center;
+  min-height: calc(100vh - 300px);
+  height: 100%;
 }
 
-[data-bs-theme="light"] .btn-gradient-success {
-  background-image: var(--save-btn-bg-light);
-  color: var(--save-btn-text-light);
+.welcome-content {
+  text-align: center;
+  max-width: 500px;
 }
 
-[data-bs-theme="light"] .btn-gradient-success:hover {
-  box-shadow: var(--save-btn-hover-shadow-light);
+.welcome-icon {
+  font-size: 5rem;
+  background: var(--gradient-divine);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 2rem;
+  animation: icon-pulse 2s ease-in-out infinite;
 }
 
-[data-bs-theme="dark"] .btn-gradient-success {
-  background-image: var(--save-btn-bg-dark);
-  color: var(--save-btn-text-dark);
+.welcome-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: var(--gradient-divine);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
 }
 
-[data-bs-theme="dark"] .btn-gradient-success:hover {
-  box-shadow: var(--save-btn-hover-shadow-dark);
+.welcome-text {
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
 }
 
-.alert-success-custom {
-  background-color: #1e4620; /* Darker green for dark mode */
-  color: #d1e7dd;
-  border-color: #2a602c;
+/* Current Content Card Updates */
+.current-devotion-card {
+  max-width: 100%;
+  margin-bottom: 2rem;
 }
 
-/* Custom info alert for share confirmation */
-.alert-info-custom {
-  background-color: #0c5460; /* Darker cyan for dark mode */
-  color: #d1ecf1;
-  border-color: #138496;
+/* Enhanced Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-[data-bs-theme="light"] .alert-success-custom {
-  background-color: #d4edda;
-  color: #155724;
-  border-color: #c3e6cb;
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-[data-bs-theme="light"] .alert-info-custom {
-  background-color: #cce5ff; /* Light blue for light theme */
-  color: #004085;
-  border-color: #b8daff;
+.card {
+  animation: fadeInUp 0.6s ease-out;
 }
 
-/* Ensure close button is visible on light backgrounds for custom alerts */
-[data-bs-theme="light"] .alert-success-custom .btn-close,
-[data-bs-theme="light"] .alert-info-custom .btn-close {
-  filter: none; 
+.saved-devotion-card {
+  animation: slideInRight 0.4s ease-out;
 }
 
-/* Ensure share button icon and text are visible in both themes */
-[data-bs-theme="dark"] .btn-outline-info {
-  color: #39c0ed; /* A slightly brighter cyan for dark theme */
-  border-color: #39c0ed;
-}
-[data-bs-theme="dark"] .btn-outline-info:hover {
-  color: var(--bs-body-bg); /* Or a specific dark text color */
-  background-color: #39c0ed;
-  border-color: #39c0ed;
+.saved-devotion-card:nth-child(even) {
+  animation-delay: 0.1s;
 }
 
-/* Styles for the new card structure */
-.devotion-generator-card, .current-devotion-card {
-  background-color: var(--dark-card); /* Ensure cards use the theme's card background */
-  border: 1px solid var(--dark-border);
+.saved-devotion-card:nth-child(odd) {
+  animation-delay: 0.2s;
 }
 
-.devotion-generator-card .card-header, .current-devotion-card .card-header {
-  border-bottom: 1px solid var(--dark-border); /* Add a subtle separator */
+/* Focus States for Accessibility */
+button:focus-visible,
+.form-control:focus,
+a:focus-visible {
+  outline: 2px solid var(--divine-primary);
+  outline-offset: 2px;
 }
 
-/* Adjust DevotionDisplay related styles since it's no longer a card itself */
-.devotion-display-content .main-devotion-text { /* Updated selector */
-  color: var(--dark-text) !important; /* Ensure text color is consistent */
-}
-.devotion-display-content .verses-section-title { /* Updated selector */
-   color: var(--dark-text) !important;
-}
-.devotion-display-content .list-group-item {
-  color: var(--dark-text) !important;
-  background-color: transparent !important; /* Ensure transparent background */
-}
-.devotion-display-content .list-group-item a {
-  color: var(--dark-text) !important; /* Ensure link color is consistent */
-}
-.devotion-display-content .list-group-item a:hover {
-  color: var(--primary-color) !important;
-}
-.devotion-display-content hr {
-    background-color: var(--dark-border);
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(0, 0, 0, 0.3);
+  }
+  
+  [data-bs-theme="dark"] {
+    --glass-bg: rgba(0, 0, 0, 0.95);
+    --glass-border: rgba(255, 255, 255, 0.3);
+  }
 }
 
-/* Scrollbar styling for webkit browsers */
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Modern Scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
+
 ::-webkit-scrollbar-track {
-  background: var(--dark-surface);
+  background: var(--glass-bg);
+  border-radius: 10px;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: var(--dark-input-border);
-  border-radius: 4px;
+  background: var(--gradient-divine);
+  border-radius: 10px;
+  transition: var(--transition-smooth);
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-color);
+  background: var(--gradient-success);
+  box-shadow: var(--shadow-glow);
 }
 
-/* Custom tooltip style for Bible verses */
+/* Custom Tooltip Styling */
 .bible-verse-tooltip .tooltip-inner {
-  background-color: var(--dark-surface); /* Use a theme color */
-  color: var(--dark-text);
-  border: 1px solid var(--dark-border);
-  max-width: 400px; /* Adjust as needed */
-  text-align: left; /* Align text to the left */
-  padding: 10px;
-  font-size: 0.9rem;
-  white-space: pre-wrap; /* Respect newlines in verse text */
+  background: var(--glass-bg);
+  backdrop-filter: blur(15px);
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  max-width: 400px;
+  text-align: left;
+  padding: 1rem;
+  font-size: 0.95rem;
+  white-space: pre-wrap;
+  box-shadow: var(--shadow-card);
 }
 
-.bible-verse-tooltip .tooltip-arrow::before {
-  border-top-color: var(--dark-border); /* Match border color */
-  /* If placement is 'bottom', use border-bottom-color, etc. */
-}
-
-.devotion-display-content .list-group-item a, /* Updated selector */
+/* Inline Verse Links */
 :deep(.inline-verse-link) {
-  font-weight: bold;
+  font-weight: 600;
   font-style: italic;
+  color: var(--divine-primary);
+  text-decoration: none;
+  position: relative;
+  transition: var(--transition-smooth);
 }
 
-/* Mobile Styles */
+:deep(.inline-verse-link)::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-divine);
+  transition: width 0.3s ease;
+}
+
+:deep(.inline-verse-link):hover::after {
+  width: 100%;
+}
+
+:deep(.inline-verse-link):hover {
+  color: var(--divine-secondary);
+  transform: translateY(-1px);
+}
+/* Sidebar Overlay for Mobile */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1050;
+  opacity: 0;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Mobile Responsive Design */
 @media (max-width: 768px) {
   .sidebar {
     position: fixed;
     left: 0;
     top: 0;
     height: 100%;
-    width: 280px; /* Or a percentage like 80vw */
+    width: 320px;
     transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    z-index: 1100; /* Higher than theme toggle and overlay */
-    box-shadow: 2px 0 10px rgba(0,0,0,0.2); /* Add shadow for overlay effect */
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1100;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.3);
   }
 
-  /* When sidebar should be visible on mobile (app has mobile-view and is not sidebar-collapsed) */
   #app.mobile-view:not(.sidebar-collapsed) .sidebar {
     transform: translateX(0);
   }
-  
-  /* Sidebar content visibility on mobile when open */
+
   #app.mobile-view:not(.sidebar-collapsed) .sidebar .sidebar-title span,
   #app.mobile-view:not(.sidebar-collapsed) .sidebar .search-bar,
   #app.mobile-view:not(.sidebar-collapsed) .sidebar .saved-devotions-list {
-    display: block; /* Or flex, depending on original display type */
-  }
-  
-  /* Hide desktop-specific collapsed icons on mobile */
-  #app.mobile-view .sidebar-collapsed-icons {
-    display: none !important;
+    display: block;
   }
 
   .main-content {
     margin-left: 0;
-    padding: 1rem 1rem; /* Reduced padding for mobile */
+    padding: 1rem;
   }
 
-  /* Sidebar toggle button in main content (hamburger) */
+  /* Ensure main content stays at margin-left 0 on mobile regardless of sidebar state */
+  #app.mobile-view .main-content {
+    margin-left: 0 !important;
+  }
+
   .sidebar-toggle-btn-main {
-    display: none; /* Hidden by default, shown by #app.mobile-view.sidebar-collapsed */
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 1005; 
-    font-size: 1.5rem; /* Make hamburger larger */
+    top: 1rem;
+    left: 1rem;
+    font-size: 1.5rem;
+    padding: 0.75rem;
   }
 
-  /* Theme toggle button position adjustment */
-  button[style*="position: fixed"][style*="top: 10px"][style*="right: 10px"] {
-    top: 12px;
-    right: 12px;
-    padding: 0.4rem 0.8rem;
-    font-size: 0.8rem;
-  }
-
-  .devotion-generator-card, .current-devotion-card {
-    margin-left: auto; /* Keep mx-auto behavior */
-    margin-right: auto;
-    max-width: 100%; /* Allow full width within padding */
+  /* Mobile sidebar styling adjustments */
+  .sidebar-bottom {
+    bottom: 1.5rem;
+    left: 1.5rem;
+    right: 1.5rem;
   }
 
   .app-title {
-    font-size: 1.8rem; /* Adjust title font size */
-    margin-top: 2.5rem; /* Add margin to avoid overlap with fixed buttons */
-  }
-  .main-content .lead {
-    font-size: 0.9rem; /* Adjust lead text size */
+    font-size: 2.5rem;
+    margin-top: 4rem;
+    margin-bottom: 1rem;
   }
 
-  .main-content header {
-    margin-bottom: 1.5rem !important; /* Reduced margin */
+  .main-content .lead {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
   }
+
   .card {
-    margin-bottom: 1.5rem !important; /* Reduced margin for cards */
+    margin-bottom: 1.5rem !important;
+    border-radius: 20px;
   }
+
   .card-body, .card-header {
-    padding: 0.75rem; /* Reduced padding inside cards */
+    padding: 1.5rem;
   }
+
   .form-control-lg {
-    font-size: 1rem; /* Adjust textarea font size */
+    font-size: 1rem;
+    padding: 1rem 1.25rem;
   }
+
   .btn-lg {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+    padding: 1rem 2rem;
+    font-size: 1rem;
   }
 
   .first-verse-highlight {
-    padding: 0.75rem 1rem;
-    margin-bottom: 1rem !important;
-  }
-  .first-verse-highlight .verse-reference-bold {
-    font-size: 1.05rem;
-  }
-  .first-verse-highlight .verse-text-blockquote {
-    font-size: 0.95rem;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem !important;
   }
 
   .placeholder-section {
-    padding: 2rem 1rem !important; /* Adjust padding */
+    padding: 2.5rem 1.5rem !important;
+    border-radius: 20px;
   }
-  .placeholder-section .bi-lightbulb-fill {
-    font-size: 2.5rem;
-    margin-bottom: 0.75rem !important;
+
+  .actions-toolbar {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem 0;
   }
-  
-  /* Ensure the close button (X) in the sidebar is easily tappable */
-  #app.mobile-view .sidebar .sidebar-toggle-btn.top-right-absolute {
-    top: 10px;
-    right: 10px;
-    font-size: 1.3rem;
+
+  .actions-toolbar .btn {
+    width: 100%;
   }
-}
 
-/* Ensure that when sidebar is collapsed on desktop, the main toggle button uses the correct icon */
-#app:not(.mobile-view).sidebar-collapsed .sidebar-toggle-btn-main i {
-  /* This will be bi-arrow-right-square-fill from the template if not mobile */
-   content: '\F13A'; /* Fallback if class doesn't update, though Vue should handle it */
-}
-#app.mobile-view.sidebar-collapsed .sidebar-toggle-btn-main i::before {
-  content: "\F479"; /* Bootstrap icon for list/hamburger */
-}
+  /* Mobile Responsive Bottom Input Area */
+  .bottom-input-area {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 1rem 0;
+    border-top: 1px solid var(--glass-border);
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+  }
 
-.sidebar-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.5);
-  z-index: 1099; /* Below sidebar, above content */
-}
+  /* Override sidebar adjustments on mobile */
+  #app.sidebar-collapsed .bottom-input-area,
+  #app.mobile-view .bottom-input-area {
+    left: 0;
+  }
 
-#app.mobile-view:not(.sidebar-collapsed) .sidebar-overlay {
-  display: block;
-}
+  .input-container {
+    padding: 0 1rem;
+    max-width: 100%;
+  }
 
-.theme-toggle-btn {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  z-index: 2000;
-  padding: 0.375rem 0.75rem; /* Standard Bootstrap btn padding */
-  font-size: 1.25rem; /* Adjust icon size */
-  line-height: 1; /* Ensure icon is centered vertically */
-  /* background-color: var(--bs-body-bg); Using btn classes will handle this */
-  /* color: var(--bs-body-color); */
-  /* border: 1px solid var(--bs-border-color); */
-  /* border-radius: 5px; */
-}
+  .content-type-selector {
+    margin-bottom: 1rem;
+  }
 
-[data-bs-theme="light"] .theme-toggle-btn {
-  background-color: var(--bs-light);
-  color: var(--bs-dark);
-  border: 1px solid var(--bs-gray-400);
-}
+  .content-type-selector .btn-group {
+    flex-direction: row;
+    padding: 0.375rem;
+    border-radius: 12px;
+  }
 
-[data-bs-theme="dark"] .theme-toggle-btn {
-  background-color: var(--bs-dark);
-  color: var(--bs-light);
-  border: 1px solid var(--bs-gray-700);
-}
+  .content-type-selector .btn {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    flex: 1;
+    text-align: center;
+  }
 
-.theme-toggle-btn:hover {
-  opacity: 0.8;
-}
+  .content-type-selector .btn i {
+    font-size: 1rem;
+    margin-right: 0.375rem;
+  }
 
-.content-type-flag {
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-left: 8px;
-  vertical-align: middle;
-}
+  .input-form .input-group {
+    border-radius: 16px;
+    padding: 0.375rem;
+  }
 
-.flag-devotion {
-  background-color: var(--primary-color);
-  color: white;
-}
+  .bottom-textarea {
+    padding: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.4;
+    min-height: 50px;
+    max-height: 160px;
+  }
 
-[data-bs-theme="light"] .flag-devotion {
-   background-color: var(--primary-color);
-   color: white;
-}
+  .send-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    margin-left: 0.375rem;
+  }
 
-.flag-faithIntegration {
-  background-color: #ffc107; 
-  color: #333;
-}
+  .send-btn i {
+    font-size: 1.1rem;
+  }
 
-[data-bs-theme="light"] .flag-faithIntegration {
-  background-color: #ffc107; 
-  color: #333;
+  /* Content area adjustments for mobile */
+  .content-area {
+    padding-bottom: 1rem;
+    min-height: calc(100vh - 200px);
+  }
+
+  .welcome-area {
+    min-height: calc(100vh - 350px);
+    height: 100%;
+    padding: 2rem 1rem !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .welcome-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .welcome-title {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .welcome-text {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .current-devotion-card {
+    margin-bottom: 1rem;
+  }
+
+  /* Ensure proper spacing from bottom input */
+  .main-content {
+    padding-bottom: 180px; /* Account for bottom input height */
+  }
 }
 </style>

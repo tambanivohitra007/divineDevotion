@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Adventist Devotions: Research Framework</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Visualization & Content Choices:
+        - Report Info: Research Project Overview & Title -> Goal: Inform -> Presentation: Prominent header and introductory text.
+        - Report Info: Main Sections (I-VIII from detailed analysis) -> Goal: Navigate/Organize -> Presentation: Clickable navigation links in sidebar.
+        - Report Info: Key Concepts within Sections (e.g., RAG, Adventist Philosophy, Ethical Principles) -> Goal: Inform/Explore -> Presentation: Expandable text blocks, interactive cards, HTML tables for structured data (Table 1 & 2). Interaction: Click to expand/collapse. Justification: Breaks down dense information into digestible chunks.
+        - Report Info: Recommendations (within sections and final list) -> Goal: Highlight/Action -> Presentation: Styled list items, clickable to show more detail. Justification: Emphasizes actionable takeaways.
+        - Report Info: Processes (RAG, Iterative Cycles) -> Goal: Explain/Visualize -> Presentation: HTML/CSS/JS diagrams (simple flow representations). Justification: Visual aid for complex processes.
+        - Library/Method: Vanilla JS for interactions, Tailwind for styling. Chart.js/Plotly not needed as no primary quantitative data charts are in the source.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .sidebar-link.active {
+            background-color: #0ea5e9; /* sky-500 */
+            color: white;
+        }
+        .sidebar-link {
+            transition: background-color 0.3s ease;
+        }
+        .collapsible-content {
+            display: none;
+            padding-left: 1rem;
+            border-left: 2px solid #e0e0e0; /* stone-300 */
+            margin-left: 0.5rem;
+        }
+        .collapsible-trigger::after {
+            content: ' ▼';
+            font-size: 0.8em;
+            transition: transform 0.3s ease;
+        }
+        .collapsible-trigger.open::after {
+            transform: rotate(180deg);
+            content: ' ▲';
+        }
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-container th, .table-container td {
+            border: 1px solid #cbd5e1; /* slate-300 */
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .table-container th {
+            background-color: #f1f5f9; /* slate-100 */
+        }
+        .process-step {
+            border: 2px solid #0284c7; /* sky-600 */
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            background-color: #f0f9ff; /* sky-50 */
+            text-align: center;
+        }
+        .process-arrow {
+            text-align: center;
+            font-size: 2rem;
+            color: #0284c7; /* sky-600 */
+            margin: 0.25rem 0;
+        }
+         /* Custom scrollbar for webkit browsers */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0ea5e9; /* sky-500 */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0284c7; /* sky-600 */
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <aside class="w-full md:w-72 bg-white shadow-lg p-6 space-y-4 md:sticky md:top-0 md:h-screen md:overflow-y-auto">
+            <h1 class="text-2xl font-bold text-sky-700">Adventist Devotions AI</h1>
+            <p class="text-sm text-stone-600">Research Framework Explorer</p>
+            <nav class="mt-6">
+                <ul class="space-y-2">
+                    <li><a href="#overview" class="sidebar-link block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700">Project Overview</a></li>
+                    <li><a href="#introduction" class="sidebar-link block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700">I. The Vision</a></li>
+                    <li>
+                        <button class="sidebar-link-group w-full text-left block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 focus:outline-none">II. Building the AI ▾</button>
+                        <ul class="pl-4 mt-1 space-y-1 hidden">
+                            <li><a href="#architecting-ai-data" class="sidebar-link block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 text-sm">A. Data Foundation</a></li>
+                            <li><a href="#architecting-ai-engine" class="sidebar-link block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 text-sm">B. Generation Engine</a></li>
+                            <li><a href="#architecting-ai-integrity" class="sidebar-link block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 text-sm">C. Ensuring Integrity</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <button class="sidebar-link-group w-full text-left block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 focus:outline-none">III. Defining "Meaningful" ▾</button>
+                        <ul class="pl-4 mt-1 space-y-1 hidden">
+                            <li><a href="#defining-meaningful-philosophy" class="sidebar-link block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 text-sm">A. Adventist Philosophy</a></li>
+                            <li><a href="#defining-meaningful-growth" class="sidebar-link block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 text-sm">B. Fostering Growth</a></li>
+                        </ul>
+                    </li>
+                     <li>
+                        <button class="sidebar-link-group w-full text-left block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 focus:outline-none">IV. Classroom Strategies ▾</button>
+                        <ul class="pl-4 mt-1 space-y-1 hidden">
+                            <li><a href="#classroom-teachers" class="sidebar-link block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 text-sm">A. Teacher Empowerment</a></li>
+                            <li><a href="#classroom-students" class="sidebar-link block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 text-sm">B. Student Engagement</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <button class="sidebar-link-group w-full text-left block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 focus:outline-none">V. Ethical Framework ▾</button>
+                        <ul class="pl-4 mt-1 space-y-1 hidden">
+                            <li><a href="#ethical-principles" class="sidebar-link block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 text-sm">A. Guiding Principles</a></li>
+                            <li><a href="#ethical-ai-role" class="sidebar-link block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 text-sm">B. AI's Role</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <button class="sidebar-link-group w-full text-left block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 focus:outline-none">VI. Measuring Success ▾</button>
+                        <ul class="pl-4 mt-1 space-y-1 hidden">
+                            <li><a href="#measuring-evaluation" class="sidebar-link block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 text-sm">A. Holistic Evaluation</a></li>
+                            <li><a href="#measuring-pedagogical" class="sidebar-link block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 text-sm">B. Pedagogical Markers</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <button class="sidebar-link-group w-full text-left block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 focus:outline-none">VII. The Path Ahead ▾</button>
+                        <ul class="pl-4 mt-1 space-y-1 hidden">
+                            <li><a href="#path-iterative" class="sidebar-link block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 text-sm">A. Iterative Development</a></li>
+                            <li><a href="#path-dissemination" class="sidebar-link block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700 text-sm">B. Dissemination</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#recommendations" class="sidebar-link block px-4 py-2 rounded-md hover:bg-sky-100 hover:text-sky-700">VIII. Key Recommendations</a></li>
+                </ul>
+            </nav>
+            <div class="mt-auto pt-6 border-t border-stone-200 text-xs text-stone-500">
+                <p>SPA based on research by Rindra Razafinjatovo, Sandeep Lloyd Kachchhap, Hamengamon Kharsynniang (Asia Pacific International University).</p>
+            </div>
+        </aside>
+
+        <main class="flex-1 p-6 md:p-10 bg-stone-50 overflow-y-auto">
+            <section id="overview" class="content-section space-y-6">
+                <h2 class="text-3xl font-semibold text-sky-700 border-b-2 border-sky-600 pb-2">Project Overview</h2>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-sky-600 mb-2">Bridging Faith and Innovation: Developing an AI-Powered Framework for Meaningful Adventist Biblical Devotions with Classroom Integration Strategies</h3>
+                    <p class="text-sm text-stone-600 mb-4">By Rindra Razafinjatovo, Sandeep Lloyd Kachchhap, Hamengamon Kharsynniang (Asia Pacific International University)</p>
+                    <p class="mb-2"><strong>Abstract:</strong> This research explores the intersection of faith and technology by developing an AI-powered system to generate meaningful Adventist biblical devotions tailored for educational settings. The study aims to enhance spiritual formation in classrooms through personalized, theologically sound devotional content, while also providing educators with practical integration strategies. By leveraging natural language processing and Adventist theological resources, the project seeks to support both spiritual growth and pedagogical effectiveness.</p>
+                    <div class="mt-4">
+                        <h4 class="font-semibold text-md text-sky-600">Core Aims:</h4>
+                        <ul class="list-disc list-inside text-stone-700 ml-4">
+                            <li>Forge a novel AI-powered framework for meaningful Adventist biblical devotions.</li>
+                            <li>Design for integration into classroom settings.</li>
+                            <li>Enhance spiritual formation and pedagogical effectiveness.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="introduction" class="content-section space-y-6">
+                <h2 class="text-3xl font-semibold text-sky-700 border-b-2 border-sky-600 pb-2">I. The Vision: The Confluence of Faith, Technology, and Adventist Education</h2>
+                 <div class="bg-white p-6 rounded-lg shadow">
+                    <p class="mb-4">This research positions itself at the intersection of advancing AI technology and the mission of spiritual formation within Adventist education. It aims to develop an AI framework for generating meaningful Adventist biblical devotions for classrooms, offering guidance to achieve these ambitious objectives.</p>
+                    <p class="mb-2">A fundamental consideration is balancing technological innovation with unwavering theological fidelity within Adventism. The challenge is not *if* AI should be used, but *how* it can genuinely support Adventist spiritual values. "Bridging Faith and Innovation" acknowledges this balance, learning from past instances where AI responses, like those concerning Ellen G. White's writings, were inaccurate without strong theological grounding. Success depends on reconciling AI's capabilities with Adventist theological integrity throughout the research.</p>
+                    <button class="collapsible-trigger text-sky-600 font-semibold hover:underline focus:outline-none">Key Challenges</button>
+                    <div class="collapsible-content mt-2 space-y-1">
+                        <p><strong>Theological Fidelity vs. Innovation:</strong> Ensuring AI supports and enriches Adventist values without subverting them.</p>
+                        <p><strong>Accuracy of AI:</strong> Addressing potential inaccuracies in AI-generated content, especially concerning inspired texts like E.G. White's writings.</p>
+                        <p><strong>Maintaining Integrity:</strong> Continuously reconciling AI capabilities with the distinctiveness of Adventist theology across all research phases.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="architecting-ai-data" class="content-section space-y-6">
+                <h2 class="text-3xl font-semibold text-sky-700 border-b-2 border-sky-600 pb-2">II.A. Architecting Theologically Sound AI: Data Foundation</h2>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <p class="mb-4">The development of an AI for theologically sound Adventist devotions critically depends on the quality of its training data and AI architecture. This involves curating an appropriate corpus of Adventist theological data and using advanced Natural Language Processing (NLP), particularly Retrieval-Augmented Generation (RAG).</p>
+                    <h3 class="text-xl font-semibold text-sky-600 mb-3">Curating the Corpus: Sourcing and Preparing Adventist Theological Data</h3>
+                    <p class="mb-2">The AI model's foundation is its dataset. Core texts include:</p>
+                    <ul class="list-disc list-inside ml-4 mb-3">
+                        <li>The Bible</li>
+                        <li>Writings of Ellen G. White (EGW)</li>
+                        <li>Sabbath School materials</li>
+                        <li>Existing Adventist devotionals</li>
+                    </ul>
+                    <p class="mb-2">Emphasis on "vetted" sources is crucial. The diverse nature of this corpus (Scripture, commentary, pedagogical content, devotional literature) requires sophisticated data structuring to maintain theological coherence and represent intertextual relationships. Raw textual input can be misinterpreted without contextual guidance.</p>
+                     <button class="collapsible-trigger text-sky-600 font-semibold hover:underline focus:outline-none">Structuring Data with KGs/Ontologies</button>
+                    <div class="collapsible-content mt-2 space-y-1">
+                        <p>Techniques like Knowledge Graphs (KGs) and ontologies can structure complex domain knowledge by representing entities (theological concepts, figures, themes) and their relationships, improving retrieval accuracy and efficiency for the RAG model.</p>
+                    </div>
+                    <div class="mt-4 p-4 border border-sky-200 rounded-lg bg-sky-50">
+                        <h4 class="font-semibold text-md text-sky-700">Recommendation:</h4>
+                        <p>Investigate methodologies for creating a structured knowledge base from the curated corpus. Explore lightweight ontological models or knowledge graphs to map relationships between scriptures, EGW commentary, key doctrinal themes, and pedagogical principles. This structured representation is crucial for the RAG model’s ability to retrieve and synthesize information contextually and anner that is both contextually relevant and theologically coherent.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="architecting-ai-engine" class="content-section space-y-6">
+                <h2 class="text-3xl font-semibold text-sky-700 border-b-2 border-sky-600 pb-2">II.B. Architecting Theologically Sound AI: Generation Engine</h2>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-sky-600 mb-3">Refining the Engine: Leveraging Advanced NLP and RAG for Devotional Generation</h3>
+                    <p class="mb-2">Fine-tuning a language model and employing Retrieval-Augmented Generation (RAG) is a sound approach. RAG architectures mitigate LLM "hallucinations" by grounding responses in factual, up-to-date information from a curated knowledge base.</p>
+                    <h4 class="text-lg font-medium text-stone-700 my-3">RAG Framework Simplified:</h4>
+                    <div class="grid md:grid-cols-3 gap-4 items-center">
+                        <div class="process-step">1. User Input (Theme/Scripture)</div>
+                        <div class="process-arrow hidden md:block">➔</div>
+                        <div class="process-step">2. RAG Retrieves Relevant Data from Adventist Knowledge Base</div>
+                         <div class="process-arrow hidden md:block">➔</div>
+                        <div class="process-step md:col-span-1">3. LLM Generates Devotion based on Retrieved Data & Prompt</div>
+                    </div>
+                     <div class="process-arrow md:hidden">↓</div>
+                     <div class="process-step md:hidden">2. RAG Retrieves Relevant Data from Adventist Knowledge Base</div>
+                     <div class="process-arrow md:hidden">↓</div>
+                     <div class="process-step md:hidden">3. LLM Generates Devotion based on Retrieved Data & Prompt</div>
+
+                    <p class="mt-4 mb-2">While RAG ensures theological accuracy by anchoring outputs in texts, the "meaningfulness" and devotional quality depend on how the LLM is prompted to synthesize this information. A devotion requires reflection, personal application, and a spiritual tone.</p>
+                     <button class="collapsible-trigger text-sky-600 font-semibold hover:underline focus:outline-none">The Importance of Prompt Engineering</button>
+                    <div class="collapsible-content mt-2 space-y-1">
+                        <p>Prompts given to the LLM post-retrieval must be meticulously engineered to guide the generation of content with appropriate devotional qualities (e.g., structure, tone, target audience, reflection questions, EGW connections, prayer starters).</p>
+                    </div>
+                    <div class="mt-4 p-4 border border-sky-200 rounded-lg bg-sky-50">
+                        <h4 class="font-semibold text-md text-sky-700">Recommendation:</h4>
+                        <p>Develop a systematic approach to prompt engineering. Experiment with various prompt structures that explicitly guide the LLM to incorporate elements such as reflective questions, calls to action, prayerful language, connections to Adventist distinctives, and an age-appropriate tone, based on retrieved Adventist texts. Iteratively refine prompts based on theological review and user feedback.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="architecting-ai-integrity" class="content-section space-y-6">
+                <h2 class="text-3xl font-semibold text-sky-700 border-b-2 border-sky-600 pb-2">II.C. Architecting Theologically Sound AI: Ensuring Integrity</h2>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-sky-600 mb-3">Upholding Integrity: Ensuring Theological Accuracy and Mitigating Bias in AI Outputs</h3>
+                    <p class="mb-2">A significant challenge is ensuring AI-generated devotions consistently align with Seventh-day Adventist theology, preventing errors and addressing subtle misinterpretations or biases.</p>
+                    <p class="mb-2">AI systems are "only as good as the data they're trained on" and lack spiritual discernment. A multi-layered validation process is imperative:</p>
+                    <ul class="list-decimal list-inside ml-4 mb-3 space-y-1">
+                        <li><strong>Data Vetting and Structuring:</strong> Ensure the corpus is comprehensive and structured to represent theological nuances appropriately for AI.</li>
+                        <li><strong>RAG Retrieval Accuracy:</strong> Verify consistent retrieval of relevant and theologically appropriate passages.</li>
+                        <li><strong>Prompt Effectiveness:</strong> Ensure prompts elicit devotionally styled and theologically sound responses.</li>
+                        <li><strong>LLM Synthetic Reasoning:</strong> Assess the LLM's ability to synthesize information coherently with Adventist doctrine.</li>
+                        <li><strong>Bias Auditing:</strong> Systematically test for theological misinterpretations and social biases.</li>
+                    </ul>
+                    <p class="mb-2">Robust human oversight, especially from theological experts, is necessary for iterative refinement of data, RAG, and LLM prompting.</p>
+                    <div class="mt-4 p-4 border border-sky-200 rounded-lg bg-sky-50">
+                        <h4 class="font-semibold text-md text-sky-700">Recommendation:</h4>
+                        <p>Implement a comprehensive, multi-stage theological validation process including: Corpus Audit, Retrieval Accuracy Testing, Generation Review Protocol, and Bias Mitigation Strategies (data augmentation, fine-tuning, regular audits).</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="defining-meaningful-philosophy" class="content-section space-y-6">
+                <h2 class="text-3xl font-semibold text-sky-700 border-b-2 border-sky-600 pb-2">III.A. Defining "Meaningful": Adventist Philosophy</h2>
+                <div class="bg-white p-6 rounded-lg shadow">
+                     <p class="mb-4">A core research question is: "What defines a 'meaningful' devotion in the context of Adventist education?" This requires engaging with Adventist educational philosophy to create actionable criteria for AI content generation and evaluation.</p>
+                    <h3 class="text-xl font-semibold text-sky-600 mb-3">Anchoring in Doctrine: Synthesizing Adventist Educational Philosophy</h3>
+                    <p class="mb-2">Key themes from Adventist educational philosophy include:</p>
+                    <ul class="list-disc list-inside ml-4 mb-3 space-y-1">
+                        <li><strong>Redemptive Aim:</strong> Restoring humans into God's image.</li>
+                        <li><strong>Whole-Person Development:</strong> Spiritual, intellectual, physical, social growth.</li>
+                        <li><strong>Christ-Centeredness:</strong> Jesus as central to faith and transformation.</li>
+                        <li><strong>Faith-Learning-Life Integration:</strong> Linking faith, learning, and daily life.</li>
+                        <li><strong>Nurturing Thinkers:</strong> Encouraging critical reflection and inquiry.</li>
+                        <li><strong>Service and Character:</strong> Preparing for loving service and Christ-like character.</li>
+                    </ul>
+                    <p class="mb-2">A working definition: <em>A meaningful Adventist devotion is biblically faithful and theologically aligned with Adventist doctrine, fostering a personal, transformative relationship with Jesus Christ by engaging the whole person, encouraging deep reflection on God's Word and character, and inspiring practical application of faith in daily life and service.</em></p>
+                    
+                    <button class="collapsible-trigger text-sky-600 font-semibold hover:underline focus:outline-none mt-4">View Table 1: Framework for Defining "Meaningful Devotion"</button>
+                    <div class="collapsible-content mt-2 table-container overflow-x-auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Core Principle</th>
+                                    <th>Elaboration</th>
+                                    <th>Implication for Devotion</th>
+                                    <th>Example AI Element</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Redemptive Aim / Restoration to Imago Dei</td>
+                                    <td>Education aims to restore individuals into God's image.</td>
+                                    <td>Devotions should highlight God's restorative power and call towards Christ-likeness.</td>
+                                    <td>"Consider one way God's grace is working to restore something broken in your life."</td>
+                                </tr>
+                                <tr>
+                                    <td>Whole-Person Development</td>
+                                    <td>Fostering balanced growth (spiritual, intellectual, physical, social).</td>
+                                    <td>Devotions should engage intellect, emotions, will, and social aspects.</td>
+                                    <td>"How does this passage challenge your thinking? Feel? What action can you take?"</td>
+                                </tr>
+                                <tr>
+                                    <td>Christ-Centeredness</td>
+                                    <td>Jesus is central to faith, understanding God, and transformation.</td>
+                                    <td>Devotions must point to Jesus, His life, teachings, sacrifice, and ministry.</td>
+                                    <td>"Reflect on how Jesus exemplified this principle in His own life."</td>
+                                </tr>
+                                <tr>
+                                    <td>Faith-Learning-Life Integration</td>
+                                    <td>Faith as an active process integrating biblical learning with daily life.</td>
+                                    <td>Devotions should bridge biblical insights with practical situations.</td>
+                                    <td>"How can this biblical truth guide your response in a situation today?"</td>
+                                </tr>
+                                <tr>
+                                    <td>Nurturing Thinkers</td>
+                                    <td>Encouraging critical thought and personal inquiry.</td>
+                                    <td>Devotions should pose questions that stimulate thought, not provide all answers.</td>
+                                    <td>"What questions does this passage raise for you? How does it challenge your understanding?"</td>
+                                </tr>
+                                <tr>
+                                    <td>Service to Others & Character Development</td>
+                                    <td>Preparing for loving service and building Christ-like character.</td>
+                                    <td>Devotions should inspire kindness, ethical decisions, and serving others.</td>
+                                    <td>"Who might God be prompting you to serve or encourage this week?"</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4 p-4 border border-sky-200 rounded-lg bg-sky-50">
+                        <h4 class="font-semibold text-md text-sky-700">Recommendation:</h4>
+                        <p>Develop a detailed rubric for "meaningful Adventist devotions" based on the principles in Table 1. This rubric should translate philosophical tenets into specific, observable content characteristics (e.g., reflective questions, EGW insights, call to action, focus on Christ's character, biblical clarity). This rubric is vital for guiding AI generation and evaluation.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="defining-meaningful-growth" class="content-section space-y-6">
+                <h2 class="text-3xl font-semibold text-sky-700 border-b-2 border-sky-600 pb-2">III.B. Defining "Meaningful": Fostering Spiritual Growth</h2>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-sky-600 mb-3">Fostering Spiritual Growth: Aligning AI Content with Transformative Faith Objectives</h3>
+                    <p class="mb-2">AI-generated devotions must intentionally foster spiritual growth by moving beyond information dissemination to encourage personal engagement with God and His Word. This includes prompting prayer, facilitating deep reflection, encouraging practical application of biblical principles, and deepening understanding of God's character.</p>
+                    <p class="mb-2">The AI's role is a catalyst or scaffold, not a replacement for personal spiritual engagement or the Holy Spirit's work. AI lacks personal faith, spiritual discernment, and cannot replicate the leading of the Holy Spirit. However, AI can function as a "study partner," providing devotional prompts, summaries, explanations, and reflection questions.</p>
+                    <p class="mb-2">The AI should provide sound material structured to *encourage and facilitate* the student's own spiritual engagement, leading them towards personal reflection, prayer, and community interaction. Devotions should often conclude with open-ended questions or prompts for action.</p>
+                    <div class="mt-4 p-4 border border-sky-200 rounded-lg bg-sky-50">
+                        <h4 class="font-semibold text-md text-sky-700">Recommendation:</h4>
+                        <p>Design AI-generated devotions to explicitly prompt further personal spiritual engagement (e.g., "How might this principle apply to a challenge you're facing?" or "Pray about one aspect of this passage."). Classroom strategies should reinforce AI as a tool to initiate reflection, not the entirety of the devotional experience.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="classroom-teachers" class="content-section space-y-6">
+                <h2 class="text-3xl font-semibold text-sky-700 border-b-2 border-sky-600 pb-2">IV.A. Classroom Strategies: Teacher Empowerment</h2>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <p class="mb-4">Successful AI devotional framework implementation hinges on effective classroom integration, requiring comprehensive support for educators.</p>
+                    <h3 class="text-xl font-semibold text-sky-600 mb-3">Equipping Educators: Developing Teacher Training and Comprehensive Resource Guides</h3>
+                    <p class="mb-2">Teachers are linchpins. Robust training and a comprehensive resource guide are paramount. The guide should cover pedagogical approaches, technical operation, curriculum integration, and facilitating student reflection.</p>
+                    <p class="mb-2">Teacher oversight and contextualization are critical. AI should supplement, not replace, the teacher. Teachers need proficiency with the tool and theological discernment to evaluate its output. Training must cultivate pedagogical expertise in using AI for spiritual formation and enhance theological discernment. Teachers should understand AI's capabilities/limitations, learn prompt engineering, assess devotions, and guide discussions. The focus should be on "Intelligence Augmentation (IA)," enhancing human abilities.</p>
+                     <button class="collapsible-trigger text-sky-600 font-semibold hover:underline focus:outline-none">Key Training Components</button>
+                    <div class="collapsible-content mt-2 space-y-1">
+                        <p><strong>Technical Proficiency:</strong> Using the AI tool effectively.</p>
+                        <p><strong>Pedagogical Expertise:</strong> Using AI for spiritual formation.</p>
+                        <p><strong>Theological Discernment:</strong> Evaluating AI-generated content.</p>
+                        <p><strong>Prompt Engineering:</strong> Tailoring AI outputs to student needs.</p>
+                        <p><strong>Ethical Considerations:</strong> Navigating complexities with wisdom.</p>
+                    </div>
+                    <div class="mt-4 p-4 border border-sky-200 rounded-lg bg-sky-50">
+                        <h4 class="font-semibold text-md text-sky-700">Recommendation:</h4>
+                        <p>The teacher guidebook and training should include case studies (exemplary and flawed AI devotions) for practical evaluation experience. Training should cover refining prompts, adapting content, designing follow-up activities, and thoroughly address ethical considerations.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="classroom-students" class="content-section space-y-6">
+                <h2 class="text-3xl font-semibold text-sky-700 border-b-2 border-sky-600 pb-2">IV.B. Classroom Strategies: Student Engagement</h2>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-sky-600 mb-3">Engaging Students: Cultivating Interactive and Reflective Use of AI-Generated Devotions</h3>
+                    <p class="mb-2">For meaningful impact, students must move beyond passive consumption to active engagement, reflection, discussion, and application. Classroom strategies should foster this interactivity.</p>
+                    <p class="mb-2">Approaches like critical dialogue with AI, challenging presumptions, and cross-referencing evidence align with nurturing "thinkers rather than mere reflectors." The goal is not uncritical acceptance. True spiritual formation occurs when students critically interact with content, relate it to their lives and Adventist teachings, and take ownership of reflections. The AI tool can be a starting point or dialogue partner. Involving students in evaluating AI output (e.g., "What did AI emphasize? What might it have missed?") deepens understanding and critical thinking.</p>
+                    <div class="mt-4 p-4 border border-sky-200 rounded-lg bg-sky-50">
+                        <h4 class="font-semibold text-md text-sky-700">Recommendation: Design classroom activities that encourage students to:</h4>
+                        <ul class="list-decimal list-inside ml-4 mt-2 space-y-1">
+                            <li><strong>Analyze and Critique:</strong> Evaluate AI's interpretation, identify biases/omissions, explore alternatives.</li>
+                            <li><strong>Personalize and Apply:</strong> Use journaling, discussions, creative responses, service projects to connect themes to personal lives.</li>
+                            <li><strong>Cross-Reference and Verify:</strong> Compare AI content with the Bible and EGW writings.</li>
+                            <li><strong>Guided Co-creation (older students):</strong> Under supervision, use AI for initial drafts, then critically refine them.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ethical-principles" class="content-section space-y-6">
+                <h2 class="text-3xl font-semibold text-sky-700 border-b-2 border-sky-600 pb-2">V.A. Ethical Framework: Guiding Principles</h2>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <p class="mb-4">Integrating AI into spiritual education demands careful navigation of complex ethical and theological issues. The framework for oversight is paramount.</p>
+                    <h3 class="text-xl font-semibold text-sky-600 mb-3">Establishing Robust Frameworks for Responsible AI in Spiritual Education</h3>
+                    <p class="mb-2">A comprehensive ethical framework must be proactive and integrated into every project stage, guiding data selection, model design, prompt engineering, classroom strategies, teacher training, and evaluation. It should be a living document, revisited continually.</p>
+                    <p class="mb-2">Key principles from various sources include: Compassionate Intelligence (uplifting learners, fairness, truthfulness, transparency, accountability), Biblical Authority, Transparency (AI's role/limitations), Accountability (reviews, feedback), Human Dignity, Stewardship, and serving the Common Good. For Adventism, AI databases should align with church doctrine, making AI an "extension of ministry, maintaining denominational identity."</p>
+                     <button class="collapsible-trigger text-sky-600 font-semibold hover:underline focus:outline-none mt-4">View Table 2: Ethical and Theological Oversight Protocol</button>
+                    <div class="collapsible-content mt-2 table-container overflow-x-auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Oversight Stage</th>
+                                    <th>Key Consideration</th>
+                                    <th>Proposed Action/Strategy</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Data Curation & Preparation</td>
+                                    <td>Doctrinal Accuracy; Representativeness; Contextual Integrity of EGW; Bias Avoidance</td>
+                                    <td>"Vetted" sources criteria; Diverse perspectives; EGW quoting protocols; Bias screening.</td>
+                                </tr>
+                                <tr>
+                                    <td>AI Model Training/Fine-tuning</td>
+                                    <td>Prevent Model-Induced Bias; Theological Coherence; Faithfulness to Doctrines</td>
+                                    <td>Low-bias base LLMs; Fine-tuning for theological consistency; Theological "probes".</td>
+                                </tr>
+                                <tr>
+                                    <td>Prompt Engineering & RAG Design</td>
+                                    <td>Elicit Sound & Meaningful Devotions; Avoid Harmful Outputs; Transparency</td>
+                                    <td>Prompts for Adventist themes; Instructions for uncertainty; RAG from authoritative sources.</td>
+                                </tr>
+                                <tr>
+                                    <td>Content Generation Review</td>
+                                    <td>Ongoing Accuracy; Appropriateness; Absence of Harmful Interpretations</td>
+                                    <td>Multi-stage review by experts/educators; Use "Meaningful Devotion Rubric".</td>
+                                </tr>
+                                <tr>
+                                    <td>Classroom Integration & Teacher Guidebook</td>
+                                    <td>Responsible Use; Critical Engagement; Prevent Over-Reliance; Data Privacy</td>
+                                    <td>Guidebook on ethics, AI limitations, critical discussion, data safeguarding; Teacher training.</td>
+                                </tr>
+                                <tr>
+                                    <td>Ongoing Monitoring & Evaluation</td>
+                                    <td>Long-term Integrity; Emergent Biases; User Feedback; Adherence to Principles</td>
+                                    <td>Feedback channels; Periodic audits; Model/guideline updates.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4 p-4 border border-sky-200 rounded-lg bg-sky-50">
+                        <h4 class="font-semibold text-md text-sky-700">Recommendation:</h4>
+                        <p>Develop the "Framework for Ethical and Theological Oversight" as a foundational, iterative document from project inception. This framework (structured like Table 2) should guide decisions across all phases, detailing procedures for data vetting, model auditing, theological review, and educator guidelines for responsible AI use.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ethical-ai-role" class="content-section space-y-6">
+                <h2 class="text-3xl font-semibold text-sky-700 border-b-2 border-sky-600 pb-2">V.B. Ethical Framework: AI's Role</h2>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-sky-600 mb-3">Clarifying AI's Role: An Assistant, Not a Replacement, for Spiritual Nurture</h3>
+                    <p class="mb-2">A crucial clarification: AI is a tool, an assistant, or study partner, never replacing essential human and divine elements of spiritual nurture. This distinction must be central to the ethical framework and all communications.</p>
+                    <p class="mb-2">AI lacks personal faith, consciousness, empathy, and capacity for genuine relationships. It cannot experience Holy Spirit guidance or understand personal faith journeys. Generative AI is "not the right tool" for spiritual companionship, offering an "impoverished kind of spiritual practice" and potentially subverting spiritual relationships.</p>
+                    <p class="mb-2">The AI tool must be positioned as a supportive instrument. Its value is in efficiently producing theologically grounded devotional *content* that educators use to facilitate deeper, human-led spiritual engagement, or students use as a springboard for personal reflection. The "value added" is how it *assists* and *enhances* existing practices, acknowledging limitations and keeping human agency and the Holy Spirit central.</p>
+                    <div class="mt-4 p-4 border border-sky-200 rounded-lg bg-sky-50">
+                        <h4 class="font-semibold text-md text-sky-700">Recommendation:</h4>
+                        <p>Clearly and consistently articulate AI's assistive role in all project documentation (teacher guidebook, student materials, publications). Emphasize it supports teachers and students within a broader framework prioritizing direct Scripture engagement, personal study, prayer, community, educator guidance, and the Holy Spirit's work.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="measuring-evaluation" class="content-section space-y-6">
+                <h2 class="text-3xl font-semibold text-sky-700 border-b-2 border-sky-600 pb-2">VI.A. Measuring Success: Holistic Evaluation</h2>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <p class="mb-4">Evaluating the spiritual and educational impact is crucial for understanding the AI tool's true value. This requires a holistic assessment combining qualitative and quantitative methods.</p>
+                    <h3 class="text-xl font-semibold text-sky-600 mb-3">Holistic Assessment: Combining Qualitative and Quantitative Methodologies</h3>
+                    <p class="mb-2">A mixed-methods design is needed. Qualitative methods (interviews, focus groups) explore "lived experiences," revealing perceptions of meaningfulness and faith integration. Quantitative methods (surveys) measure changes in attitudes, beliefs, or spiritual practices using validated scales where appropriate.</p>
+                    <p class="mb-2">A key challenge is defining and operationalizing "spiritual growth indicators" within an Adventist context. These must be measurable and reflect Adventist understandings of spiritual development (e.g., character development, faith in God, service, transformation). Generic scales may not fully align. Prior to evaluation, specific spiritual growth indicators must be articulated.</p>
+                     <button class="collapsible-trigger text-sky-600 font-semibold hover:underline focus:outline-none">Examples of Indicators</button>
+                    <div class="collapsible-content mt-2 space-y-1">
+                        <p><strong>Qualitative:</strong> Depth of reflection in journals/interviews; ability to connect themes to life/Adventist beliefs; expressed changes in understanding God; increased prayer/Bible study.</p>
+                        <p><strong>Quantitative (if feasible):</strong> Pre/post surveys on attitudes to devotion; understanding of themes; self-reported spiritual practices (adapting validated scales).</p>
+                    </div>
+                    <div class="mt-4 p-4 border border-sky-200 rounded-lg bg-sky-50">
+                        <h4 class="font-semibold text-md text-sky-700">Recommendation:</h4>
+                        <p>Develop a specific list of "Spiritual Growth Indicators" tailored to the project's Adventist context and AI devotions, informed by the "meaningful devotions" definition and Adventist educational philosophy. Combine qualitative and quantitative indicators.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="measuring-pedagogical" class="content-section space-y-6">
+                <h2 class="text-3xl font-semibold text-sky-700 border-b-2 border-sky-600 pb-2">VI.B. Measuring Success: Pedagogical Markers</h2>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-sky-600 mb-3">Identifying Markers: Defining and Tracking Indicators of Pedagogical Effectiveness</h3>
+                    <p class="mb-2">Evaluating "educational impact" and "pedagogical effectiveness" includes teacher experiences, student perceptions, and AI tool integration into the classroom.</p>
+                    <p class="mb-2">Pedagogical effectiveness is linked to the AI tool's practical utility for teachers, ease of integration, and support for spiritual formation goals. If cumbersome or misaligned, its effectiveness is limited. AI is useful if it saves teacher time or assists in content delivery.</p>
+                    <p class="mb-2">Indicators include:</p>
+                    <ul class="list-disc list-inside ml-4 mb-3 space-y-1">
+                        <li><strong>Teacher Feedback:</strong> Surveys/interviews on usability, guidebook helpfulness, curriculum alignment, impact on student engagement, preparation efficiency.</li>
+                        <li><strong>Student Engagement Levels:</strong> Observations and feedback on engagement with AI devotions and activities.</li>
+                        <li><strong>Quality of Student Work/Reflection:</strong> Assessing student responses in journals, discussions, projects.</li>
+                        <li><strong>Classroom Integration:</strong> Observing how teachers use AI devotions and student responses.</li>
+                    </ul>
+                    <div class="mt-4 p-4 border border-sky-200 rounded-lg bg-sky-50">
+                        <h4 class="font-semibold text-md text-sky-700">Recommendation: Include specific measures for pedagogical effectiveness:</h4>
+                         <ul class="list-decimal list-inside ml-4 mt-2 space-y-1">
+                            <li>Teacher Surveys and Interviews.</li>
+                            <li>Student Focus Groups and Surveys.</li>
+                            <li>Classroom Observations.</li>
+                            <li>Analysis of Student Artifacts.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="path-iterative" class="content-section space-y-6">
+                <h2 class="text-3xl font-semibold text-sky-700 border-b-2 border-sky-600 pb-2">VII.A. The Path Ahead: Iterative Development</h2>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <p class="mb-4">This pioneering research requires careful prioritization and anticipation of challenges. An iterative development process with continuous feedback is key.</p>
+                    <h3 class="text-xl font-semibold text-sky-600 mb-3">Prioritized Next Steps and Anticipating Potential Hurdles</h3>
+                    <p class="mb-2">Potential challenges include: data scarcity/nuance, theological consistency in AI, RAG system performance, defining/measuring "meaningfulness" and "spiritual impact," teacher adoption/training, student engagement, and ethical vigilance.</p>
+                    <h4 class="text-lg font-medium text-stone-700 my-3">Proposed Iterative Cycles:</h4>
+                    <div class="space-y-4">
+                        <div class="process-step">
+                            <strong>Cycle 1: Foundation & Initial Prototyping</strong>
+                            <p class="text-sm">Tasks: Data curation/structuring, initial RAG pipeline, basic prompt engineering. Testing: Small-scale theological review. Refinement: Based on feedback.</p>
+                        </div>
+                        <div class="process-arrow">↓</div>
+                        <div class="process-step">
+                            <strong>Cycle 2: Meaningfulness & Usability</strong>
+                            <p class="text-sm">Tasks: Develop "Meaningful Devotion Rubric," refine prompts, generate sample devotions. Testing: Pilot with teachers/students. Refinement: Adjust rubric, prompts, AI model; draft teacher guidebook.</p>
+                        </div>
+                        <div class="process-arrow">↓</div>
+                        <div class="process-step">
+                            <strong>Cycle 3: Classroom Integration & Broader Piloting</strong>
+                             <p class="text-sm">Tasks: Develop integration strategies, finalize guidebook, conduct teacher training. Testing: Implement in broader pilot classrooms, collect impact data. Refinement: Refine strategies, resources, AI tool.</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-4 border border-sky-200 rounded-lg bg-sky-50">
+                        <h4 class="font-semibold text-md text-sky-700">Recommendation:</h4>
+                        <p>Structure the project plan around explicit iterative cycles (Foundation & Prototyping; Meaningfulness & Usability; Classroom Integration & Piloting). This allows for learning, adaptation, and progressive improvement.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="path-dissemination" class="content-section space-y-6">
+                <h2 class="text-3xl font-semibold text-sky-700 border-b-2 border-sky-600 pb-2">VII.B. The Path Ahead: Dissemination</h2>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-sky-600 mb-3">Disseminating Your Work: Avenues for Publication and Broader Impact</h3>
+                    <p class="mb-2">Findings and outputs have significant potential impact within the Adventist Church and broader academic discourse. Planning for dissemination is key.</p>
+                    <p class="mb-2">The teacher guidebook and ethical/theological oversight framework are substantial, publishable contributions. There's a pressing need for such research-informed resources.</p>
+                    <p class="mb-2">Potential avenues:</p>
+                    <ul class="list-disc list-inside ml-4 mb-3 space-y-1">
+                        <li><strong>Academic Journals:</strong> *Journal of Adventist Education*, digital theology/religion & tech journals, AI in education journals, religious education journals.</li>
+                        <li><strong>Practitioner Resources:</strong> Adventist educational departments, church publications (*Adventist Review*, *Adventist World*).</li>
+                        <li><strong>Conference Presentations:</strong> Adventist education conferences, academic conferences in AI/EdTech/theology.</li>
+                        <li><strong>Workshops & Professional Development:</strong> For Adventist educators.</li>
+                        <li><strong>Open Access & Digital Repositories:</strong> Anonymized data, evaluation instruments, aspects of AI model/code.</li>
+                    </ul>
+                    <div class="mt-4 p-4 border border-sky-200 rounded-lg bg-sky-50">
+                        <h4 class="font-semibold text-md text-sky-700">Recommendation:</h4>
+                        <p>Develop a multi-pronged dissemination strategy for academic and practitioner audiences. Prioritize *Journal of Adventist Education*. Develop guidebook/ethical framework as standalone resources. Present findings and conduct workshops at relevant conferences.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="recommendations" class="content-section space-y-6">
+                <h2 class="text-3xl font-semibold text-sky-700 border-b-2 border-sky-600 pb-2">VIII. Conclusion and Key Recommendations</h2>
+                 <div class="bg-white p-6 rounded-lg shadow">
+                    <p class="mb-4">This research is a timely and significant undertaking, potentially offering valuable tools for spiritual formation in Adventist education. Success depends on navigating AI technology, Adventist theology, pedagogy, and ethical oversight.</p>
+                    <h3 class="text-xl font-semibold text-sky-600 mb-3">The 10 Key Recommendations:</h3>
+                    <ol class="list-decimal list-inside space-y-3">
+                        <li>
+                            <button class="collapsible-trigger text-sky-600 font-semibold hover:underline focus:outline-none">Prioritize Structured Knowledge Representation</button>
+                            <div class="collapsible-content mt-1 text-sm">Move beyond simple data curation to investigate and implement methods for structuring the Adventist theological corpus (Bible, EGW writings, Sabbath School materials, devotionals). Exploring lightweight ontological models or knowledge graphs will be crucial for enabling the RAG model to retrieve and synthesize information with theological coherence and contextual accuracy.</div>
+                        </li>
+                        <li>
+                            <button class="collapsible-trigger text-sky-600 font-semibold hover:underline focus:outline-none">Master Prompt Engineering for Devotional Nuance</button>
+                            <div class="collapsible-content mt-1 text-sm">Dedicate significant effort to developing and iteratively refining prompt engineering strategies for the LLM component of the RAG system. This is essential to ensure the AI's output is not merely informational but possesses the reflective, applicational, and spiritually engaging qualities of a "meaningful" devotion.</div>
+                        </li>
+                        <li>
+                            <button class="collapsible-trigger text-sky-600 font-semibold hover:underline focus:outline-none">Implement a Multi-Layered Theological Validation Process</button>
+                            <div class="collapsible-content mt-1 text-sm">Establish a comprehensive validation protocol that assesses theological accuracy at multiple stages: initial data vetting, RAG retrieval accuracy, prompt effectiveness, LLM synthesis, and continuous auditing for emergent biases. This requires the active involvement of theological experts throughout the development lifecycle.</div>
+                        </li>
+                        <li>
+                            <button class="collapsible-trigger text-sky-600 font-semibold hover:underline focus:outline-none">Develop a Detailed Rubric for "Meaningful Adventist Devotions"</button>
+                            <div class="collapsible-content mt-1 text-sm">Translate the core principles of Adventist educational philosophy (redemptive aim, whole-person development, Christ-centeredness, faith-life integration, etc.) into a specific, actionable rubric. This rubric will guide AI content generation and serve as a cornerstone for evaluating the devotional outputs.</div>
+                        </li>
+                        <li>
+                            <button class="collapsible-trigger text-sky-600 font-semibold hover:underline focus:outline-none">Design for Scaffolding Personal Spiritual Engagement</button>
+                            <div class="collapsible-content mt-1 text-sm">Ensure that AI-generated devotions and associated classroom activities are designed to catalyze and support, rather than replace, the student's personal reflection, prayer, study, and the work of the Holy Spirit. The AI's role is to be an assistant and a starting point.</div>
+                        </li>
+                        <li>
+                            <button class="collapsible-trigger text-sky-600 font-semibold hover:underline focus:outline-none">Equip Educators Through Comprehensive Training and Resources</button>
+                            <div class="collapsible-content mt-1 text-sm">Develop a robust teacher guidebook and training program that goes beyond technical proficiency to cultivate pedagogical skill in using AI for spiritual formation and theological discernment in evaluating AI-generated content.</div>
+                        </li>
+                        <li>
+                            <button class="collapsible-trigger text-sky-600 font-semibold hover:underline focus:outline-none">Foster Critical and Interactive Student Engagement</button>
+                            <div class="collapsible-content mt-1 text-sm">Design classroom strategies that encourage students to actively and critically engage with AI-generated devotions—analyzing, personalizing, applying, and cross-referencing content with primary Adventist sources.</div>
+                        </li>
+                        <li>
+                            <button class="collapsible-trigger text-sky-600 font-semibold hover:underline focus:outline-none">Integrate Ethical and Theological Oversight Proactively</button>
+                            <div class="collapsible-content mt-1 text-sm">Establish the "Framework for Ethical and Theological Oversight" as a foundational, living document from the project's outset, guiding all methodological decisions and ensuring the technology serves the mission of Adventist education responsibly.</div>
+                        </li>
+                        <li>
+                            <button class="collapsible-trigger text-sky-600 font-semibold hover:underline focus:outline-none">Adopt an Iterative Development and Feedback-Driven Approach</button>
+                            <div class="collapsible-content mt-1 text-sm">Structure the project plan around iterative cycles of development, testing (with theologians, educators, and students), and refinement for all major components to allow for learning and adaptation.</div>
+                        </li>
+                        <li>
+                            <button class="collapsible-trigger text-sky-600 font-semibold hover:underline focus:outline-none">Plan for Multi-Faceted Dissemination</button>
+                            <div class="collapsible-content mt-1 text-sm">Strategize for sharing research findings, the AI tool (if applicable), the teacher guidebook, and the ethical/theological framework through diverse channels, including academic journals (especially the Journal of Adventist Education), Adventist educational networks, and relevant conferences.</div>
+                        </li>
+                    </ol>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            const collapsibleTriggers = document.querySelectorAll('.collapsible-trigger');
+            const sidebarLinkGroups = document.querySelectorAll('.sidebar-link-group');
+
+            function setActiveLink(hash) {
+                sidebarLinks.forEach(link => {
+                    if (link.getAttribute('href') === hash) {
+                        link.classList.add('active');
+                        // Open parent group if nested
+                        let parentGroup = link.closest('ul.pl-4');
+                        if (parentGroup && parentGroup.previousElementSibling && parentGroup.previousElementSibling.classList.contains('sidebar-link-group')) {
+                            parentGroup.classList.remove('hidden');
+                            parentGroup.previousElementSibling.classList.add('active');
+                             parentGroup.previousElementSibling.innerHTML = parentGroup.previousElementSibling.innerHTML.replace('▾', '▴');
+                        }
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+                 // Also highlight the group button if a sublink is active
+                sidebarLinkGroups.forEach(group => {
+                    const subList = group.nextElementSibling;
+                    if (subList && subList.querySelector(`.sidebar-link[href="${hash}"]`)) {
+                        group.classList.add('active');
+                    } else if (!subList || !subList.classList.contains('hidden')) { 
+                        // Only remove active if not the one being opened or if its sublinks are not active
+                        let isActiveSublink = false;
+                        if(subList) {
+                            subList.querySelectorAll('.sidebar-link').forEach(sl => {
+                                if(sl.getAttribute('href') === hash) isActiveSublink = true;
+                            });
+                        }
+                        if(!isActiveSublink) group.classList.remove('active');
+                    }
+                });
+            }
+
+            function showContent(targetId) {
+                contentSections.forEach(section => {
+                    if (section.id === targetId) {
+                        section.classList.add('active');
+                    } else {
+                        section.classList.remove('active');
+                    }
+                });
+                setActiveLink('#' + targetId);
+                window.scrollTo(0, 0); // Scroll to top of page
+            }
+
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    history.pushState(null, null, '#' + targetId);
+                    showContent(targetId);
+                });
+            });
+            
+            sidebarLinkGroups.forEach(button => {
+                button.addEventListener('click', function() {
+                    const subMenu = this.nextElementSibling;
+                    subMenu.classList.toggle('hidden');
+                    if (subMenu.classList.contains('hidden')) {
+                        this.innerHTML = this.innerHTML.replace('▴', '▾');
+                    } else {
+                        this.innerHTML = this.innerHTML.replace('▾', '▴');
+                    }
+                    // Do not make group button active on just click, only if sublink is active
+                });
+            });
+
+            collapsibleTriggers.forEach(trigger => {
+                trigger.addEventListener('click', function () {
+                    this.classList.toggle('open');
+                    const content = this.nextElementSibling;
+                    if (content.style.display === "block") {
+                        content.style.display = "none";
+                    } else {
+                        content.style.display = "block";
+                    }
+                });
+            });
+
+            // Handle initial page load based on hash
+            let initialHash = window.location.hash;
+            if (initialHash) {
+                showContent(initialHash.substring(1));
+            } else {
+                showContent('overview'); // Default section
+            }
+
+            // Handle back/forward navigation
+            window.addEventListener('popstate', function () {
+                let hash = window.location.hash;
+                if (hash) {
+                    showContent(hash.substring(1));
+                } else {
+                    showContent('overview');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

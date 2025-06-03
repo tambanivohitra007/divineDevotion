@@ -42,14 +42,17 @@ interface DisplayableContent {
   topic?: string;
 }
 
-const props = defineProps<{
-  devotion: DisplayableContent; // Prop name remains 'devotion' as passed from App.vue
+const props = defineProps<{ 
+  devotion: DisplayableContent; 
   contentType: 'devotion' | 'faithIntegration';
 }>();
 
 const verseTooltipContents = ref<Record<string, string>>({});
 
-declare var bootstrap: any;
+declare var bootstrap: any; // Keep this if you are sure bootstrap is globally available
+// OR, if using Bootstrap via ES modules and it's not attaching to window:
+// import { Tooltip as BootstrapTooltip } from 'bootstrap'; // Example import
+
 const KJV_BIBLE_ID = 'en-kjv';
 
 interface ParsedVerse {
@@ -172,14 +175,15 @@ const initializeOrUpdateTooltipsAndListeners = async () => {
   const tooltipElements = document.querySelectorAll<HTMLElement>('a.verse-link[data-bs-toggle="tooltip"]');
   
   tooltipElements.forEach(el => {
-    if (window.bootstrap) {
-      const existingTooltip = window.bootstrap.Tooltip.getInstance(el);
+    // Check if bootstrap is available on window, or use imported Tooltip
+    if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+      const existingTooltip = bootstrap.Tooltip.getInstance(el);
       if (existingTooltip) {
         existingTooltip.dispose();
       }
-      new window.bootstrap.Tooltip(el);
+      new bootstrap.Tooltip(el);
     } else {
-      console.warn('Bootstrap object not found. Tooltips may not work.');
+      console.warn('Bootstrap Tooltip object not found. Tooltips may not work.');
     }
 
     // Attach listeners for inline verse links (those not handled by Vue's @event bindings)
@@ -204,8 +208,8 @@ const updateTooltipContent = async (verseRef: string, newContent: string) => {
   // Query for all links (list items and inline) that match the specific verseRef
   document.querySelectorAll<HTMLElement>(`a.verse-link[data-verse-ref="${verseRef}"]`).forEach(el => {
     el.setAttribute('title', newContent); // Update the title attribute
-    if (window.bootstrap) {
-      const tooltipInstance = window.bootstrap.Tooltip.getInstance(el);
+    if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+      const tooltipInstance = bootstrap.Tooltip.getInstance(el);
       if (tooltipInstance) {
         // If Bootstrap tooltip is initialized and possibly visible, tell it to update its content.
         tooltipInstance.setContent({ '.tooltip-inner': newContent });
