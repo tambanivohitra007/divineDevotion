@@ -47,8 +47,7 @@
           </button>
         </li>
       </ul>
-      
-      <!-- Theme toggle button at bottom of sidebar -->
+        <!-- Theme toggle button at bottom of sidebar -->
       <div class="sidebar-bottom" v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">
         <button @click="toggleTheme" class="btn theme-toggle-btn-sidebar" :title="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
           <i :class="isDarkMode ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill'"></i>
@@ -58,7 +57,7 @@
         </button>
       </div>
     </div>
-  </div>
+
     <div class="main-content">
       <!-- This button is now primarily for opening sidebar on mobile, or expanding on desktop if it was collapsed -->
       <button class="btn btn-sm btn-outline-light sidebar-toggle-btn-main" @click="toggleSidebar" v-if="isSidebarCollapsed">
@@ -184,11 +183,11 @@
           </div>
           <div v-if="generationError" class="alert alert-danger mt-2" role="alert">
             <strong>Error:</strong> {{ generationError }}
-          </div>
-        </form>
+          </div>        </form>
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script setup lang="ts">
@@ -812,7 +811,7 @@ onUnmounted(() => {
 
 /* Main Content Area */
 .main-content {
-
+  margin-left: 350px; /* Default margin when sidebar is expanded on desktop */
   /* padding: 2rem 3rem 10rem; */
   flex-grow: 1;
   height: 100vh;
@@ -821,6 +820,25 @@ onUnmounted(() => {
   flex-direction: column;
   position: relative;
 }
+
+/* Adjust main content when sidebar is collapsed on desktop - center the content */
+#app.sidebar-collapsed .main-content {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Ensure .content-area stays centered and doesn't stretch full width */
+#app.sidebar-collapsed .main-content .content-area {
+  margin: 0 auto;
+  max-width: 60rem;
+}
+
 
 .content-area {
   flex: 1;
@@ -839,6 +857,12 @@ onUnmounted(() => {
   margin: 0 auto;
   padding: 0 2rem;
   margin-bottom: 25px;
+}
+
+/* Ensure input-container centers when sidebar is collapsed */
+#app.sidebar-collapsed .input-container {
+  margin: 0 auto;
+  max-width: 60rem;
 }
 
 .content-type-selector .btn-group {
@@ -1092,6 +1116,27 @@ a:focus-visible {
   box-shadow: var(--shadow-card);
 }
 
+/* Desktop Bottom Input Area */
+.bottom-input-area {
+  position: fixed;
+  bottom: 0;
+  left: 350px; /* Default position when sidebar is expanded */
+  right: 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--glass-border);
+  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  transition: var(--transition-smooth);
+}
+
+/* Adjust bottom input area when sidebar is collapsed on desktop */
+#app.sidebar-collapsed .bottom-input-area {
+  left: 0; /* Center the bottom input area when sidebar is collapsed */
+}
+
 /* Inline Verse Links */
 :deep(.inline-verse-link) {
   font-weight: 600;
@@ -1173,12 +1218,17 @@ a:focus-visible {
     font-size: 1.5rem;
     padding: 0.75rem;
   }
-
   /* Mobile sidebar styling adjustments */
   .sidebar-bottom {
     bottom: 1.5rem;
     left: 1.5rem;
     right: 1.5rem;
+  }
+
+  /* Mobile main content - no margin adjustments */
+  .main-content {
+    margin-left: 0 !important;
+    width: 100%;
   }
 
   .app-title {
@@ -1230,18 +1280,17 @@ a:focus-visible {
   .actions-toolbar .btn {
     width: 100%;
   }
-
   /* Mobile Responsive Bottom Input Area */
   .bottom-input-area {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    padding: 1rem 0;
+    padding: 1rem 0 !important;
     border-top: 1px solid var(--glass-border);
     box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
     z-index: 100;
@@ -1250,7 +1299,7 @@ a:focus-visible {
   /* Override sidebar adjustments on mobile */
   #app.sidebar-collapsed .bottom-input-area,
   #app.mobile-view .bottom-input-area {
-    left: 0;
+    left: 0 !important;
   }
 
   .input-container {
