@@ -99,9 +99,8 @@
               <span class="verse-reference-bold">{{ currentContent.verses[0] }}</span>
               <blockquote v-if="firstVerseText" class="verse-text-blockquote">
                 "{{ firstVerseText }}"
-              </blockquote>
-            </div>
-            <DevotionDisplay :devotion="formattedContentForDisplay" :content-type="currentContent.type || 'devotion'" />
+              </blockquote>            </div>            <DevotionDisplay :devotion="formattedContentForDisplay" :content-type="currentContent.type || 'devotion'" />
+            
             <div class="actions-toolbar text-center mt-4 pt-3 border-top border-secondary">
               <button class="btn btn-gradient-success btn-sm me-2" @click="handleSaveCurrentContent">
                 <i class="bi bi-heart-fill me-2"></i>Save {{ currentContent.type === 'devotion' ? 'Devotion' : 'Idea' }}
@@ -111,8 +110,7 @@
               </button>
             </div>
           </div>
-        </div>
-      </div>
+        </div>      </div>
       
       <!-- Placeholder for when nothing is generated and not loading, and no error -->
       <section v-else-if="!isLoading && !currentContent.text && !generationError" class="text-center placeholder-section mx-auto p-5 rounded welcome-area">
@@ -195,7 +193,7 @@ import { ref, computed, watch, watchEffect, onMounted, onUnmounted } from 'vue';
 import DevotionDisplay from './components/DevotionDisplay.vue';
 import useGemini from './composables/useGemini';
 // Correctly import useContentStorage and StoredContent type
-import useContentStorage, { type StoredContent } from './composables/useDevotions'; 
+import useContentStorage, { type StoredContent } from './composables/useDevotions';
 
 const selectedContentType = ref<'devotion' | 'faithIntegration'>('devotion');
 const topicInput = ref(''); // Renamed from devotionTopic
@@ -284,14 +282,29 @@ watch(() => (currentContent.value.type === 'devotion' && currentContent.value.ve
   if (!verse) {
     firstVerseText.value = '';
     return;
-  }
-  // Parse the verse reference
+  }  // Parse the verse reference
   const match = verse.match(/^(\d*\s*[a-zA-Z\s]+)\s*(\d+):(\d+)(?:-(\d+))?$/);
   if (!match) {
     firstVerseText.value = '';
     return;
   }
-  const book = match[1].trim().toLowerCase().replace(/\s+/g, '');
+  
+  let book = match[1].trim().toLowerCase().replace(/\s+/g, '');
+  
+  // Map common book name variations to the API format
+  const bookNameMappings: Record<string, string> = {
+    'psalm': 'psalms',
+    'proverb': 'proverbs',
+    'ecclesiastes': 'ecclesiastes',
+    'songofsolomon': 'songofsolomon',
+    'songs': 'songofsolomon',
+    'song': 'songofsolomon',
+  };
+  
+  if (bookNameMappings[book]) {
+    book = bookNameMappings[book];
+  }
+  
   const chapter = match[2];
   const startVerse = match[3];
   const apiUrl = `https://cdn.jsdelivr.net/gh/wldeh/bible-api/bibles/en-kjv/books/${book}/chapters/${chapter}/verses/${startVerse}.json`;
@@ -1686,9 +1699,57 @@ a:focus-visible {
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
   }
-
   .current-devotion-card {
     margin-bottom: 1rem;
   }
+}
+
+/* Bible Card Integration Styles */
+.btn-gradient-primary {
+  background: linear-gradient(135deg, var(--divine-primary), var(--divine-secondary));
+  border: none;
+  color: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-gradient-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  color: white;
+}
+
+.btn-gradient-primary:disabled {
+  opacity: 0.6;
+  transform: none;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+}
+
+/* Verse link styling improvements */
+.list-group-item .d-flex {
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.list-group-item .btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  border-radius: 0.375rem;
+  transition: all 0.3s ease;
+}
+
+.list-group-item .btn-sm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+/* Bible card container integration */
+.bible-card-container {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--glass-bg);
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
 }
 </style>

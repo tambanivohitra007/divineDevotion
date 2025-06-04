@@ -1,30 +1,47 @@
 <template>
   <div class="devotion-display-content">
-    <div class="main-devotion-text lh-lg" v-html="formattedDevotionText"></div>
-    <template v-if="props.contentType === 'devotion' && props.devotion.verses && props.devotion.verses.length > 0">
+    <div class="main-devotion-text lh-lg" v-html="formattedDevotionText"></div>    <template v-if="props.contentType === 'devotion' && props.devotion.verses && props.devotion.verses.length > 0">
       <hr class="my-4">
       <div class="verses-section">
         <h6 class="verses-section-title mb-3">
           <i class="bi bi-book-half me-2"></i>
           Bible Verses:
-        </h6>
-        <ul class="list-group list-group-flush">
+        </h6>        <ul class="list-group list-group-flush">
           <li v-for="(verse, index) in props.devotion.verses" :key="index" class="list-group-item px-0 py-2">
-            <a :href="getBibleGatewayLink(verse)"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="text-decoration-none verse-link list-item-verse-link"
-               :data-verse-ref="verse"
-               data-bs-toggle="tooltip"
-               data-bs-placement="top"
-               data-bs-custom-class="bible-verse-tooltip"
-               :title="getTooltipTitle(verse)"
-               @mouseover.once="fetchVerseText(verse)"
-               @focus.once="fetchVerseText(verse)" 
-            >
-              <i class="bi bi-link-45deg me-1"></i>
-              {{ verse }}
-            </a>
+            <div class="d-flex justify-content-between align-items-center">
+              <a :href="getBibleGatewayLink(verse)"
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 class="text-decoration-none verse-link list-item-verse-link"
+                 :data-verse-ref="verse"
+                 data-bs-toggle="tooltip"
+                 data-bs-placement="top"
+                 data-bs-custom-class="bible-verse-tooltip"
+                 :title="getTooltipTitle(verse)"
+                 @mouseover.once="fetchVerseText(verse)"
+                 @focus.once="fetchVerseText(verse)" 
+              >
+                <i class="bi bi-link-45deg me-1"></i>
+                {{ verse }}
+              </a>
+              <button 
+                @click="generateCardForVerse(verse)" 
+                class="btn btn-outline-primary btn-sm ms-2"
+                title="Generate beautiful verse card"
+              >
+                <i class="bi bi-image me-1"></i>Card
+              </button>
+            </div>
+            
+            <!-- Bible Card Component -->
+            <BibleCard 
+              v-if="selectedVerseForCard === verse"
+              :verse="verse"
+              :verse-text="verseTooltipContents[verse]"
+              @card-generated="onCardGenerated"
+              @card-shared="onCardShared"
+              class="mt-3"
+            />
           </li>
         </ul>
       </div>
@@ -34,6 +51,7 @@
 
 <script setup lang="ts">
 import { defineProps, ref, watch, nextTick, computed } from 'vue';
+import BibleCard from './BibleCard.vue';
 
 // Renamed Devotion to DisplayableContent and made verses optional
 interface DisplayableContent {
@@ -42,12 +60,44 @@ interface DisplayableContent {
   topic?: string;
 }
 
+interface BibleCardData {
+  verseText: string;
+  verseReference: string;
+  backgroundImage: string;
+}
+
 const props = defineProps<{ 
   devotion: DisplayableContent; 
   contentType: 'devotion' | 'faithIntegration';
 }>();
 
 const verseTooltipContents = ref<Record<string, string>>({});
+const selectedVerseForCard = ref<string | null>(null);
+
+// Bible card methods
+const generateCardForVerse = (verse: string) => {
+  if (selectedVerseForCard.value === verse) {
+    // Hide if already showing
+    selectedVerseForCard.value = null;
+  } else {
+    // Show for this verse
+    selectedVerseForCard.value = verse;
+  }
+};
+
+const onCardGenerated = (cardData: BibleCardData) => {
+  console.log('Bible card generated:', cardData);
+  // You can add additional logic here if needed
+};
+
+const onCardShared = (success: boolean) => {
+  if (success) {
+    console.log('Bible card shared successfully');
+  } else {
+    console.log('Failed to share Bible card');
+  }
+  // You can add additional logic here if needed
+};
 
 declare var bootstrap: any; // Keep this if you are sure bootstrap is globally available
 // OR, if using Bootstrap via ES modules and it's not attaching to window:
@@ -64,13 +114,14 @@ interface ParsedVerse {
 
 // Regex to find Bible verses in text. Handles books like "1 John", "Song of Solomon".
 // Example refs: "John 3:16", "1 John 3:16-18", "Song of Solomon 2:1".
-const bibleVerseGlobalRegex = /\\b(\\d*\\s*[A-Za-z]+(?:(?:\\s+)[A-Zael]+)*\\s+\\d+:\\d+(?:-\\d+)?)\\b/g;
+const createBibleVerseGlobalRegex = () => /\b(\d*\s*[A-Za-z]+(?:(?:\s+)[A-Za-z]+)*\s+\d+:\d+(?:-\d+)?)\b/g;
 
 const formattedDevotionText = computed(() => {
   const text = props.devotion.text;
   if (!text) return '';
 
-  return text.replace(bibleVerseGlobalRegex, (matchedVerse) => {
+  const bibleVerseRegex = createBibleVerseGlobalRegex();
+  return text.replace(bibleVerseRegex, (matchedVerse) => {
     const parsed = parseVerseReference(matchedVerse);
     if (!parsed) {
       return matchedVerse; // If not a valid/parseable verse, return original text segment
@@ -103,13 +154,28 @@ const getBibleGatewayLink = (verse: string): string => {
 };
 
 const parseVerseReference = (verse: string): ParsedVerse | null => {
-  const match = verse.match(/^(\\d*\\s*[a-zA-Z\\s]+)\\s*(\\d+):(\\d+)(?:-(\\d+))?$/);
+  const match = verse.match(/^(\d*\s*[a-zA-Z\s]+)\s*(\d+):(\d+)(?:-(\d+))?$/);
   if (!match) {
-    // Do not warn here for inline parsing, as regex might pick up partials.
-    // The check in formattedDevotionText handles returning original text.
     return null;
   }
-  const bookName = match[1].trim().toLowerCase().replace(/\\s+/g, '');
+  
+  let bookName = match[1].trim().toLowerCase().replace(/\s+/g, '');
+  
+  // Map common book name variations to the API format
+  const bookNameMappings: Record<string, string> = {
+    'psalm': 'psalms',
+    'proverb': 'proverbs',
+    'ecclesiastes': 'ecclesiastes',
+    'songofsolomon': 'songofsolomon',
+    'songs': 'songofsolomon', // Alternative name
+    'song': 'songofsolomon',  // Alternative name
+    // Add more mappings as needed
+  };
+  
+  if (bookNameMappings[bookName]) {
+    bookName = bookNameMappings[bookName];
+  }
+  
   const chapter = match[2];
   const startVerse = match[3];
   const endVerse = match[4];
