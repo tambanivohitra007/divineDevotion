@@ -444,13 +444,9 @@ const formattedContentForDisplay = computed(() => { // Renamed from formattedDev
   if (!currentContent.value.text) return currentContent.value;
   
   let text = currentContent.value.text;
-  // Bold title only for devotions, or make it conditional if titles apply to faithIntegration too
-  if (currentContent.value.type === 'devotion') {
-    text = text.replace(/^(?:\*\*([^*]+)\*\*|([^:]+?))(:|—|--)(\s|$)/, (_match, p1, p2, p3, p4) => {
-      const titleContent = p1 || p2;
-      return `<strong class="devotion-title-intro">${titleContent.trim()}${p3}</strong>${p4}`;
-    });
-  }
+  
+  // Enhanced text formatting for better readability
+  text = formatContentText(text, currentContent.value.type);
 
   return {
     ...currentContent.value,
@@ -458,6 +454,85 @@ const formattedContentForDisplay = computed(() => { // Renamed from formattedDev
     verses: currentContent.value.verses || [], // Ensure verses is an array
   };
 });
+
+// Enhanced text formatting function
+const formatContentText = (text: string, contentType: 'devotion' | 'faithIntegration') => {
+  if (!text) return '';
+  
+  // Escape any existing HTML to prevent conflicts
+  let formattedText = text;
+  
+  // Step 1: Split into paragraphs first (double line breaks)
+  const paragraphs = formattedText.split(/\n\s*\n/).filter(p => p.trim());
+  
+  const processedParagraphs = paragraphs.map((paragraph, index) => {
+    let processed = paragraph.trim();
+    
+    // Step 2: Handle title formatting for devotions (first paragraph only)
+    if (index === 0 && contentType === 'devotion') {
+      const titleMatch = processed.match(/^(?:\*\*([^*]+)\*\*|([^:]+?))\s*(:|—|--)\s*/);
+      if (titleMatch) {
+        const titleContent = titleMatch[1] || titleMatch[2];
+        const separator = titleMatch[3];
+        processed = processed.replace(titleMatch[0], '');
+        return `<h4 class="devotion-title-intro mb-3">${titleContent.trim()}${separator}</h4><p class="devotion-paragraph">${processed}</p>`;
+      }
+    }
+    
+    // Step 3: Check if this is a special section (prayer, reflection, etc.)
+    const specialSectionMatch = processed.match(/^(Prayer:|Let us pray:|Reflection:|Application:|Consider:|Today's Challenge:)\s*([\s\S]*)/i);
+    if (specialSectionMatch) {
+      const label = specialSectionMatch[1];
+      const content = specialSectionMatch[2];
+      return `<div class="devotion-prayer-section"><strong class="prayer-label">${label}</strong> ${content}</div>`;
+    }
+    
+    // Step 4: Handle markdown-style formatting
+    processed = processed.replace(/\*\*(.*?)\*\*/g, '<strong class="text-emphasis">$1</strong>');
+    processed = processed.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em class="text-accent">$1</em>');
+    
+    // Step 5: Handle quoted text
+    processed = processed.replace(/"([^"]{1,79})"/g, '<span class="devotion-quote-inline">"$1"</span>');
+    processed = processed.replace(/"([^"]{80,})"/g, '<blockquote class="devotion-quote">$1</blockquote>');
+    
+    // Step 6: Handle lists
+    const lines = processed.split('\n');    const processedLines = lines.map(line => {
+      line = line.trim();
+      // Numbered lists
+      if (/^\d+\.\s+/.test(line)) {
+        const match = line.match(/^(\d+\.\s+)(.*)$/);
+        if (match) {
+          return `<div class="devotion-list-item"><span class="list-number">${match[1]}</span>${match[2]}</div>`;
+        }
+      }
+      // Bullet points
+      if (/^[-•]\s+/.test(line)) {
+        const content = line.replace(/^[-•]\s+/, '');
+        return `<div class="devotion-list-item"><span class="list-bullet">•</span> ${content}</div>`;
+      }
+      return line;
+    });
+    
+    processed = processedLines.join('<br>');
+    
+    // Step 7: Check if this paragraph contains list items
+    if (processed.includes('<div class="devotion-list-item">')) {
+      return processed; // Don't wrap list items in paragraphs
+    }
+    
+    // Step 8: Wrap in paragraph if not already wrapped
+    return `<p class="devotion-paragraph">${processed}</p>`;
+  });
+  
+  // Join all paragraphs
+  let result = processedParagraphs.join('');
+  
+  // Step 9: Clean up any issues
+  result = result.replace(/<p class="devotion-paragraph">\s*<\/p>/g, '');
+  result = result.replace(/(<br>\s*){3,}/g, '<br><br>');
+  
+  return result;
+};
 
 const truncateText = (text: string, length: number) => {
   if (text.length <= length) {
@@ -1011,6 +1086,229 @@ onUnmounted(() => {
 .current-devotion-card {
   max-width: 100%;
   margin-bottom: 2rem;
+}
+
+/* Enhanced Devotion Text Formatting */
+.main-devotion-text {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+}
+
+.devotion-title-intro {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--divine-primary);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--glass-border);
+  background: var(--gradient-divine);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.devotion-paragraph {
+  margin-bottom: 1.25rem;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.text-emphasis {
+  font-weight: 600;
+  color: var(--divine-primary);
+  text-shadow: 0 1px 2px rgba(99, 102, 241, 0.1);
+}
+
+.text-accent {
+  font-style: italic;
+  color: var(--divine-secondary);
+  font-weight: 500;
+}
+
+.devotion-quote {
+  background: var(--glass-bg);
+  border-left: 4px solid var(--divine-accent);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 0 12px 12px 0;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-card);
+  position: relative;
+}
+
+.devotion-quote::before {
+  content: '"';
+  position: absolute;
+  top: -10px;
+  left: 15px;
+  font-size: 3rem;
+  color: var(--divine-accent);
+  opacity: 0.5;
+  font-family: serif;
+}
+
+.devotion-list-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+  border-left: 2px solid transparent;
+  transition: var(--transition-smooth);
+}
+
+.devotion-list-item:hover {
+  border-left-color: var(--divine-accent);
+  padding-left: 0.75rem;
+  background: var(--gradient-glow);
+  border-radius: 0 8px 8px 0;
+}
+
+.list-number {
+  font-weight: 600;
+  color: var(--divine-primary);
+  margin-right: 0.75rem;
+  min-width: 2rem;
+  display: inline-block;
+}
+
+.list-bullet {
+  color: var(--divine-accent);
+  font-weight: 600;
+  margin-right: 0.75rem;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+/* Additional formatting styles for enhanced text display */
+.devotion-prayer-section {
+  background: var(--gradient-glow);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-card);
+}
+
+.prayer-label {
+  color: var(--divine-primary);
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.devotion-quote-inline {
+  font-style: italic;
+  color: var(--divine-secondary);
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  background: var(--gradient-glow);
+  border-radius: 6px;
+  margin: 0 0.25rem;
+}
+
+/* Enhanced paragraph spacing and typography */
+.devotion-paragraph:first-child {
+  margin-top: 0;
+}
+
+.devotion-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+/* Better handling of nested elements */
+.devotion-paragraph .text-emphasis,
+.devotion-paragraph .text-accent {
+  transition: var(--transition-smooth);
+}
+
+.devotion-paragraph .text-emphasis:hover {
+  color: var(--divine-secondary);
+}
+
+/* Responsive typography */
+@media (max-width: 768px) {
+  .main-devotion-text {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  .devotion-title-intro {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .devotion-paragraph {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    text-align: left;
+  }
+  
+  .devotion-quote {
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+    font-size: 1rem;
+  }
+}
+
+/* Additional formatting styles for enhanced text display */
+.devotion-prayer-section {
+  background: var(--gradient-glow);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-card);
+}
+
+.prayer-label {
+  color: var(--divine-primary);
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.devotion-quote-inline {
+  font-style: italic;
+  color: var(--divine-secondary);
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  background: var(--gradient-glow);
+  border-radius: 6px;
+  margin: 0 0.25rem;
+}
+
+/* Enhanced paragraph spacing and typography */
+.devotion-paragraph:first-child {
+  margin-top: 0;
+}
+
+.devotion-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+/* Better handling of nested elements */
+.devotion-paragraph .text-emphasis,
+.devotion-paragraph .text-accent {
+  transition: var(--transition-smooth);
+}
+
+.devotion-paragraph .text-emphasis:hover {
+  color: var(--divine-secondary);
 }
 
 /* Enhanced Animations */

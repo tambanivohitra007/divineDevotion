@@ -231,8 +231,9 @@ watch(() => props.devotion, async () => {
   border: none; 
 }
 .main-devotion-text { /* Was .card-text */
-  white-space: pre-wrap;
+  /* Removed white-space: pre-wrap since we're now handling formatting with HTML */
   font-size: 1.1rem;
+  line-height: 1.7;
 }
 .list-group-item {
   background-color: transparent;
