@@ -561,6 +561,11 @@ onUnmounted(() => {
   --border-color: rgba(255, 255, 255, 0.15);
 }
 
+#topicInput {
+  font-size: 14px;
+  font-style: italic;
+}
+
 /* Modern Sidebar Design */
 .sidebar {
   width: 350px;
@@ -1345,7 +1350,7 @@ a:focus-visible {
 
   .send-btn {
     width: 44px;
-    height: 44px;
+    height: 85px;
     border-radius: 12px;
     margin-left: 0.375rem;
   }
