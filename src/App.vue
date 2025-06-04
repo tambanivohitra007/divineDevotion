@@ -607,11 +607,6 @@ onUnmounted(() => {
   display: none;
 }
 
-/* Adjust main content margin when sidebar is collapsed */
-#app.sidebar-collapsed .main-content {
-  margin-left: 80px;
-}
-
 .sidebar-toggle-btn {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
@@ -817,8 +812,8 @@ onUnmounted(() => {
 
 /* Main Content Area */
 .main-content {
-  margin-left: 350px;
-  padding: 2rem 3rem 10rem;
+
+  /* padding: 2rem 3rem 10rem; */
   flex-grow: 1;
   height: 100vh;
   transition: var(--transition-smooth);
@@ -838,32 +833,12 @@ onUnmounted(() => {
   padding-bottom: 10rem;
 }
 
-/* Bottom Input Area (Gemini-like) */
-.bottom-input-area {
-  position: fixed;
-  bottom: 0;
-  left: 350px;
-  right: 0;
-  width: auto;
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--glass-border);
-  padding: 1.5rem 0;
-  z-index: 100;
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
-  transition: var(--transition-smooth);
-}
-
-/* Adjust bottom input area when sidebar is collapsed */
-#app.sidebar-collapsed .bottom-input-area {
-  left: 30px;
-}
 
 .input-container {
   max-width: 60rem;
   margin: 0 auto;
   padding: 0 2rem;
+  margin-bottom: 25px;
 }
 
 .content-type-selector .btn-group {
@@ -937,8 +912,9 @@ onUnmounted(() => {
 .send-btn {
   background: var(--gradient-divine);
   border: none;
-  color: white;
-  width: 48px;
+   width: 60px;
+  /* color: white;
+ 
   height: 48px;
   border-radius: 16px;
   display: flex;
@@ -946,7 +922,7 @@ onUnmounted(() => {
   justify-content: center;
   transition: var(--transition-bounce);
   box-shadow: var(--shadow-card);
-  margin-left: 0.5rem;
+  margin-left: 0.5rem; */
 }
 
 .send-btn:hover:not(:disabled) {
@@ -961,14 +937,14 @@ onUnmounted(() => {
 }
 
 /* Welcome Area Styling */
-.welcome-area {
+/* .welcome-area {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: calc(100vh - 300px);
   height: 100%;
-}
+} */
 
 .welcome-content {
   text-align: center;
@@ -1190,15 +1166,6 @@ a:focus-visible {
     display: block;
   }
 
-  .main-content {
-    margin-left: 0;
-    padding: 1rem;
-  }
-
-  /* Ensure main content stays at margin-left 0 on mobile regardless of sidebar state */
-  #app.mobile-view .main-content {
-    margin-left: 0 !important;
-  }
 
   .sidebar-toggle-btn-main {
     top: 1rem;
@@ -1370,11 +1337,6 @@ a:focus-visible {
 
   .current-devotion-card {
     margin-bottom: 1rem;
-  }
-
-  /* Ensure proper spacing from bottom input */
-  .main-content {
-    padding-bottom: 180px; /* Account for bottom input height */
   }
 }
 </style>
