@@ -956,7 +956,12 @@ onUnmounted(() => {
   margin: 0 auto;
   width: 100%;
   overflow-y: auto;
-  padding-bottom: 10rem;
+  padding-bottom: 15rem; /* Increased from 10rem to prevent overlay issues */
+}
+
+/* Additional bottom spacing for Bible Card Generator to ensure share buttons are visible */
+.bible-card-section {
+  margin-bottom: 2rem;
 }
 
 
@@ -1676,7 +1681,6 @@ a:focus-visible {
   .send-btn i {
     font-size: 1.1rem;
   }
-
   /* Content area adjustments for mobile */
   .content-area {
     /* Center content vertically and horizontally */
@@ -1684,7 +1688,7 @@ a:focus-visible {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-bottom: 1rem;
+    padding-bottom: 12rem; /* Increased from 1rem to prevent overlap with fixed bottom input */
     min-height: calc(100vh - 200px);
     width: 100%;
     /* Allow scrolling for generated text */

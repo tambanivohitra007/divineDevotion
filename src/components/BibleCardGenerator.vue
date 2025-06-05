@@ -181,21 +181,40 @@
                 </button>
               </div>
             </div>
-            <div class="card-body">
-              <!-- Loading State -->
+            <div class="card-body">              <!-- Loading State -->
               <div v-if="isGenerating" class="text-center py-5">
                 <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
                   <span class="visually-hidden">Generating...</span>
                 </div>
-                <h6>Creating Your Bible Card</h6>
-                <p class="text-muted">This may take a few moments...</p>
+                <h6>Creating Your Bible Card with AI</h6>
+                <div class="generation-status mb-3">
+                  <div v-if="generationProgress <= 20" class="text-muted">
+                    <i class="bi bi-search me-1"></i>Validating verse reference...
+                  </div>
+                  <div v-else-if="generationProgress <= 40" class="text-muted">
+                    <i class="bi bi-book me-1"></i>Fetching verse text...
+                  </div>
+                  <div v-else-if="generationProgress <= 60" class="text-muted">
+                    <i class="bi bi-magic me-1"></i>Generating AI image prompt...
+                  </div>
+                  <div v-else-if="generationProgress <= 70" class="text-muted">
+                    <i class="bi bi-palette me-1"></i>Creating beautiful background...
+                  </div>
+                  <div v-else-if="generationProgress <= 90" class="text-muted">
+                    <i class="bi bi-image me-1"></i>Finalizing card design...
+                  </div>
+                  <div v-else class="text-success">
+                    <i class="bi bi-check-circle me-1"></i>Card ready!
+                  </div>
+                </div>
                 <div class="progress">
                   <div class="progress-bar progress-bar-striped progress-bar-animated" 
                        :style="{ width: generationProgress + '%' }"></div>
                 </div>
-              </div>
-
-              <!-- Generated Card Display -->
+                <small class="text-muted mt-2 d-block">
+                  Using Gemini AI to create personalized spiritual imagery
+                </small>
+              </div>              <!-- Generated Card Display -->
               <div v-else-if="generatedCard" class="generated-card-container">
                 <div 
                   class="bible-card-preview" 
@@ -214,6 +233,32 @@
                       <cite class="verse-reference">
                         {{ generatedCard.verseReference }}
                       </cite>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- AI Generation Info -->
+                <div v-if="!customBackground && lastGeneratedImagePrompt" class="mt-3">
+                  <div class="ai-prompt-info">
+                    <button 
+                      class="btn btn-link btn-sm p-0 text-muted"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#aiPromptCollapse"
+                      aria-expanded="false"
+                      aria-controls="aiPromptCollapse"
+                    >
+                      <i class="bi bi-robot me-1"></i>
+                      View AI-Generated Image Description
+                      <i class="bi bi-chevron-down ms-1"></i>
+                    </button>
+                    <div class="collapse mt-2" id="aiPromptCollapse">
+                      <div class="card card-body bg-light">
+                        <small class="text-muted mb-1">
+                          <i class="bi bi-magic me-1"></i>Gemini AI created this image description:
+                        </small>
+                        <p class="mb-0 small fst-italic">{{ lastGeneratedImagePrompt }}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -272,6 +317,7 @@ const verseSuggestions = ref<VerseSuggestion[]>([]);
 const verseValidationMessage = ref('');
 const generationProgress = ref(0);
 const fileInput = ref<HTMLInputElement | null>(null);
+const lastGeneratedImagePrompt = ref<string | null>(null);
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
@@ -434,7 +480,7 @@ const refineStyle = async () => {
 
   isRefiningStyle.value = true;
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -485,28 +531,120 @@ const removeCustomBackground = () => {
   }
 };
 
-// Create gradient background based on style description
+// Generate detailed image prompt using Gemini AI
+const generateImagePrompt = async (verseText: string, verseRef: string, styleDescription: string): Promise<string> => {
+  try {
+    const prompt = `Based on this Bible verse: "${verseText}" (${verseRef}) and style description: "${styleDescription}", create a detailed, beautiful image description that would be perfect for a spiritual Bible verse card background. The image should be photorealistic, peaceful, and spiritually inspiring. Include specific details about lighting, colors, composition, and mood. Focus on natural scenes that reflect the verse's meaning and create a serene atmosphere suitable for prayer and reflection.`;
+
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.8,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 500,
+        }
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const imagePrompt = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (imagePrompt) {
+        return imagePrompt.trim();
+      }
+    }
+    
+    // Fallback to default prompt if API fails
+    return `Beautiful ${styleDescription} scene with peaceful lighting, spiritual atmosphere, perfect for Bible verse card background`;
+  } catch (err) {
+    console.error('Error generating image prompt:', err);
+    return `Beautiful ${styleDescription} scene with peaceful lighting, spiritual atmosphere, perfect for Bible verse card background`;
+  }
+};
+
+// Generate background image using AI (placeholder for real image generation)
+const generateBackgroundImage = async (prompt: string): Promise<string> => {
+  try {
+    // NOTE: This is a placeholder implementation since Gemini doesn't generate images directly.
+    // In a production environment, you would replace this with a call to an actual image generation service like:
+    // - OpenAI DALL-E API
+    // - Stability AI 
+    // - Google's Imagen API (when available)
+    // - Midjourney API
+    
+    console.log('Generated image prompt:', prompt);
+    
+    // For now, we'll create a sophisticated gradient based on the AI-generated prompt
+    return createStyledBackground(prompt);
+    
+    /* 
+    // Example implementation for a real image generation service:
+    const response = await fetch('https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${STABILITY_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text_prompts: [{ text: prompt }],
+        cfg_scale: 7,
+        height: 1024,
+        width: 1024,
+        steps: 20,
+        samples: 1,
+      }),
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      return `data:image/png;base64,${data.artifacts[0].base64}`;
+    }
+    */
+    
+  } catch (err) {
+    console.error('Error generating background image:', err);
+    return createStyledBackground(prompt);
+  }
+};
+
+// Create sophisticated gradient background based on AI prompt analysis
 const createStyledBackground = (description: string): string => {
   const desc = description.toLowerCase();
   
-  if (desc.includes('sunrise') || desc.includes('dawn') || desc.includes('golden')) {
-    return 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fad0c4 100%)';
-  } else if (desc.includes('mountain') || desc.includes('peaks') || desc.includes('majestic')) {
-    return 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #a8edea 100%)';
-  } else if (desc.includes('ocean') || desc.includes('water') || desc.includes('blue') || desc.includes('tranquil')) {
-    return 'linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #00cec9 100%)';
-  } else if (desc.includes('garden') || desc.includes('flower') || desc.includes('green') || desc.includes('paradise')) {
-    return 'linear-gradient(135deg, #56ab2f 0%, #a8e6cf 50%, #ffd3a5 100%)';
-  } else if (desc.includes('heavenly') || desc.includes('divine') || desc.includes('light') || desc.includes('ethereal')) {
-    return 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%)';
-  } else if (desc.includes('forest') || desc.includes('sanctuary') || desc.includes('peaceful')) {
-    return 'linear-gradient(135deg, #134e5e 0%, #71b280 50%, #a8e6cf 100%)';
-  } else if (desc.includes('desert') || desc.includes('oasis') || desc.includes('warm')) {
-    return 'linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #ffd89b 100%)';
-  } else if (desc.includes('night') || desc.includes('star') || desc.includes('moon')) {
-    return 'linear-gradient(135deg, #2c3e50 0%, #3498db 50%, #9b59b6 100%)';
+  // Enhanced gradient selection based on AI-generated descriptions
+  if (desc.includes('sunrise') || desc.includes('dawn') || desc.includes('golden') || desc.includes('warm light')) {
+    return 'linear-gradient(135deg, #ff9a9e 0%, #fad0c4 30%, #ffd89b 60%, #f093fb 100%)';
+  } else if (desc.includes('mountain') || desc.includes('peaks') || desc.includes('majestic') || desc.includes('rocky')) {
+    return 'linear-gradient(135deg, #667eea 0%, #764ba2 40%, #a8edea 70%, #d3cce3 100%)';
+  } else if (desc.includes('ocean') || desc.includes('water') || desc.includes('sea') || desc.includes('blue') || desc.includes('tranquil')) {
+    return 'linear-gradient(135deg, #74b9ff 0%, #0984e3 30%, #00cec9 60%, #55a3ff 100%)';
+  } else if (desc.includes('garden') || desc.includes('flower') || desc.includes('green') || desc.includes('paradise') || desc.includes('meadow')) {
+    return 'linear-gradient(135deg, #56ab2f 0%, #a8e6cf 40%, #c3f0ca 60%, #ffd3a5 100%)';
+  } else if (desc.includes('heavenly') || desc.includes('divine') || desc.includes('light') || desc.includes('ethereal') || desc.includes('spiritual')) {
+    return 'linear-gradient(135deg, #667eea 0%, #764ba2 20%, #f093fb 40%, #f5576c 60%, #4facfe 80%, #00f2fe 100%)';
+  } else if (desc.includes('forest') || desc.includes('sanctuary') || desc.includes('peaceful') || desc.includes('trees')) {
+    return 'linear-gradient(135deg, #134e5e 0%, #71b280 40%, #a8e6cf 70%, #c3f0ca 100%)';
+  } else if (desc.includes('desert') || desc.includes('oasis') || desc.includes('warm') || desc.includes('sand')) {
+    return 'linear-gradient(135deg, #f093fb 0%, #f5576c 30%, #ffd89b 60%, #ff8a80 100%)';
+  } else if (desc.includes('night') || desc.includes('star') || desc.includes('moon') || desc.includes('dark')) {
+    return 'linear-gradient(135deg, #2c3e50 0%, #3498db 30%, #9b59b6 60%, #667eea 100%)';
+  } else if (desc.includes('cloud') || desc.includes('sky') || desc.includes('heavens')) {
+    return 'linear-gradient(135deg, #74b9ff 0%, #667eea 40%, #764ba2 70%, #f093fb 100%)';
+  } else if (desc.includes('fire') || desc.includes('flame') || desc.includes('burning')) {
+    return 'linear-gradient(135deg, #ff6b6b 0%, #ffa726 30%, #ffcc02 60%, #ff8a65 100%)';
   } else {
-    return 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)';
+    // Default divine gradient with more colors
+    return 'linear-gradient(135deg, #667eea 0%, #764ba2 30%, #f093fb 60%, #4facfe 100%)';
   }
 };
 
@@ -528,17 +666,22 @@ const generateCard = async () => {
       throw new Error('Unable to fetch verse text. Please check the verse reference.');
     }
     
-    generationProgress.value = 50;
-    
-    // Generate or use background
+    generationProgress.value = 40;
+      // Generate or use background
     let backgroundImage: string;
     if (customBackground.value) {
       backgroundImage = `url(${customBackground.value})`;
+      lastGeneratedImagePrompt.value = null; // Clear prompt for custom backgrounds
     } else {
-      backgroundImage = createStyledBackground(styleDescription.value);
+      // Generate AI-powered image prompt and background
+      generationProgress.value = 60;
+      const imagePrompt = await generateImagePrompt(verseText, verseReference.value, styleDescription.value);
+      lastGeneratedImagePrompt.value = imagePrompt; // Store the generated prompt
+      generationProgress.value = 70;
+      backgroundImage = await generateBackgroundImage(imagePrompt);
     }
     
-    generationProgress.value = 80;
+    generationProgress.value = 90;
     
     // Create card data
     const cardData: BibleCardData = {
@@ -853,6 +996,58 @@ watch(verseReference, validateVerse);
 .progress {
   height: 8px;
   border-radius: 4px;
+}
+
+.generation-status {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.generation-status i {
+  width: 16px;
+  text-align: center;
+}
+
+.ai-prompt-info {
+  border-top: 1px solid var(--bs-border-color);
+  padding-top: 1rem;
+}
+
+.ai-prompt-info .btn-link {
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.ai-prompt-info .btn-link:hover {
+  text-decoration: underline;
+}
+
+.ai-prompt-info .card {
+  border: 1px solid var(--bs-border-color);
+  border-radius: 8px;
+  background: rgba(248, 249, 250, 0.8);
+}
+
+.ai-prompt-info .card-body {
+  padding: 1rem;
+}
+
+@media (max-width: 768px) {
+  .verse-text {
+    font-size: 1.2rem;
+  }
+  
+  .verse-reference {
+    font-size: 1rem;
+  }
+  
+  .bible-card-preview {
+    min-height: 250px;
+  }
+  
+  .card-overlay {
+    padding: 1.5rem;
+  }
 }
 
 .spinner {
