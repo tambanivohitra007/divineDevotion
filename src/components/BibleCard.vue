@@ -160,40 +160,37 @@ const fetchVerseText = async (verseRef: string): Promise<string> => {
   }
 };
 
-const generateBackgroundImage = async (prompt: string): Promise<string> => {
+const generateBackgroundImage = async (prompt: string): Promise<string[]> => {
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${GEMINI_API_KEY}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:generateImage?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: `Generate an image with this description: ${prompt}`
-          }]
-        }],
+        prompt: prompt, // Image description
         generationConfig: {
-          temperature: 0.8,
-          topK: 40,
-          topP: 0.95,
+          numberOfImages: 1, // Generate a single background image
+          aspectRatio: "16:9", // Adjust the background dimensions
+          safetyFilterLevel: "medium", // Apply safety filtering
+          personGeneration: "allow" // Enable realistic human rendering if needed
         }
       }),
-    });    if (!response.ok) {
+    });
+
+    if (!response.ok) {
       throw new Error('Failed to generate background image');
     }
 
-    // Note: Gemini's text-based API doesn't actually generate images
-    // For a real implementation, you'd need to use Google's Imagen API or similar
-    // For now, we'll create a beautiful gradient background based on the prompt
-    return createGradientBackground(prompt);
-    
+    const data = await response.json();
+    return data.generatedImages.map((image: any) => image.imageUrl);
+
   } catch (err) {
     console.error('Error generating background:', err);
-    // Fallback to gradient
-    return createGradientBackground(prompt);
+    return []; // Return an empty array in case of failure
   }
 };
+
 
 const createGradientBackground = (prompt: string): string => {
   // Create beautiful gradients based on prompt content

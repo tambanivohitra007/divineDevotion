@@ -12,7 +12,7 @@ export default function useGemini() {
   const error = ref<string | null>(null);
 
   const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-  const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
+  const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
   const generateGeminiContent = async (topic: string, contentType: 'devotion' | 'faithIntegration'): Promise<GeminiContentResponse> => {
     isLoading.value = true;

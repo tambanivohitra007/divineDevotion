@@ -536,22 +536,18 @@ const generateImagePrompt = async (verseText: string, verseRef: string, styleDes
   try {
     const prompt = `Based on this Bible verse: "${verseText}" (${verseRef}) and style description: "${styleDescription}", create a detailed, beautiful image description that would be perfect for a spiritual Bible verse card background. The image should be photorealistic, peaceful, and spiritually inspiring. Include specific details about lighting, colors, composition, and mood. Focus on natural scenes that reflect the verse's meaning and create a serene atmosphere suitable for prayer and reflection.`;
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:generateImage?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: prompt
-          }]
-        }],
+        prompt: prompt, // Text description for the image
         generationConfig: {
-          temperature: 0.8,
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 500,
+          numberOfImages: 4, // Generate up to 4 images
+          aspectRatio: "16:9", // Adjust the image ratio
+          safetyFilterLevel: "medium", // Content filtering level
+          personGeneration: "allow" // Enable realistic human generation
         }
       }),
     });
