@@ -68,13 +68,14 @@
       <header class="text-center mb-4">
         <h1 class="display-4 app-title">DivineDevotion</h1>
         <p class="lead">Your AI-powered spiritual companion</p>
-      </header>
+      </header>      <!-- Main Content Area -->
+      <div class="content-area">      <!-- Bible Card Generator Section -->
+      <div v-if="showBibleCardGenerator" class="bible-card-section">
+        <BibleCardGenerator />
+      </div>
 
-      <!-- Main Content Area -->
-      <div class="content-area">
-
-      <!-- Content Display Section -->
-      <div v-if="isLoading || (currentContent.text && !generationError)" class="card shadow-lg mx-auto current-devotion-card">
+      <!-- Content Display Section (for devotions and faith integration) -->
+      <div v-else-if="isLoading || (currentContent.text && !generationError)" class="card shadow-lg mx-auto current-devotion-card">
         <div class="card-header bg-transparent py-3">
           <h3 class="card-title h4 d-flex align-items-center gap-2 mb-0">
              <i :class="currentContent.type === 'devotion' ? 'bi bi-journal-text me-2' : 'bi bi-lightbulb me-2'" style="font-size: 1.5rem;"></i>Your {{ currentContent.type === 'devotion' ? 'Devotion' : 'Faith & Learning Idea' }}
@@ -110,10 +111,8 @@
               </button>
             </div>
           </div>
-        </div>      </div>
-      
-      <!-- Placeholder for when nothing is generated and not loading, and no error -->
-      <section v-else-if="!isLoading && !currentContent.text && !generationError" class="text-center placeholder-section mx-auto p-5 rounded welcome-area">
+        </div>      </div>      <!-- Placeholder for when nothing is generated and not loading, and no error (not shown for Bible Card Generator) -->
+      <section v-else-if="!isLoading && !currentContent.text && !generationError && !showBibleCardGenerator" class="text-center placeholder-section mx-auto p-5 rounded welcome-area">
         <div class="welcome-content">
           <i class="bi bi-lightbulb-fill welcome-icon"></i>
           <h2 class="welcome-title">Welcome to DivineDevotion</h2>
@@ -136,24 +135,23 @@
 
     <!-- Bottom Input Area (Gemini-like) -->
     <div class="bottom-input-area">
-      <div class="input-container">
-        <!-- Content Type Selector -->
+      <div class="input-container">        <!-- Content Type Selector -->
         <div class="content-type-selector mb-3">
-          <div class="btn-group w-100" role="group" aria-label="Content type selection">
-            <input type="radio" class="btn-check" name="contentType" id="devotion-radio" autocomplete="off" :checked="selectedContentType === 'devotion'" @change="selectedContentType = 'devotion'">
+          <div class="btn-group w-100" role="group" aria-label="Content type selection">            <input type="radio" class="btn-check" name="contentType" id="devotion-radio" autocomplete="off" :checked="selectedContentType === 'devotion' && !showBibleCardGenerator" @change="selectedContentType = 'devotion'; showBibleCardGenerator = false">
             <label class="btn btn-outline-primary" for="devotion-radio">
               <i class="bi bi-stars me-2"></i>Devotion
             </label>
 
-            <input type="radio" class="btn-check" name="contentType" id="faithIntegration-radio" autocomplete="off" :checked="selectedContentType === 'faithIntegration'" @change="selectedContentType = 'faithIntegration'">
+            <input type="radio" class="btn-check" name="contentType" id="faithIntegration-radio" autocomplete="off" :checked="selectedContentType === 'faithIntegration' && !showBibleCardGenerator" @change="selectedContentType = 'faithIntegration'; showBibleCardGenerator = false">
             <label class="btn btn-outline-primary" for="faithIntegration-radio">
               <i class="bi bi-lightbulb-fill me-2"></i>Faith & Learning
+            </label><input type="radio" class="btn-check" name="contentType" id="bibleCard-radio" autocomplete="off" :checked="showBibleCardGenerator" @change="showBibleCardGenerator = true; selectedContentType = 'devotion'">
+            <label class="btn btn-outline-primary" for="bibleCard-radio">
+              <i class="bi bi-card-image me-2"></i>Bible Cards
             </label>
           </div>
-        </div>
-
-        <!-- Input Form -->
-        <form @submit.prevent="handleGenerateContent" class="input-form">
+        </div>        <!-- Input Form (hidden when Bible Card Generator is selected) -->
+        <form v-if="!showBibleCardGenerator" @submit.prevent="handleGenerateContent" class="input-form">
           <div class="input-group">
             <textarea
               id="topicInput"
@@ -191,11 +189,13 @@
 <script setup lang="ts">
 import { ref, computed, watch, watchEffect, onMounted, onUnmounted } from 'vue';
 import DevotionDisplay from './components/DevotionDisplay.vue';
+import BibleCardGenerator from './components/BibleCardGenerator.vue';
 import useGemini from './composables/useGemini';
 // Correctly import useContentStorage and StoredContent type
 import useContentStorage, { type StoredContent } from './composables/useDevotions';
 
 const selectedContentType = ref<'devotion' | 'faithIntegration'>('devotion');
+const showBibleCardGenerator = ref(false);
 const topicInput = ref(''); // Renamed from devotionTopic
 
 const currentContent = ref<StoredContent>({
@@ -272,6 +272,9 @@ onUnmounted(() => {
 
 // Computed properties for dynamic UI text
 const topicInputPlaceholder = computed(() => {
+  if (showBibleCardGenerator.value) {
+    return "Bible card generation uses its own interface";
+  }
   return selectedContentType.value === 'devotion' 
     ? "E.g., 'finding peace in hardship', 'gratitude', or 'guidance for a tough decision'"
     : "E.g., 'teaching biology through a faith lens', 'integrating ethics in computer science', or 'faith perspectives on history'";
@@ -336,6 +339,12 @@ const filteredContent = computed(() => { // Renamed from filteredDevotions
 
 const handleGenerateContent = async () => {
   if (!topicInput.value.trim()) return;
+  
+  // Bible Card Generator doesn't use the same content generation flow
+  if (showBibleCardGenerator.value) {
+    return;
+  }
+  
   const newId = `content-${Date.now()}`; // Generate ID here
   currentContent.value = { id: newId, text: '', verses: [], topic: '', type: selectedContentType.value }; // Initialize with selected type and ID
   try {
@@ -383,7 +392,8 @@ const handleDeleteContent = (id?: string) => {
   const itemToDelete = savedContent.value.find(item => item.id === id);
 
   if (itemToDelete && currentContent.value.id === itemToDelete.id) {
-      currentContent.value = { id: `content-${Date.now()}`, text: '', verses: [], topic: '', type: selectedContentType.value };
+      const defaultType = selectedContentType.value;
+      currentContent.value = { id: `content-${Date.now()}`, text: '', verses: [], topic: '', type: defaultType };
   }
   deleteContent(id); 
 };
@@ -391,7 +401,12 @@ const handleDeleteContent = (id?: string) => {
 
 const viewSavedContent = (content: StoredContent) => { // Renamed from viewSavedDevotion, updated type
   currentContent.value = { ...content };
-  selectedContentType.value = content.type || 'devotion'; // Update tab selection
+  // Only allow valid content types for selectedContentType
+  if (content.type === 'devotion' || content.type === 'faithIntegration') {
+    selectedContentType.value = content.type;
+  } else {
+    selectedContentType.value = 'devotion'; // Default fallback
+  }
   if (isMobile.value && !isSidebarCollapsed.value) {
     isSidebarCollapsed.value = true;
   }
