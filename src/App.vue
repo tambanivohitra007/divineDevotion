@@ -1453,14 +1453,9 @@ a:focus-visible {
   bottom: 0;
   left: 350px; /* Default position when sidebar is expanded */
   right: 0;
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+ 
   padding: 1.5rem 2rem;
-  border-top: 1px solid var(--glass-border);
-  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
-  z-index: 100;
-  transition: var(--transition-smooth);
+ 
 }
 
 /* Adjust bottom input area when sidebar is collapsed on desktop */
@@ -1618,12 +1613,9 @@ a:focus-visible {
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    
     padding: 1rem 0 !important;
-    border-top: 1px solid var(--glass-border);
-    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
+   
     z-index: 100;
   }
 
@@ -1687,8 +1679,17 @@ a:focus-visible {
 
   /* Content area adjustments for mobile */
   .content-area {
+    /* Center content vertically and horizontally */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     padding-bottom: 1rem;
     min-height: calc(100vh - 200px);
+    width: 100%;
+    /* Allow scrolling for generated text */
+    overflow-y: auto;
+    max-height: calc(100vh - 220px);
   }
 
   .welcome-area {
