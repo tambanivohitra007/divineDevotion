@@ -956,7 +956,42 @@ onUnmounted(() => {
   margin: 0 auto;
   width: 100%;
   overflow-y: auto;
-  padding-bottom: 6rem; /* Reduced from 15rem to decrease height */
+  padding-bottom: 15rem; /* Increased to prevent overlap with fixed bottom input area */
+  /* Hide scrollbar by default */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer and Edge */
+}
+
+/* Hide scrollbar for webkit browsers by default */
+.content-area::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+/* Show scrollbar on hover and focus */
+.content-area:hover {
+  scrollbar-width: thin; /* Firefox */
+}
+
+.content-area:hover::-webkit-scrollbar {
+  width: 8px;
+  background: var(--glass-bg);
+}
+
+.content-area:hover::-webkit-scrollbar-track {
+  background: var(--glass-bg);
+  border-radius: 10px;
+}
+
+.content-area:hover::-webkit-scrollbar-thumb {
+  background: var(--gradient-divine);
+  border-radius: 10px;
+  transition: var(--transition-smooth);
+}
+
+.content-area:hover::-webkit-scrollbar-thumb:hover {
+  background: var(--gradient-success);
+  box-shadow: var(--shadow-glow);
 }
 
 /* Additional bottom spacing for Bible Card Generator to ensure share buttons are visible */
@@ -969,7 +1004,7 @@ onUnmounted(() => {
   max-width: 60rem;
   margin: 0 auto;
   padding: 0 2rem;
-  margin-bottom: 25px;
+  /* margin-bottom: 25px; */
 }
 
 /* Ensure input-container centers when sidebar is collapsed */
@@ -1458,9 +1493,13 @@ a:focus-visible {
   bottom: 0;
   left: 350px; /* Default position when sidebar is expanded */
   right: 0;
- 
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--glass-border);
   padding: 1.5rem 2rem;
- 
+  z-index: 1000;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
 }
 
 /* Adjust bottom input area when sidebar is collapsed on desktop */
@@ -1610,18 +1649,20 @@ a:focus-visible {
 
   .actions-toolbar .btn {
     width: 100%;
-  }
-  /* Mobile Responsive Bottom Input Area */
+  }  /* Mobile Responsive Bottom Input Area */
   .bottom-input-area {
     position: fixed !important;
     bottom: 0 !important;
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
-    
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-top: 1px solid var(--glass-border) !important;
     padding: 1rem 0 !important;
-   
-    z-index: 100;
+    z-index: 1000 !important;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1) !important;
   }
 
   /* Override sidebar adjustments on mobile */
