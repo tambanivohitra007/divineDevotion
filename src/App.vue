@@ -69,10 +69,18 @@
         <h1 class="display-4 app-title">DivineDevotion</h1>
         <p class="lead">Your AI-powered spiritual companion</p>
       </header>      <!-- Main Content Area -->
-      <div class="content-area">      <!-- Bible Card Generator Section -->
-      <div v-if="showBibleCardGenerator" class="bible-card-section">
-        <BibleCardGenerator />
-      </div>
+      <div class="content-area-wrapper">
+        <!-- Top fade overlay -->
+        <div 
+          class="scroll-fade-overlay scroll-fade-top" 
+          :class="{ 'visible': showTopFade }"
+        ></div>
+        
+        <div class="content-area" ref="contentAreaRef" @scroll="handleContentScroll">
+          <!-- Bible Card Generator Section -->
+          <div v-if="showBibleCardGenerator" class="bible-card-section">
+            <BibleCardGenerator />
+          </div>
 
       <!-- Content Display Section (for devotions and faith integration) -->
       <div v-else-if="isLoading || (currentContent.text && !generationError)" class="card shadow-lg mx-auto current-devotion-card">
@@ -125,13 +133,18 @@
       <div v-if="showSaveConfirmation" class="alert alert-success-custom alert-dismissible fade show mt-3" role="alert">
         <i class="bi bi-check-circle-fill me-2"></i>Content saved successfully!
         <button type="button" class="btn-close btn-close-white" @click="showSaveConfirmation = false" aria-label="Close"></button>
-      </div>
-
-      <div v-if="showShareAlert" class="alert alert-info-custom alert-dismissible fade show mt-3" role="alert">
+      </div>      <div v-if="showShareAlert" class="alert alert-info-custom alert-dismissible fade show mt-3" role="alert">
         <i class="bi bi-info-circle-fill me-2"></i>{{ shareAlertMessage }}
         <button type="button" :class="isDarkMode ? 'btn-close btn-close-white' : 'btn-close'" @click="showShareAlert = false" aria-label="Close"></button>
       </div>
-    </div>
+        </div>
+        
+        <!-- Bottom fade overlay -->
+        <div 
+          class="scroll-fade-overlay scroll-fade-bottom" 
+          :class="{ 'visible': showBottomFade }"
+        ></div>
+      </div>
 
     <!-- Bottom Input Area (Gemini-like) -->
     <div class="bottom-input-area">
@@ -217,6 +230,13 @@ const shareAlertMessage = ref('');
 
 // Ref for the textarea
 const textareaRef = ref<HTMLTextAreaElement>();
+
+// Ref for the content area
+const contentAreaRef = ref<HTMLElement>();
+
+// Fade effects state
+const showTopFade = ref(false);
+const showBottomFade = ref(false);
 
 // Mobile responsiveness
 const isMobile = ref(false);
@@ -579,6 +599,23 @@ const autoResizeTextarea = () => {
     textareaRef.value.style.height = 'auto';
     textareaRef.value.style.height = `${Math.min(textareaRef.value.scrollHeight, 200)}px`;
   }
+};
+
+// Handle content area scroll for fade effects
+const handleContentScroll = () => {
+  if (!contentAreaRef.value) return;
+  
+  const element = contentAreaRef.value;
+  const scrollTop = element.scrollTop;
+  const scrollHeight = element.scrollHeight;
+  const clientHeight = element.clientHeight;
+  const scrollBottom = scrollHeight - scrollTop - clientHeight;
+  
+  // Show top fade when scrolled down more than 50px
+  showTopFade.value = scrollTop > 50;
+  
+  // Show bottom fade when there's more than 50px of content below
+  showBottomFade.value = scrollBottom > 50;
 };
 
 // Watch for changes in isDarkMode, update data-bs-theme attribute, and save to localStorage
@@ -1812,5 +1849,47 @@ a:focus-visible {
   border-radius: 12px;
   border: 1px solid var(--glass-border);
   backdrop-filter: blur(10px);
+}
+
+/* Scroll fade overlay effects */
+.content-area-wrapper {
+  position: relative;
+}
+
+.scroll-fade-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 60px;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.scroll-fade-overlay.visible {
+  opacity: 0.2;
+}
+
+.scroll-fade-top {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--bg-primary) 0%,
+    var(--bg-primary) 30%,
+    var(--surface-primary) 60%,
+    transparent 100%
+  );
+}
+
+.scroll-fade-bottom {
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    var(--bg-primary) 0%,
+    var(--bg-primary) 30%,
+    var(--surface-primary) 60%,
+    transparent 100%
+  );
 }
 </style>
