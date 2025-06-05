@@ -1,0 +1,211 @@
+/* Animations and Effects */
+
+/* Keyframe Animations */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Animation Classes */
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.slide-in-up {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.slide-in-right {
+  animation: slideInRight 0.4s ease-out;
+}
+
+.pulse-animation {
+  animation: pulse 2s infinite;
+}
+
+/* Staggered Animations for Lists */
+.saved-devotion-card {
+  animation: slideInRight 0.4s ease-out;
+}
+
+.saved-devotion-card:nth-child(even) {
+  animation-delay: 0.1s;
+}
+
+.saved-devotion-card:nth-child(odd) {
+  animation-delay: 0.2s;
+}
+
+/* Scroll Fade Overlay Effects */
+.scroll-fade-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 60px;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.scroll-fade-overlay.visible {
+  opacity: 0.2;
+}
+
+.scroll-fade-top {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--bg-primary) 0%,
+    var(--bg-primary) 30%,
+    var(--surface-primary) 60%,
+    transparent 100%
+  );
+}
+
+.scroll-fade-bottom {
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    var(--bg-primary) 0%,
+    var(--bg-primary) 30%,
+    var(--surface-primary) 60%,
+    transparent 100%
+  );
+}
+
+/* Hover Effects */
+.hover-lift {
+  transition: var(--transition-smooth);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-divine);
+}
+
+.hover-glow {
+  transition: var(--transition-smooth);
+}
+
+.hover-glow:hover {
+  box-shadow: var(--shadow-glow);
+}
+
+/* Loading Shimmer Effect */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--glass-bg) 25%,
+    var(--surface-primary) 50%,
+    var(--glass-bg) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Entrance Animations */
+.entrance-fade {
+  opacity: 0;
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.entrance-slide-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: slideInUp 0.6s ease-out forwards;
+}
+
+.entrance-scale {
+  opacity: 0;
+  transform: scale(0.9);
+  animation: fadeInScale 0.6s ease-out forwards;
+}
+
+/* Stagger delays for multiple elements */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+/* Interactive Effects */
+.interactive-scale {
+  transition: transform 0.2s ease;
+}
+
+.interactive-scale:hover {
+  transform: scale(1.02);
+}
+
+.interactive-scale:active {
+  transform: scale(0.98);
+}
+
+/* Glow Effects */
+.glow-primary {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+.glow-success {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.glow-divine {
+  box-shadow: var(--shadow-glow);
+}

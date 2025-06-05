@@ -1,0 +1,266 @@
+/* Base Application Styles */
+
+/* Global Body and Layout */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+#app {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  transition: var(--transition-smooth);
+}
+
+/* App Layout */
+.main-content {
+  margin-left: 350px;
+  min-height: 100vh;
+  padding: 2rem;
+  background: transparent;
+  transition: var(--transition-smooth);
+  position: relative;
+}
+
+#app.sidebar-collapsed .main-content {
+  margin-left: 80px;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.app-title {
+  background: var(--gradient-divine);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  margin-top: 4rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 3.5rem;
+}
+
+.lead {
+  color: var(--text-secondary);
+  font-size: 1.25rem;
+  margin-bottom: 3rem;
+}
+
+#topicInput {
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* Cards and Surfaces */
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow: var(--shadow-card);
+  color: var(--text-primary);
+  transition: var(--transition-smooth);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-divine);
+}
+
+.card-header {
+  background: transparent;
+  border-bottom: 1px solid var(--glass-border);
+  padding: 1.5rem 2rem;
+  border-radius: 24px 24px 0 0;
+}
+
+.card-body {
+  padding: 2rem;
+  line-height: 1.8;
+}
+
+.card-title {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.current-devotion-card {
+  max-width: 900px;
+  margin: 0 auto 2rem auto;
+  animation: slideInUp 0.6s ease-out;
+}
+
+/* Content Areas */
+.content-area {
+  background: transparent;
+  border-radius: 24px;
+  min-height: calc(100vh - 200px);
+  padding: 0 1rem 1rem 1rem;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.content-area-wrapper {
+  position: relative;
+}
+
+/* Welcome Section */
+.welcome-area {
+  text-align: center;
+  padding: 4rem 2rem;
+  min-height: calc(100vh - 400px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.welcome-icon {
+  font-size: 4rem;
+  background: var(--gradient-divine);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 2rem;
+  animation: pulse 2s infinite;
+}
+
+.welcome-title {
+  font-size: 2.5rem;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.welcome-text {
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  max-width: 600px;
+}
+
+/* Placeholder Section */
+.placeholder-section {
+  background: var(--glass-bg);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 4rem 3rem;
+  text-align: center;
+  margin: 2rem auto;
+  max-width: 800px;
+  box-shadow: var(--shadow-card);
+}
+
+/* First Verse Highlight */
+.first-verse-highlight {
+  background: var(--gradient-glow);
+  border: 1px solid var(--divine-primary);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  box-shadow: var(--shadow-glow);
+  animation: fadeInScale 0.8s ease-out;
+}
+
+.first-verse-highlight h5 {
+  color: var(--divine-primary);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.first-verse-highlight p {
+  font-style: italic;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.first-verse-highlight .text-muted {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+/* Header Styles */
+header {
+  transition: var(--transition-smooth);
+  transform: translateY(0);
+  opacity: 1;
+}
+
+header.header-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Focus States for Accessibility */
+button:focus-visible,
+.form-control:focus,
+a:focus-visible {
+  outline: 2px solid var(--divine-primary);
+  outline-offset: 2px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(0, 0, 0, 0.3);
+  }
+  
+  [data-bs-theme="dark"] {
+    --glass-bg: rgba(0, 0, 0, 0.95);
+    --glass-border: rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Modern Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--glass-bg);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gradient-divine);
+  border-radius: 10px;
+  transition: var(--transition-smooth);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gradient-success);
+  box-shadow: var(--shadow-glow);
+}

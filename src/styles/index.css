@@ -1,0 +1,10 @@
+/* Main App Styles - Imports all modular CSS files */
+
+/* Import all CSS modules in logical order */
+@import './variables.css';    /* CSS variables and theme system */
+@import './base.css';         /* Base styles, typography, layout */
+@import './sidebar.css';      /* Sidebar-specific styles */
+@import './forms.css';        /* Form controls, buttons, inputs */
+@import './components.css';   /* Component-specific styles */
+@import './animations.css';   /* Animations and effects */
+@import './responsive.css';   /* Mobile and responsive styles */

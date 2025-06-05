@@ -692,3 +692,1157 @@ onUnmounted(() => {
 /* Import modular CSS styles */
 @import './styles/index.css';
 </style>
+
+
+/* Theme toggle button in sidebar */
+.theme-toggle-btn-sidebar {
+  width: 100%;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 0.75rem;
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 0.9rem;
+}
+
+.theme-toggle-btn-sidebar:hover {
+  background: var(--gradient-glow);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+  color: var(--text-primary);
+}
+
+.theme-toggle-btn-sidebar i {
+  font-size: 1.1rem;
+}
+
+/* Main content toggle button (hamburger menu) */
+.sidebar-toggle-btn-main {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1000;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-card);
+}
+
+.sidebar-toggle-btn-main:hover {
+  background: var(--gradient-glow);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.sidebar-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  background: var(--gradient-divine);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+}
+
+/* Modern Search Bar */
+.search-bar .form-control {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  border-radius: 16px;
+  padding: 0.75rem 1rem;
+  backdrop-filter: blur(10px);
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-card);
+}
+
+.search-bar .form-control:focus {
+  border-color: var(--divine-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  transform: translateY(-1px);
+}
+
+.search-bar .form-control::placeholder {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+/* Modern Content Cards */
+.saved-devotions-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--divine-primary) transparent;
+}
+
+.saved-devotion-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(15px);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: var(--transition-bounce);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.saved-devotion-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-divine);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.saved-devotion-card:hover::before {
+  opacity: 1;
+}
+
+.saved-devotion-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: var(--shadow-divine);
+}
+
+.saved-devotion-topic {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  margin-right: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.saved-devotion-excerpt {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0;
+  line-height: 1.5;
+  margin-right: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.delete-saved-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--divine-error);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 0.375rem;
+  font-size: 0.75rem;
+  border-radius: 8px;
+  transition: var(--transition-smooth);
+}
+
+.delete-saved-btn:hover {
+  background: var(--divine-error);
+  color: white;
+  transform: scale(1.1);
+}
+
+
+/* Main Content Area */
+.main-content {
+  margin-left: 350px; /* Default margin when sidebar is expanded on desktop */
+  /* padding: 2rem 3rem 10rem; */
+  flex-grow: 1;
+  height: 100vh;
+  transition: var(--transition-smooth);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Header auto-hide functionality */
+.main-content header {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.main-content header.header-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Adjust main content when sidebar is collapsed on desktop - center the content */
+#app.sidebar-collapsed .main-content {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Ensure .content-area stays centered and doesn't stretch full width */
+#app.sidebar-collapsed .main-content .content-area {
+  margin: 0 auto;
+  max-width: 60rem;
+}
+
+
+.content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 60rem;
+  margin: 0 auto;
+  width: 100%;
+  overflow-y: auto;
+  padding-bottom: 15rem; /* Increased to prevent overlap with fixed bottom input area */
+  /* Hide scrollbar by default */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer and Edge */
+}
+
+/* Hide scrollbar for webkit browsers by default */
+.content-area::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+/* Show scrollbar on hover and focus */
+.content-area:hover {
+  scrollbar-width: thin; /* Firefox */
+}
+
+.content-area:hover::-webkit-scrollbar {
+  width: 8px;
+  background: var(--glass-bg);
+}
+
+.content-area:hover::-webkit-scrollbar-track {
+  background: var(--glass-bg);
+  border-radius: 10px;
+}
+
+.content-area:hover::-webkit-scrollbar-thumb {
+  background: var(--gradient-divine);
+  border-radius: 10px;
+  transition: var(--transition-smooth);
+}
+
+.content-area:hover::-webkit-scrollbar-thumb:hover {
+  background: var(--gradient-success);
+  box-shadow: var(--shadow-glow);
+}
+
+/* Additional bottom spacing for Bible Card Generator to ensure share buttons are visible */
+.bible-card-section {
+  margin-bottom: 2rem;
+}
+
+
+.input-container {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 0 2rem;
+  /* margin-bottom: 25px; */
+}
+
+/* Ensure input-container centers when sidebar is collapsed */
+#app.sidebar-collapsed .input-container {
+  margin: 0 auto;
+  max-width: 60rem;
+}
+
+.content-type-selector .btn-group {
+  background: var(--glass-bg);
+  border-radius: 16px;
+  padding: 0.5rem;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+}
+
+.content-type-selector .btn-check:checked + .btn {
+  background: var(--gradient-divine);
+  border-color: var(--divine-primary);
+  color: white;
+  box-shadow: var(--shadow-glow);
+}
+
+.content-type-selector .btn {
+  border: none;
+  color: var(--text-secondary);
+  background: transparent;
+  border-radius: 12px;
+  transition: var(--transition-smooth);
+  font-weight: 500;
+}
+
+.content-type-selector .btn:hover:not(.btn-check:checked + .btn) {
+  background: var(--gradient-glow);
+  color: var(--text-primary);
+}
+
+.input-form .input-group {
+  position: relative;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 0.5rem;
+  transition: border-color 0.2s ease;
+  height: 100px;
+}
+
+.input-form .input-group:focus-within {
+  border-color: var(--divine-primary);
+}
+
+.bottom-textarea {
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  resize: none;
+  min-height: 60px;
+  max-height: 200px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: var(--transition-smooth);
+}
+
+.bottom-textarea:focus {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+}
+
+.bottom-textarea::placeholder {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.send-btn {
+  background: var(--gradient-divine);
+  border: none;
+   width: 60px;
+  /* color: white;
+ 
+  height: 48px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-bounce);
+  box-shadow: var(--shadow-card);
+  margin-left: 0.5rem; */
+}
+
+.send-btn:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: var(--shadow-glow);
+}
+
+.send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Welcome Area Styling */
+/* .welcome-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 300px);
+  height: 100%;
+} */
+
+.welcome-content {
+  text-align: center;
+  max-width: 500px;
+}
+
+.welcome-icon {
+  font-size: 5rem;
+  background: var(--gradient-divine);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 2rem;
+  animation: icon-pulse 2s ease-in-out infinite;
+}
+
+.welcome-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: var(--gradient-divine);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+}
+
+.welcome-text {
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+}
+
+/* Current Content Card Updates */
+.current-devotion-card {
+  max-width: 100%;
+  margin-bottom: 2rem;
+}
+
+/* Enhanced Devotion Text Formatting */
+.main-devotion-text {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+}
+
+.devotion-title-intro {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--divine-primary);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--glass-border);
+  background: var(--gradient-divine);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.devotion-paragraph {
+  margin-bottom: 1.25rem;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.text-emphasis {
+  font-weight: 600;
+  color: var(--divine-primary);
+  text-shadow: 0 1px 2px rgba(99, 102, 241, 0.1);
+}
+
+.text-accent {
+  font-style: italic;
+  color: var(--divine-secondary);
+  font-weight: 500;
+}
+
+.devotion-quote {
+  background: var(--glass-bg);
+  border-left: 4px solid var(--divine-accent);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 0 12px 12px 0;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-card);
+  position: relative;
+}
+
+.devotion-quote::before {
+  content: '"';
+  position: absolute;
+  top: -10px;
+  left: 15px;
+  font-size: 3rem;
+  color: var(--divine-accent);
+  opacity: 0.5;
+  font-family: serif;
+}
+
+.devotion-list-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+  border-left: 2px solid transparent;
+  transition: var(--transition-smooth);
+}
+
+.devotion-list-item:hover {
+  border-left-color: var(--divine-accent);
+  padding-left: 0.75rem;
+  background: var(--gradient-glow);
+  border-radius: 0 8px 8px 0;
+}
+
+.list-number {
+  font-weight: 600;
+  color: var(--divine-primary);
+  margin-right: 0.75rem;
+  min-width: 2rem;
+  display: inline-block;
+}
+
+.list-bullet {
+  color: var(--divine-accent);
+  font-weight: 600;
+  margin-right: 0.75rem;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+/* Additional formatting styles for enhanced text display */
+.devotion-prayer-section {
+  background: var(--gradient-glow);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-card);
+}
+
+.prayer-label {
+  color: var(--divine-primary);
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.devotion-quote-inline {
+  font-style: italic;
+  color: var(--divine-secondary);
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  background: var(--gradient-glow);
+  border-radius: 6px;
+  margin: 0 0.25rem;
+}
+
+/* Enhanced paragraph spacing and typography */
+.devotion-paragraph:first-child {
+  margin-top: 0;
+}
+
+.devotion-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+/* Better handling of nested elements */
+.devotion-paragraph .text-emphasis,
+.devotion-paragraph .text-accent {
+  transition: var(--transition-smooth);
+}
+
+.devotion-paragraph .text-emphasis:hover {
+  color: var(--divine-secondary);
+}
+
+/* Responsive typography */
+@media (max-width: 768px) {
+  .main-devotion-text {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  .devotion-title-intro {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .devotion-paragraph {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    text-align: left;
+  }
+  
+  .devotion-quote {
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+    font-size: 1rem;
+  }
+}
+
+/* Additional formatting styles for enhanced text display */
+.devotion-prayer-section {
+  background: var(--gradient-glow);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-card);
+}
+
+.prayer-label {
+  color: var(--divine-primary);
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.devotion-quote-inline {
+  font-style: italic;
+  color: var(--divine-secondary);
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  background: var(--gradient-glow);
+  border-radius: 6px;
+  margin: 0 0.25rem;
+}
+
+/* Enhanced paragraph spacing and typography */
+.devotion-paragraph:first-child {
+  margin-top: 0;
+}
+
+.devotion-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+/* Better handling of nested elements */
+.devotion-paragraph .text-emphasis,
+.devotion-paragraph .text-accent {
+  transition: var(--transition-smooth);
+}
+
+.devotion-paragraph .text-emphasis:hover {
+  color: var(--divine-secondary);
+}
+
+/* Enhanced Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.saved-devotion-card {
+  animation: slideInRight 0.4s ease-out;
+}
+
+.saved-devotion-card:nth-child(even) {
+  animation-delay: 0.1s;
+}
+
+.saved-devotion-card:nth-child(odd) {
+  animation-delay: 0.2s;
+}
+
+/* Focus States for Accessibility */
+button:focus-visible,
+.form-control:focus,
+a:focus-visible {
+  outline: 2px solid var(--divine-primary);
+  outline-offset: 2px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(0, 0, 0, 0.3);
+  }
+  
+  [data-bs-theme="dark"] {
+    --glass-bg: rgba(0, 0, 0, 0.95);
+    --glass-border: rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Modern Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--glass-bg);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gradient-divine);
+  border-radius: 10px;
+  transition: var(--transition-smooth);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gradient-success);
+  box-shadow: var(--shadow-glow);
+}
+
+/* Custom Tooltip Styling */
+.bible-verse-tooltip .tooltip-inner {
+  background: var(--glass-bg);
+  backdrop-filter: blur(15px);
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  max-width: 400px;
+  text-align: left;
+  padding: 1rem;
+  font-size: 0.95rem;
+  white-space: pre-wrap;
+  box-shadow: var(--shadow-card);
+}
+
+/* Desktop Bottom Input Area */
+.bottom-input-area {
+  position: fixed;
+  bottom: 0;
+  left: 350px; /* Default position when sidebar is expanded */
+  right: 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--glass-border);
+  padding: 1.5rem 2rem;
+  z-index: 1000;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+  transform: translateY(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  opacity: 1;
+}
+
+/* Auto-hide bottom input area during scrolling */
+.bottom-input-area.input-hidden {
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Adjust bottom input area when sidebar is collapsed on desktop */
+#app.sidebar-collapsed .bottom-input-area {
+  left: 0; /* Center the bottom input area when sidebar is collapsed */
+}
+
+/* Inline Verse Links */
+:deep(.inline-verse-link) {
+  font-weight: 600;
+  font-style: italic;
+  color: var(--divine-primary);
+  text-decoration: none;
+  position: relative;
+  transition: var(--transition-smooth);
+}
+
+:deep(.inline-verse-link)::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-divine);
+  transition: width 0.3s ease;
+}
+
+:deep(.inline-verse-link):hover::after {
+  width: 100%;
+}
+
+:deep(.inline-verse-link):hover {
+  color: var(--divine-secondary);
+  transform: translateY(-1px);
+}
+/* Sidebar Overlay for Mobile */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1050;
+  opacity: 0;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 320px;
+    transform: translateX(-100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1100;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.3);
+  }
+
+  #app.mobile-view:not(.sidebar-collapsed) .sidebar {
+    transform: translateX(0);
+  }
+
+  #app.mobile-view:not(.sidebar-collapsed) .sidebar .sidebar-title span,
+  #app.mobile-view:not(.sidebar-collapsed) .sidebar .search-bar,
+  #app.mobile-view:not(.sidebar-collapsed) .sidebar .saved-devotions-list {
+    display: block;
+  }
+
+
+  .sidebar-toggle-btn-main {
+    top: 1rem;
+    left: 1rem;
+    font-size: 1.5rem;
+    padding: 0.75rem;
+  }
+  /* Mobile sidebar styling adjustments */
+  .sidebar-bottom {
+    bottom: 1.5rem;
+    left: 1.5rem;
+    right: 1.5rem;
+  }  /* Mobile main content - no margin adjustments */
+  .main-content {
+    margin-left: 0 !important;
+    width: 100%;
+    padding-top: 1rem; /* Added to ensure proper spacing on mobile */
+  }
+
+  /* Mobile header auto-hide functionality */
+  .main-content header {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease !important;
+    transform: translateY(0) !important;
+    opacity: 1 !important;
+  }
+
+  .main-content header.header-hidden {
+    transform: translateY(-100%) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .app-title {
+    font-size: 2.5rem;
+    margin-top: 3rem; /* Reduced from 4rem to optimize spacing */
+    margin-bottom: 1rem;
+  }
+
+  .main-content .lead {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+
+  .card {
+    margin-bottom: 1.5rem !important;
+    border-radius: 20px;
+  }
+
+  .card-body, .card-header {
+    padding: 1.5rem;
+  }
+
+  .form-control-lg {
+    font-size: 1rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+  }
+
+  .first-verse-highlight {
+    padding: 1.25rem;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .placeholder-section {
+    padding: 2.5rem 1.5rem !important;
+    border-radius: 20px;
+  }
+
+  .actions-toolbar {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem 0;
+  }
+
+  .actions-toolbar .btn {
+    width: 100%;
+  }  /* Mobile Responsive Bottom Input Area */
+  .bottom-input-area {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-top: 1px solid var(--glass-border) !important;
+    padding: 1rem 0 !important;
+    z-index: 1000 !important;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(0) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease !important;
+    opacity: 1 !important;
+  }
+
+  /* Auto-hide bottom input area during scrolling on mobile */
+  .bottom-input-area.input-hidden {
+    transform: translateY(100%) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  /* Override sidebar adjustments on mobile */
+  #app.sidebar-collapsed .bottom-input-area,
+  #app.mobile-view .bottom-input-area {
+    left: 0 !important;
+  }
+
+  .input-container {
+    padding: 0 1rem;
+    max-width: 100%;
+  }
+
+  .content-type-selector {
+    margin-bottom: 1rem;
+  }
+
+  .content-type-selector .btn-group {
+    flex-direction: row;
+    padding: 0.375rem;
+    border-radius: 12px;
+  }
+
+  .content-type-selector .btn {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    flex: 1;
+    text-align: center;
+  }
+
+  .content-type-selector .btn i {
+    font-size: 1rem;
+    margin-right: 0.375rem;
+  }
+
+  .input-form .input-group {
+    border-radius: 16px;
+    padding: 0.375rem;
+  }
+
+  .bottom-textarea {
+    padding: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.4;
+    min-height: 50px;
+    max-height: 160px;
+  }
+
+  .send-btn {
+    width: 44px;
+    height: 85px;
+    border-radius: 12px;
+    margin-left: 0.375rem;
+  }
+
+  .send-btn i {
+    font-size: 1.1rem;
+  }  /* Content area adjustments for mobile */
+  .content-area {
+    /* Center content vertically and horizontally */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 12rem; /* Increased from 1rem to prevent overlap with fixed bottom input */
+    padding-top: 2rem; /* Added to prevent text hiding behind header on mobile */
+    min-height: calc(100vh - 200px);
+    width: 100%;
+    /* Allow scrolling for generated text */
+    overflow-y: auto;
+    max-height: calc(100vh - 220px);
+  }
+
+  .welcome-area {
+    min-height: calc(100vh - 350px);
+    height: 100%;
+    padding: 2rem 1rem !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .welcome-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .welcome-title {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .welcome-text {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+  .current-devotion-card {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Bible Card Integration Styles */
+.btn-gradient-primary {
+  background: linear-gradient(135deg, var(--divine-primary), var(--divine-secondary));
+  border: none;
+  color: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-gradient-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  color: white;
+}
+
+.btn-gradient-primary:disabled {
+  opacity: 0.6;
+  transform: none;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+}
+
+/* Verse link styling improvements */
+.list-group-item .d-flex {
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.list-group-item .btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  border-radius: 0.375rem;
+  transition: all 0.3s ease;
+}
+
+.list-group-item .btn-sm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+/* Bible card container integration */
+.bible-card-container {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--glass-bg);
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+}
+
+/* Scroll fade overlay effects */
+.content-area-wrapper {
+  position: relative;
+}
+
+.scroll-fade-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 60px;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.scroll-fade-overlay.visible {
+  opacity: 0.2;
+}
+
+.scroll-fade-top {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--bg-primary) 0%,
+    var(--bg-primary) 30%,
+    var(--surface-primary) 60%,
+    transparent 100%
+  );
+}
+
+.scroll-fade-bottom {
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    var(--bg-primary) 0%,
+    var(--bg-primary) 30%,
+    var(--surface-primary) 60%,
+    transparent 100%
+  );
+}
+</style>
