@@ -196,9 +196,8 @@
                   </div>
                   <div v-else-if="generationProgress <= 60" class="text-muted">
                     <i class="bi bi-magic me-1"></i>Generating AI image prompt...
-                  </div>
-                  <div v-else-if="generationProgress <= 70" class="text-muted">
-                    <i class="bi bi-palette me-1"></i>Creating beautiful background...
+                  </div>                  <div v-else-if="generationProgress <= 70" class="text-muted">
+                    <i class="bi bi-image me-1"></i>Generating real AI image with Gemini...
                   </div>
                   <div v-else-if="generationProgress <= 90" class="text-muted">
                     <i class="bi bi-image me-1"></i>Finalizing card design...
@@ -210,9 +209,8 @@
                 <div class="progress">
                   <div class="progress-bar progress-bar-striped progress-bar-animated" 
                        :style="{ width: generationProgress + '%' }"></div>
-                </div>
-                <small class="text-muted mt-2 d-block">
-                  Using Gemini AI to create personalized spiritual imagery
+                </div>                <small class="text-muted mt-2 d-block">
+                  Using Gemini AI Imagen to generate real spiritual images
                 </small>
               </div>              <!-- Generated Card Display -->
               <div v-else-if="generatedCard" class="generated-card-container">
@@ -536,7 +534,7 @@ const generateImagePrompt = async (verseText: string, verseRef: string, styleDes
   try {
     const prompt = `Based on this Bible verse: "${verseText}" (${verseRef}) and style description: "${styleDescription}", create a detailed, beautiful image description that would be perfect for a spiritual Bible verse card background. The image should be photorealistic, peaceful, and spiritually inspiring. Include specific details about lighting, colors, composition, and mood. Focus on natural scenes that reflect the verse's meaning and create a serene atmosphere suitable for prayer and reflection.`;
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:generateImage?key=${GEMINI_API_KEY}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -568,47 +566,48 @@ const generateImagePrompt = async (verseText: string, verseRef: string, styleDes
   }
 };
 
-// Generate background image using AI (placeholder for real image generation)
+// Generate background image using AI (Real Gemini Imagen API implementation)
 const generateBackgroundImage = async (prompt: string): Promise<string> => {
   try {
-    // NOTE: This is a placeholder implementation since Gemini doesn't generate images directly.
-    // In a production environment, you would replace this with a call to an actual image generation service like:
-    // - OpenAI DALL-E API
-    // - Stability AI 
-    // - Google's Imagen API (when available)
-    // - Midjourney API
-    
-    console.log('Generated image prompt:', prompt);
-    
-    // For now, we'll create a sophisticated gradient based on the AI-generated prompt
-    return createStyledBackground(prompt);
-    
-    /* 
-    // Example implementation for a real image generation service:
-    const response = await fetch('https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${STABILITY_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        text_prompts: [{ text: prompt }],
-        cfg_scale: 7,
-        height: 1024,
-        width: 1024,
-        steps: 20,
-        samples: 1,
-      }),
+    // --- Call Gemini API for Image Generation (Imagen 3) ---
+    // IMPORTANT: Replace with your actual API key and endpoint setup
+    // This is a conceptual representation. You'll need to handle API key security.
+    const apiKey = GEMINI_API_KEY; // In a real app, DO NOT embed API key here. Use a backend proxy or secure environment variable.
+                           // Canvas will inject the key if it's empty.
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+
+    const payload = {
+        instances: [{ "prompt": prompt }],
+        parameters: { "sampleCount": 1 }
+    };
+
+    const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
     });
-    
-    if (response.ok) {
-      const data = await response.json();
-      return `data:image/png;base64,${data.artifacts[0].base64}`;
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        console.error('API Error:', errorData);
+        throw new Error(`API request failed: ${errorData.error?.message || response.statusText}`);
     }
-    */
-    
-  } catch (err) {
-    console.error('Error generating background image:', err);
+
+    const result = await response.json();
+
+    if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
+        const imageUrl = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+        console.log('Successfully generated image with Gemini Imagen API');
+        return `url(${imageUrl})`;
+    } else {
+        console.error('Unexpected API response structure:', result);
+        throw new Error('Failed to get image from API response. No predictions found or missing image data.');
+    }
+
+  } catch (error) {
+    console.error('Error generating image:', error);
+    // Fallback to gradient background on error
+    console.log('Falling back to gradient background due to API error');
     return createStyledBackground(prompt);
   }
 };
@@ -718,8 +717,7 @@ const downloadCard = async () => {
     // Set dimensions based on selected aspect ratio
     canvas.width = selectedAspectRatio.value.width;
     canvas.height = selectedAspectRatio.value.height;
-    
-    // Create background
+      // Create background
     if (customBackground.value) {
       // Draw custom background image
       const img = new Image();
@@ -731,31 +729,79 @@ const downloadCard = async () => {
       };
       img.src = customBackground.value;
     } else {
-      // Draw gradient background
-      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      
-      // Parse gradient colors from CSS gradient
+      // Check if we have an AI-generated image or gradient
       const bgImage = generatedCard.value.backgroundImage;
-      if (bgImage.includes('#667eea')) {
-        gradient.addColorStop(0, '#667eea');
-        gradient.addColorStop(0.5, '#764ba2');
-        gradient.addColorStop(1, '#f093fb');
+      
+      if (bgImage.startsWith('url(data:image/')) {
+        // Extract the data URL from the CSS url() format
+        const dataUrl = bgImage.match(/url\((.*?)\)/)?.[1];
+        if (dataUrl) {
+          // Draw AI-generated background image
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => {
+            // Draw image to fill canvas while maintaining aspect ratio
+            const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+            const x = (canvas.width - img.width * scale) / 2;
+            const y = (canvas.height - img.height * scale) / 2;
+            
+            ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+            drawTextOnCanvas(ctx, canvas);
+            downloadCanvasAsImage(canvas);
+          };
+          img.onerror = () => {
+            // Fallback to gradient if image fails to load
+            console.warn('Failed to load AI image for download, using gradient fallback');
+            drawGradientBackground(ctx, canvas, bgImage);
+            drawTextOnCanvas(ctx, canvas);
+            downloadCanvasAsImage(canvas);
+          };
+          img.src = dataUrl;
+        } else {
+          // Fallback to gradient
+          drawGradientBackground(ctx, canvas, bgImage);
+          drawTextOnCanvas(ctx, canvas);
+          downloadCanvasAsImage(canvas);
+        }
       } else {
-        gradient.addColorStop(0, '#667eea');
-        gradient.addColorStop(1, '#764ba2');
+        // Draw gradient background (legacy)
+        drawGradientBackground(ctx, canvas, bgImage);
+        drawTextOnCanvas(ctx, canvas);
+        downloadCanvasAsImage(canvas);
       }
-      
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      drawTextOnCanvas(ctx, canvas);
-      downloadCanvasAsImage(canvas);
     }
     
   } catch (err) {
     console.error('Error downloading card:', err);
     error.value = 'Failed to download card';
   }
+};
+
+// Helper function to draw gradient background
+const drawGradientBackground = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, bgImage: string) => {
+  const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  
+  // Parse gradient colors from CSS gradient
+  if (bgImage.includes('#667eea')) {
+    gradient.addColorStop(0, '#667eea');
+    gradient.addColorStop(0.5, '#764ba2');
+    gradient.addColorStop(1, '#f093fb');
+  } else if (bgImage.includes('#74b9ff')) {
+    gradient.addColorStop(0, '#74b9ff');
+    gradient.addColorStop(1, '#0984e3');
+  } else if (bgImage.includes('#ff9a9e')) {
+    gradient.addColorStop(0, '#ff9a9e');
+    gradient.addColorStop(0.3, '#fad0c4');
+    gradient.addColorStop(0.6, '#ffd89b');
+    gradient.addColorStop(1, '#f093fb');
+  } else {
+    // Default gradient
+    gradient.addColorStop(0, '#667eea');
+    gradient.addColorStop(1, '#764ba2');
+  }
+  
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 };
 
 // Helper function to draw text on canvas
