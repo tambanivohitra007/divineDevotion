@@ -956,7 +956,7 @@ onUnmounted(() => {
   margin: 0 auto;
   width: 100%;
   overflow-y: auto;
-  padding-bottom: 15rem; /* Increased from 10rem to prevent overlay issues */
+  padding-bottom: 6rem; /* Reduced from 15rem to decrease height */
 }
 
 /* Additional bottom spacing for Bible Card Generator to ensure share buttons are visible */

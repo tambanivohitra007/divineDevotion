@@ -170,7 +170,7 @@
                 <i class="bi bi-eye me-2"></i>Preview
               </h5>
               <div v-if="generatedCard" class="card-actions">
-                <button @click="downloadCard" class="btn btn-outline-primary btn-sm me-2">
+                <button @click="downloadCard" class="btn btn-default btn-sm me-2">
                   <i class="bi bi-download me-1"></i>Download
                 </button>
                 <button @click="shareCard" class="btn btn-outline-secondary btn-sm me-2">
