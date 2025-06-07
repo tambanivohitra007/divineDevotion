@@ -255,9 +255,12 @@
     margin-left: 300px;
     padding: 1.5rem;
   }
-
   #app.sidebar-collapsed .main-content {
     margin-left: 70px;
+  }  /* Position main toggle button correctly when sidebar is collapsed on medium screens */
+  #app.sidebar-collapsed .sidebar-toggle-btn-main {
+    left: 1rem;
+    z-index: 1001; /* Higher than sidebar z-index to appear on top */
   }
 
   #app.sidebar-collapsed .sidebar {
@@ -297,9 +300,12 @@
     left: 400px;
     padding: 2rem 3rem;
   }
-
   #app.sidebar-collapsed .main-content {
     margin-left: 90px;
+  }  /* Position main toggle button correctly when sidebar is collapsed on large screens */
+  #app.sidebar-collapsed .sidebar-toggle-btn-main {
+    left: 1rem;
+    z-index: 1001; /* Higher than sidebar z-index to appear on top */
   }
 
   #app.sidebar-collapsed .sidebar {

@@ -56,12 +56,9 @@
           </span>
         </button>
       </div>
-    </div>
-
-    <div class="main-content">
-      <!-- This button is now primarily for opening sidebar on mobile, or expanding on desktop if it was collapsed -->
-      <button class="btn btn-sm btn-outline-light sidebar-toggle-btn-main" @click="toggleSidebar" v-if="isSidebarCollapsed">
-         <i class="bi bi-list"></i> <!-- Hamburger icon for mobile -->
+    </div>    <div class="main-content">
+      <!-- This button is now primarily for opening sidebar on mobile, or expanding on desktop if it was collapsed -->      <button class="btn btn-sm btn-outline-light sidebar-toggle-btn-main" @click="toggleSidebar" v-if="isSidebarCollapsed" title="Open Sidebar">
+         <i class="bi bi-list"></i>
       </button>
         <!-- Header -->
       <header class="text-center mb-4" :class="{ 'header-hidden': !showHeader }">

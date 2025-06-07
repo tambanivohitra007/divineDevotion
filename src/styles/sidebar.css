@@ -131,6 +131,11 @@
   transition: var(--transition-smooth);
   font-size: 1.5rem;
   box-shadow: var(--shadow-card);
+  min-width: 48px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sidebar-toggle-btn-main:hover {
@@ -139,6 +144,12 @@
   color: var(--divine-primary);
   transform: translateY(-2px);
   box-shadow: var(--shadow-glow);
+}
+
+/* Position main toggle button correctly when sidebar is collapsed */
+#app.sidebar-collapsed .sidebar-toggle-btn-main {
+  left: 1rem; /* Position at top left of collapsed sidebar with margin */
+  z-index: 1001; /* Higher than sidebar z-index (1000) to appear on top */
 }
 
 /* Saved Content List */
@@ -197,10 +208,10 @@
   color: var(--text-secondary);
   font-size: 0.85rem;
   line-height: 1.4;
-  margin-bottom: 0.75rem;
-  overflow: hidden;
+  margin-bottom: 0.75rem;  overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 
