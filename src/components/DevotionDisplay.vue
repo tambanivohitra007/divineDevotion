@@ -120,25 +120,52 @@ const formattedDevotionText = computed(() => {
   const text = props.devotion.text;
   if (!text) return '';
 
-  const bibleVerseRegex = createBibleVerseGlobalRegex();
-  return text.replace(bibleVerseRegex, (matchedVerse) => {
-    const parsed = parseVerseReference(matchedVerse);
-    if (!parsed) {
-      return matchedVerse; // If not a valid/parseable verse, return original text segment
+  // Create a temporary DOM element to safely parse and process the HTML
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = text;
+  
+  // Process text nodes to find Bible verses while preserving existing HTML structure
+  const processTextNode = (node: Node) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const textContent = node.textContent || '';
+      const bibleVerseRegex = createBibleVerseGlobalRegex();
+      
+      // Only process if there are potential Bible verses
+      if (bibleVerseRegex.test(textContent)) {
+        const processedHTML = textContent.replace(bibleVerseRegex, (matchedVerse) => {
+          const parsed = parseVerseReference(matchedVerse);
+          if (!parsed) {
+            return matchedVerse; // If not a valid/parseable verse, return original text segment
+          }
+          return `<a href="${getBibleGatewayLink(matchedVerse)}"
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     class="text-decoration-none verse-link inline-verse-link"
+                     data-bs-toggle="tooltip"
+                     data-bs-placement="top"
+                     data-bs-custom-class="bible-verse-tooltip"
+                     title="${getTooltipTitle(matchedVerse)}"
+                     data-verse-ref="${matchedVerse}"
+                  >${matchedVerse}</a>`;
+        });
+        
+        // Replace the text node with the processed HTML
+        if (processedHTML !== textContent) {
+          const newSpan = document.createElement('span');
+          newSpan.innerHTML = processedHTML;
+          node.parentNode?.replaceChild(newSpan, node);
+        }
+      }
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      // Recursively process child nodes
+      Array.from(node.childNodes).forEach(processTextNode);
     }
-    // Ensure the link uses the exact matched string for display and data-verse-ref
-    // and getTooltipTitle, as fetchVerseText will be called with this exact string.
-    return `<a href="${getBibleGatewayLink(matchedVerse)}"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="text-decoration-none verse-link inline-verse-link"
-               data-bs-toggle="tooltip"
-               data-bs-placement="top"
-               data-bs-custom-class="bible-verse-tooltip"
-               title="${getTooltipTitle(matchedVerse)}"
-               data-verse-ref="${matchedVerse}"
-            >${matchedVerse}</a>`;
-  });
+  };
+  
+  // Process all text nodes while preserving HTML structure
+  Array.from(tempDiv.childNodes).forEach(processTextNode);
+  
+  return tempDiv.innerHTML;
 });
 
 const getBibleGatewayLink = (verse: string): string => {

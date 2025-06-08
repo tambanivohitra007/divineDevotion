@@ -1,5 +1,69 @@
 /* Component-Specific Styles */
 
+/* Text Emphasis for Devotional Content */
+.text-emphasis {
+  font-weight: 600;
+  color: var(--divine-primary);
+  text-shadow: 0 1px 2px rgba(99, 102, 241, 0.1);
+  transition: var(--transition-smooth);
+}
+
+.text-emphasis:hover {
+  color: var(--divine-secondary);
+}
+
+.text-accent {
+  font-style: italic;
+  color: var(--divine-secondary);
+  font-weight: 500;
+}
+
+/* Devotional Quote Styles */
+.devotion-quote {
+  background: var(--glass-bg);
+  border-left: 4px solid var(--divine-accent);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 0 12px 12px 0;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-card);
+  position: relative;
+}
+
+.devotion-quote::before {
+  content: '"';
+  position: absolute;
+  top: -10px;
+  left: 15px;
+  font-size: 3rem;
+  color: var(--divine-accent);
+  opacity: 0.5;
+  font-family: serif;
+}
+
+.devotion-quote-inline {
+  font-style: italic;
+  color: var(--divine-secondary);
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  background: var(--gradient-glow);
+  border-radius: 6px;
+  margin: 0 0.25rem;
+}
+
+/* Better handling of nested elements in devotional paragraphs */
+.devotion-paragraph .text-emphasis,
+.devotion-paragraph .text-accent {
+  transition: var(--transition-smooth);
+}
+
+.devotion-paragraph .text-emphasis:hover {
+  color: var(--divine-secondary);
+}
+
 /* Actions Toolbar */
 .actions-toolbar {
   display: flex;
@@ -133,6 +197,60 @@
 
 .placeholder.col-12 {
   width: 100%;
+}
+
+/* Devotional List Styles */
+.devotion-list-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+  border-left: 2px solid transparent;
+  transition: var(--transition-smooth);
+}
+
+.devotion-list-item:hover {
+  border-left-color: var(--divine-accent);
+  padding-left: 0.75rem;
+  background: var(--gradient-glow);
+  border-radius: 0 8px 8px 0;
+}
+
+.list-number {
+  font-weight: 600;
+  color: var(--divine-primary);
+  margin-right: 0.75rem;
+  min-width: 2rem;
+  display: inline-block;
+}
+
+.list-bullet {
+  color: var(--divine-accent);
+  font-weight: 600;
+  margin-right: 0.75rem;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+/* Prayer Section Styles */
+.devotion-prayer-section {
+  background: var(--gradient-glow);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-card);
+}
+
+.prayer-label {
+  color: var(--divine-primary);
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* Bootstrap Utility Classes */

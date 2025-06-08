@@ -136,11 +136,9 @@
     transform: translateY(0) !important;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease !important;
     opacity: 1 !important;
-  }
-
-  /* Auto-hide bottom input area during scrolling on mobile */
+  }  /* Auto-hide bottom input area during scrolling on mobile */
   .bottom-input-area.input-hidden {
-    transform: translateY(100%) !important;
+    bottom: -200px !important;
     opacity: 0 !important;
     pointer-events: none !important;
   }
@@ -242,6 +240,19 @@
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
   }
+
+  /* Typography adjustments for mobile */
+  .devotion-paragraph {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    text-align: left;
+  }
+
+  .devotion-quote {
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+    font-size: 1rem;
+  }
 }
 
 /* Tablet Responsive (769px - 1024px) */
@@ -267,9 +278,12 @@
     width: 70px;
     padding: 1.5rem 0.75rem;
   }
-
   .bottom-input-area {
     left: 300px;
+  }  .bottom-input-area.input-hidden {
+    bottom: -200px !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
   }
 
   #app.sidebar-collapsed .bottom-input-area {
@@ -295,14 +309,18 @@
     margin-left: 400px;
     padding: 3rem;
   }
-
   .bottom-input-area {
     left: 400px;
     padding: 2rem 3rem;
+  }  .bottom-input-area.input-hidden {
+    bottom: -200px !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
   }
+
   #app.sidebar-collapsed .main-content {
     margin-left: 90px;
-  }  /* Position main toggle button correctly when sidebar is collapsed on large screens */
+  }/* Position main toggle button correctly when sidebar is collapsed on large screens */
   #app.sidebar-collapsed .sidebar-toggle-btn-main {
     left: 1rem;
     z-index: 1001; /* Higher than sidebar z-index to appear on top */

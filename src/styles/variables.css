@@ -44,12 +44,12 @@
 }
 
 [data-bs-theme="dark"] {
-  --glass-bg: rgba(0, 0, 0, 0.2);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --text-primary: #f9fafb;
-  --text-secondary: #d1d5db;
-  --surface-primary: rgba(17, 24, 39, 0.8);
-  --surface-secondary: rgba(31, 41, 55, 0.6);
-  --bg-primary: rgba(0, 0, 0, 0.4);
-  --border-color: rgba(255, 255, 255, 0.15);
+  --glass-bg: rgba(51, 65, 85, 0.3); /* Even lighter dark background */
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --text-primary: #f8fafc; /* Softer white for text */
+  --text-secondary: #e2e8f0; /* Much lighter secondary text */
+  --surface-primary: rgba(71, 85, 105, 0.6); /* Lighter surface with more opacity */
+  --surface-secondary: rgba(100, 116, 139, 0.4); /* Even lighter secondary surface */
+  --bg-primary: rgba(51, 65, 85, 0.2); /* Much lighter primary background */
+  --border-color: rgba(255, 255, 255, 0.25); /* More visible borders */
 }

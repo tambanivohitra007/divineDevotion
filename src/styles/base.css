@@ -11,6 +11,12 @@ body {
   overflow-x: hidden;
 }
 
+/* Dark theme body background override */
+[data-bs-theme="dark"] body {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+  background-attachment: fixed;
+}
+
 #app {
   min-height: 100vh;
   background: var(--bg-primary);
@@ -60,6 +66,23 @@ h1, h2, h3, h4, h5, h6 {
 #topicInput {
   font-size: 14px;
   font-style: italic;
+}
+
+/* Enhanced paragraph spacing and typography */
+.devotion-paragraph {
+  margin-bottom: 1.25rem;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.devotion-paragraph:first-child {
+  margin-top: 0;
+}
+
+.devotion-paragraph:last-child {
+  margin-bottom: 0;
 }
 
 /* Cards and Surfaces */
