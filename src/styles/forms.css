@@ -273,7 +273,6 @@
   font-weight: 500;
   flex: 1;
   text-align: center;
-  min-width: 140px;
 }
 
 .content-type-selector .btn.active {
@@ -294,7 +293,7 @@
 
 /* Bottom Input Area */
 .bottom-input-area {
-  position: fixed;
+  position: fixed !important;
   bottom: 0;
   left: 350px;
   right: 0;
