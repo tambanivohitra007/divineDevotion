@@ -45,6 +45,7 @@
     margin-left: 0 !important;
     width: 100%;
     padding-top: 1rem;
+    padding-bottom: 220px;
   }
 
   /* Mobile header auto-hide functionality */
@@ -80,11 +81,10 @@
 
   .card-body, .card-header {
     padding: 1.5rem;
-    padding-bottom: 60px;
   }
 
   .current-devotion-card {
-    margin-bottom: 1rem;
+    margin-bottom: 4rem;
   }
 
   /* Mobile Form Controls */
@@ -104,10 +104,6 @@
     margin-bottom: 1.5rem !important;
   }
 
-  .placeholder-section {
-    padding: 2.5rem 1.5rem !important;
-    border-radius: 20px;
-  }
 
   /* Mobile Actions Toolbar */
   .actions-toolbar {
@@ -127,16 +123,16 @@
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
-    background: var(--glass-bg) !important;
+    /* background: var(--glass-bg) !important;
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
-    border-top: 1px solid var(--glass-border) !important;
+    border-top: 1px solid var(--glass-border) !important; */
     padding: 1rem 0 !important;
-    z-index: 1000 !important;
+    /* z-index: 1000 !important;
     box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1) !important;
     transform: translateY(0) !important;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease !important;
-    opacity: 1 !important;
+    opacity: 1 !important; */
   }  
   
   /* Auto-hide bottom input area during scrolling on mobile */
@@ -269,6 +265,7 @@
   .main-content {
     margin-left: 300px;
     padding: 1.5rem;
+    padding-bottom: 180px;
   }
   #app.sidebar-collapsed .main-content {
     margin-left: 70px;
@@ -314,6 +311,7 @@
   .main-content {
     margin-left: 400px;
     padding: 3rem;
+    padding-bottom: 180px;
   }
   .bottom-input-area {
     left: 400px;
@@ -342,6 +340,7 @@
 
   .current-devotion-card {
     max-width: 1100px;
+    margin-bottom: 4rem;
   }
 
   .input-container {

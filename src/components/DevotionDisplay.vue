@@ -120,6 +120,7 @@ const formattedDevotionText = computed(() => {
   const text = props.devotion.text;
   if (!text) return '';
 
+  // The text is already processed by App.vue, so we just need to handle Bible verse linking
   // Create a temporary DOM element to safely parse and process the HTML
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = text;
