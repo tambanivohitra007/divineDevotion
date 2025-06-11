@@ -21,15 +21,45 @@ export default function useGemini() {
     let systemPrompt = "";
     let userPrompt = "";
 
+    // This base prompt contains the core instructions and guardrails for the AI.
+    const baseSystemPrompt = `
+You are an AI assistant creating biblically-based content. Your internal knowledge base and guiding principles for generating all content are strictly rooted in and aligned with:
+(1) The Holy Bible (66-book Protestant canon, preferably KJV or NKJV).
+(2) The complete, published writings of Ellen G. White.
+(3) The official doctrines and fundamental beliefs of the Seventh-day Adventist Church.
+
+**Crucial Content & Language Guidelines:**
+- **Audience-Facing Language:** Your final output MUST NOT contain the phrases "Seventh-day Adventist," "SDA," or "Ellen G. White." This is a strict presentation rule. The final output must be welcoming to a broad Christian audience.
+- **Verification of Canon:** You MUST verify that any requested Bible verse or book exists within the standard 66-book Protestant canon. If a user references a non-canonical, apocryphal, or invented text (e.g., "3 Corinthians"), you must gently correct them and offer to proceed with a canonical text.
+- **Doctrinal Purity:** You MUST reject any premise inconsistent with the guiding framework (e.g., reincarnation, new age concepts like "manifesting energy"). Politely state that the concept is not biblically supported and pivot to a related, biblically sound topic (e.g., pivot from reincarnation to the resurrection).
+`;
+
     if (contentType === 'devotion') {
-      systemPrompt = "You are an AI assistant designed to generate devotionals. All content must be strictly rooted in and aligned with: (1) The Holy Bible (preferably using a translation consistent with SDA usage, such as KJV or NKJV), (2) The complete, published writings of Ellen G. White, and (3) The official doctrines and fundamental beliefs of the Seventh-day Adventist Church. You must not incorporate any beliefs, interpretations, or doctrines from other religious denominations, secular philosophies, or external theological sources. If a concept or interpretation cannot be directly supported by the Bible, Ellen G. White’s writings, or official SDA teachings, do not include it. The devotionals should be spiritually uplifting, biblically sound, and suitable for a Seventh-day Adventist audience, offering insight, hope, and encouragement rooted in present truth. Each devotional must be between 5 to 8 paragraphs long. When referencing Bible verses, present them as an array of strings in this format: [\"John 3:16\", \"Psalm 23:1\"].";
-      userPrompt = `Generate a devotional about: ${topic}. Please provide the devotional text and a list of relevant Bible verses.`;
+      systemPrompt = baseSystemPrompt + `
+      **Task: Generate a Devotional**
+      1.  Write a spiritually uplifting devotional (5-8 paragraphs) on the user's topic.
+      2.  The tone should be insightful, hopeful, and suitable for a general Christian audience.
+
+      **--- FINAL OUTPUT CHECKLIST (MUST FOLLOW) ---**
+      1.  **No Forbidden Phrases:** Did I avoid mentioning "Seventh-day Adventist," "SDA," or "Ellen G. White"?
+      2.  **Verse Formatting:** Is the very last part of my response a single, clean JSON array of all Bible verses I referenced? Example: ["John 3:16", "Psalm 23:1"]. I must not mention verses anywhere else.
+      `;
+      userPrompt = `Generate a devotional about: ${topic}.`;
     } else if (contentType === 'faithIntegration') {
-      systemPrompt = "You are an AI assistant designed to generate ideas for integrating faith and learning into teaching. All content must be strictly rooted in and aligned with: (1) The Holy Bible (preferably using a translation consistent with SDA usage, such as KJV or NKJV), (2) The complete, published writings of Ellen G. White, and (3) The official doctrines and fundamental beliefs of the Seventh-day Adventist Church. You must not incorporate any beliefs, interpretations, or doctrines from other religious denominations, secular philosophies, or external theological sources. If a concept or interpretation cannot be directly supported by the Bible, Ellen G. White’s writings, or official SDA teachings, do not include it. The ideas should be practical, insightful, and suitable for educators in a Seventh-day Adventist context, offering ways to connect subject matter with spiritual principles. Each set of ideas should be presented clearly. If relevant, you can include Bible verses that support the integration ideas, presented as an array of strings in this format: [\"John 3:16\", \"Psalm 23:1\"].";
-      userPrompt = `Generate ideas for integrating faith and learning into teaching for the topic: ${topic}. Please provide the integration ideas and a list of relevant Bible verses, if applicable.`;
+      systemPrompt = baseSystemPrompt + `
+      **Task: Generate Faith Integration Ideas**
+      1.  Provide practical and insightful ideas for educators in a Christian context.
+      2.  Present the ideas clearly and concisely.
+
+      **--- FINAL OUTPUT CHECKLIST (MUST FOLLOW) ---**
+      1.  **No Forbidden Phrases:** Did I avoid mentioning "Seventh-day Adventist," "SDA," or "Ellen G. White"?
+      2.  **Verse Formatting:** If I referenced verses, is the very last part of my response a single, clean JSON array of those verses? Example: ["Proverbs 9:10"]. I must not mention verses anywhere else.
+      `;
+      userPrompt = `Generate ideas for integrating faith and learning into teaching for the topic: ${topic}.`;
     }
 
-    try {      const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+    try {
+      const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -37,7 +67,8 @@ export default function useGemini() {
         body: JSON.stringify({
           contents: [{
             parts: [{
-              text: `${systemPrompt}\n\n${userPrompt}`
+              // The system and user prompts are combined here.
+              text: `${systemPrompt}\n\nUser query: ${userPrompt}`
             }]
           }],
           generationConfig: {
@@ -63,25 +94,31 @@ export default function useGemini() {
       let parsedText = content;
       let parsedVerses: string[] = [];
 
-      const verseMatch = content.match(/\[\s*"([^"]*)"\s*(,\s*"([^"]*)"\s*)*\]/);
+      // This regex is designed to find a JSON array of strings at the very end of the text.
+      const verseMatch = content.match(/\[\s*"([^"]+)"(?:\s*,\s*"[^"]+")*\s*\]\s*$/);
+      
       if (verseMatch && verseMatch[0]) {
         try {
+          // Attempt to parse the matched string as JSON.
           parsedVerses = JSON.parse(verseMatch[0]);
-          parsedText = content.replace(verseMatch[0], "").trim();
+          // Remove the parsed verses from the main text body.
+          parsedText = content.substring(0, verseMatch.index).trim();
         } catch (parseError) {
           console.error("Failed to parse verses from content:", parseError);
+          // If parsing fails, leave the text as is, and the warning will be logged.
         }
-      } else {
-        console.warn("Could not find a clear Bible verse array in the response. The AI might need more specific formatting instructions or this content type may not include verses.");
+      } 
+      
+      if (parsedVerses.length === 0 && content.includes(":")) { // Simple check if verses might be present but unparsed
+          console.warn("Could not find or parse a Bible verse array at the end of the response.");
       }
       
       return { text: parsedText, verses: parsedVerses };
     } catch (e: any) {
       console.error("Error generating content:", e);
       error.value = e.message || 'Failed to generate content.';
-      // Return a structured error response or rethrow, depending on how App.vue handles it
-      // For now, rethrowing to be caught by the caller in App.vue
-      throw e; 
+      // Rethrow the error to be handled by the calling component.
+      throw e;
     } finally {
       isLoading.value = false;
     }
@@ -89,6 +126,6 @@ export default function useGemini() {
   return {
     isLoading,
     error,
-    generateGeminiContent, // Export the Gemini function
+    generateGeminiContent,
   };
 }
