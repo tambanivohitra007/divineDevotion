@@ -24,13 +24,17 @@
   #app.mobile-view:not(.sidebar-collapsed) .sidebar .saved-devotions-list {
     display: block;
   }
-
   /* Mobile sidebar toggle button */
   .sidebar-toggle-btn-main {
-    top: 1rem;
-    left: 1rem;
-    font-size: 1.5rem;
-    padding: 0.75rem;
+    top: 0.75rem;
+    left: 0.75rem;
+    min-width: 42px;
+    min-height: 42px;
+    padding: 0.6rem;
+  }
+  
+  .sidebar-toggle-btn-main i {
+    font-size: 1rem;
   }
 
   /* Mobile sidebar styling adjustments */
@@ -284,19 +288,29 @@
     font-size: 1rem;
   }
 
-  /* Mobile fixed content type button */
+  /* Mobile fixed content type and new content buttons */
   .content-type-button-fixed {
     top: 0.75rem;
     right: 0.75rem;
   }
   
-  .content-type-btn-fixed {
+  .new-content-btn-fixed {
+    top: 0.75rem;
+    right: 4rem; /* Position to the left of content type button on mobile */
     min-width: 42px;
     height: 42px;
     padding: 0.6rem;
   }
   
-  .content-type-btn-fixed i {
+  .content-type-btn-fixed,
+  .new-content-btn-fixed {
+    min-width: 42px;
+    height: 42px;
+    padding: 0.6rem;
+  }
+  
+  .content-type-btn-fixed i,
+  .new-content-btn-fixed i {
     font-size: 1rem;
   }
   

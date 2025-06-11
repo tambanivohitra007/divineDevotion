@@ -129,7 +129,6 @@
   border-radius: 12px;
   padding: 0.75rem;
   transition: var(--transition-smooth);
-  font-size: 1.5rem;
   box-shadow: var(--shadow-card);
   min-width: 48px;
   min-height: 48px;
@@ -138,12 +137,37 @@
   justify-content: center;
 }
 
-.sidebar-toggle-btn-main:hover {
-  background: var(--surface-primary);
-  border-color: var(--divine-primary);
+.sidebar-toggle-btn-main i {
+  font-size: 1.1rem;
   color: var(--divine-primary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-glow);
+}
+
+.sidebar-toggle-btn-main:hover {
+  border-color: var(--divine-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+.sidebar-toggle-btn-main:focus,
+.sidebar-toggle-btn-main:active {
+  border-color: var(--divine-primary);
+  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+  background: var(--glass-bg);
+  color: var(--text-primary);
+}
+
+/* Dark mode adjustments for sidebar toggle button */
+[data-bs-theme="dark"] .sidebar-toggle-btn-main {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+[data-bs-theme="dark"] .sidebar-toggle-btn-main:focus,
+[data-bs-theme="dark"] .sidebar-toggle-btn-main:active {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--divine-primary);
+  color: #ffffff;
 }
 
 /* Position main toggle button correctly when sidebar is collapsed */

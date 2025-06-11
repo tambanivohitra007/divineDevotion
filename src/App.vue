@@ -63,10 +63,19 @@
       <header class="text-center mb-4" :class="{ 'header-hidden': !showHeader }">
         <h1 class="display-4 app-title">DivineDevotion</h1>
         <p class="lead">Your AI-powered spiritual companion</p>
-      </header>
-
-      <!-- Content Type Button - Fixed Top Right -->
+      </header>      <!-- Content Type Button - Fixed Top Right -->
       <div class="content-type-button-fixed">
+        <!-- New Content Button -->
+        <button
+          type="button"
+          class="btn new-content-btn-fixed"
+          @click="handleCreateNew"
+          title="Create New Content"
+        >
+          <i class="bi bi-plus-lg"></i>
+        </button>
+        
+        <!-- Content Type Toggle Button -->
         <button
           type="button"
           class="btn content-type-btn-fixed"
@@ -704,6 +713,32 @@ const closeDropdownOnClickOutside = (event: Event) => {
     if (button && dropdown && !button.contains(target) && !dropdown.contains(target)) {
       showContentTypeDropdown.value = false;
     }
+  }
+};
+
+// Handle creating new content
+const handleCreateNew = () => {
+  // Clear current content and create fresh content
+  const newId = `content-${Date.now()}`;
+  currentContent.value = {
+    id: newId,
+    text: '',
+    verses: [],
+    topic: '',
+    type: selectedContentType.value,
+  };
+  
+  // Clear the input field
+  topicInput.value = '';
+  
+  // Close the content type dropdown if it's open
+  showContentTypeDropdown.value = false;
+  
+  // Focus on the input field for immediate typing
+  if (textareaRef.value && !showBibleCardGenerator.value) {
+    setTimeout(() => {
+      textareaRef.value?.focus();
+    }, 100);
   }
 };
 
