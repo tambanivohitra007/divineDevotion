@@ -59,12 +59,61 @@
     </div>    <div class="main-content">
       <!-- This button is now primarily for opening sidebar on mobile, or expanding on desktop if it was collapsed -->      <button class="btn btn-sm btn-outline-light sidebar-toggle-btn-main" @click="toggleSidebar" v-if="isSidebarCollapsed" title="Open Sidebar">
          <i class="bi bi-list"></i>
-      </button>
-        <!-- Header -->
+      </button>      <!-- Header -->
       <header class="text-center mb-4" :class="{ 'header-hidden': !showHeader }">
         <h1 class="display-4 app-title">DivineDevotion</h1>
         <p class="lead">Your AI-powered spiritual companion</p>
-      </header><!-- Main Content Area -->
+      </header>
+
+      <!-- Content Type Button - Fixed Top Right -->
+      <div class="content-type-button-fixed">
+        <button
+          type="button"
+          class="btn content-type-btn-fixed"
+          @click="toggleContentTypeDropdown"
+          :title="currentContentTypeLabel"
+          ref="contentTypeButtonRef"
+        >
+          <i :class="currentContentTypeIcon"></i>
+        </button>
+        
+        <!-- Dropdown Menu -->
+        <div 
+          v-if="showContentTypeDropdown" 
+          class="content-type-dropdown-menu-fixed"
+          ref="dropdownMenuRef"
+        >
+          <button
+            type="button"
+            class="dropdown-item"
+            :class="{ active: contentTypeSelection === 'devotion' }"
+            @click="selectContentType('devotion')"
+          >
+            <i class="bi bi-stars me-2"></i>
+            <span>Devotion</span>
+          </button>
+          <button
+            type="button"
+            class="dropdown-item"
+            :class="{ active: contentTypeSelection === 'faithIntegration' }"
+            @click="selectContentType('faithIntegration')"
+          >
+            <i class="bi bi-lightbulb-fill me-2"></i>
+            <span>Faith & Learning</span>
+          </button>
+          <button
+            type="button"
+            class="dropdown-item"
+            :class="{ active: contentTypeSelection === 'bibleCard' }"
+            @click="selectContentType('bibleCard')"
+          >
+            <i class="bi bi-card-image me-2"></i>
+            <span>Bible Cards</span>
+          </button>
+        </div>
+      </div>
+
+<!-- Main Content Area -->
       <div class="content-area-wrapper">
         <!-- Top fade overlay -->
         <div 
@@ -142,22 +191,7 @@
         ></div>
       </div>    <!-- Bottom Input Area (Gemini-like) -->
     <div class="bottom-input-area" :class="{ 'input-hidden': !showBottomInput }">
-      <div class="input-container">        <!-- Content Type Selector -->
-        <div class="content-type-selector mb-3">
-          <div class="btn-group w-100" role="group" aria-label="Content type selection">            <input type="radio" class="btn-check" name="contentType" id="devotion-radio" autocomplete="off" :checked="selectedContentType === 'devotion' && !showBibleCardGenerator" @change="selectedContentType = 'devotion'; showBibleCardGenerator = false">
-            <label class="btn btn-outline-primary" for="devotion-radio">
-              <i class="bi bi-stars me-2"></i>Devotion
-            </label>
-
-            <input type="radio" class="btn-check" name="contentType" id="faithIntegration-radio" autocomplete="off" :checked="selectedContentType === 'faithIntegration' && !showBibleCardGenerator" @change="selectedContentType = 'faithIntegration'; showBibleCardGenerator = false">
-            <label class="btn btn-outline-primary" for="faithIntegration-radio">
-              <i class="bi bi-lightbulb-fill me-2"></i>Faith & Learning
-            </label><input type="radio" class="btn-check" name="contentType" id="bibleCard-radio" autocomplete="off" :checked="showBibleCardGenerator" @change="showBibleCardGenerator = true; selectedContentType = 'devotion'">
-            <label class="btn btn-outline-primary" for="bibleCard-radio">
-              <i class="bi bi-card-image me-2"></i>Bible Cards
-            </label>
-          </div>
-        </div>        <!-- Input Form (hidden when Bible Card Generator is selected) -->
+      <div class="input-container">        <!-- Input Form (hidden when Bible Card Generator is selected) -->
         <form v-if="!showBibleCardGenerator" @submit.prevent="handleGenerateContent" class="input-form">
           <div class="input-group">
             <textarea
@@ -205,6 +239,17 @@ const selectedContentType = ref<'devotion' | 'faithIntegration'>('devotion');
 const showBibleCardGenerator = ref(false);
 const topicInput = ref(''); // Renamed from devotionTopic
 
+// Computed property for dropdown selection that combines selectedContentType and showBibleCardGenerator
+const contentTypeSelection = computed({
+  get: () => {
+    if (showBibleCardGenerator.value) return 'bibleCard';
+    return selectedContentType.value;
+  },
+  set: () => {
+    // This will be handled by handleContentTypeChange method
+  }
+});
+
 const currentContent = ref<StoredContent>({
   id: '',
   text: '',
@@ -227,6 +272,13 @@ const textareaRef = ref<HTMLTextAreaElement>();
 
 // Ref for the content area
 const contentAreaRef = ref<HTMLElement>();
+
+// Refs for content type dropdown
+const contentTypeButtonRef = ref<HTMLButtonElement>();
+const dropdownMenuRef = ref<HTMLDivElement>();
+
+// Content type dropdown state
+const showContentTypeDropdown = ref(false);
 
 // Fade effects state
 const showTopFade = ref(false);
@@ -282,6 +334,9 @@ onMounted(() => {
     isSidebarCollapsed.value = true; // Ensure sidebar is collapsed on mobile initial load
   }
   window.addEventListener('resize', checkMobile);
+  
+  // Add click outside listener for dropdown
+  document.addEventListener('click', closeDropdownOnClickOutside);
 
   // Theme initialization
   const theme = isDarkMode.value ? 'dark' : 'light';
@@ -290,6 +345,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', checkMobile);
+  document.removeEventListener('click', closeDropdownOnClickOutside);
 });
 
 // Computed properties for dynamic UI text
@@ -593,6 +649,62 @@ const truncateText = (text: string, length: number) => {
 
 const toggleSidebar = () => {
   isSidebarCollapsed.value = !isSidebarCollapsed.value;
+};
+
+// Computed properties for content type button
+const currentContentTypeIcon = computed(() => {
+  switch (contentTypeSelection.value) {
+    case 'devotion':
+      return 'bi bi-stars';
+    case 'faithIntegration':
+      return 'bi bi-lightbulb-fill';
+    case 'bibleCard':
+      return 'bi bi-card-image';
+    default:
+      return 'bi bi-stars';
+  }
+});
+
+const currentContentTypeLabel = computed(() => {
+  switch (contentTypeSelection.value) {
+    case 'devotion':
+      return 'Devotion';
+    case 'faithIntegration':
+      return 'Faith & Learning';
+    case 'bibleCard':
+      return 'Bible Cards';
+    default:
+      return 'Devotion';
+  }
+});
+
+// Content type dropdown methods
+const toggleContentTypeDropdown = () => {
+  showContentTypeDropdown.value = !showContentTypeDropdown.value;
+};
+
+const selectContentType = (type: string) => {
+  if (type === 'bibleCard') {
+    showBibleCardGenerator.value = true;
+    selectedContentType.value = 'devotion'; // Default fallback
+  } else {
+    showBibleCardGenerator.value = false;
+    selectedContentType.value = type as 'devotion' | 'faithIntegration';
+  }
+  showContentTypeDropdown.value = false;
+};
+
+// Close dropdown when clicking outside
+const closeDropdownOnClickOutside = (event: Event) => {
+  if (showContentTypeDropdown.value) {
+    const target = event.target as Node;
+    const button = contentTypeButtonRef.value;
+    const dropdown = dropdownMenuRef.value;
+    
+    if (button && dropdown && !button.contains(target) && !dropdown.contains(target)) {
+      showContentTypeDropdown.value = false;
+    }
+  }
 };
 
 // Auto-resize textarea function for bottom input
