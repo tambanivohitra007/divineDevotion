@@ -172,8 +172,7 @@
                 <i class="bi bi-share-fill me-2"></i>Share
               </button>
             </div>
-          </div>
-        </div>      </div>      <!-- Placeholder for when nothing is generated and not loading, and no error (not shown for Bible Card Generator) -->
+          </div>      </div>      </div>      <!-- Placeholder for when nothing is generated and not loading, and no error (not shown for Bible Card Generator) -->
       <section v-else-if="!isLoading && !currentContent.text && !generationError && !showBibleCardGenerator" class="text-center placeholder-section mx-auto p-5 rounded welcome-area">
         <div class="welcome-content">
           <i class="bi bi-lightbulb-fill welcome-icon"></i>
@@ -181,6 +180,9 @@
           <p class="lead welcome-text">Generate personalized devotions and faith-based learning ideas</p>
           <p class="text-muted">Choose a content type and enter your topic below to begin</p>
         </div>
+        
+        <!-- Prompt Gallery Component -->
+        <PromptGallery @prompt-selected="handlePromptSelection" />
       </section>
 
       <!-- Alerts -->
@@ -240,6 +242,7 @@
 import { ref, computed, watch, watchEffect, onMounted, onUnmounted } from 'vue';
 import DevotionDisplay from './components/DevotionDisplay.vue';
 import BibleCardGenerator from './components/BibleCardGenerator.vue';
+import PromptGallery from './components/PromptGallery.vue';
 import useGemini from './composables/useGemini';
 // Correctly import useContentStorage and StoredContent type
 import useContentStorage, { type StoredContent } from './composables/useDevotions';
@@ -600,11 +603,21 @@ const formatContentText = (text: string, contentType: 'devotion' | 'faithIntegra
       const label = specialSectionMatch[1];
       const content = specialSectionMatch[2];
       return `<div class="devotion-prayer-section"><strong class="prayer-label">${label}</strong> ${content}</div>`;
-    }
-    
-    // Step 4: Handle markdown-style formatting
-    processed = processed.replace(/\*\*(.*?)\*\*/g, '<strong class="text-emphasis">$1</strong>');
-    processed = processed.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em class="text-accent">$1</em>');
+    }    // Step 4: Handle markdown-style formatting
+    processed = processed.replace(/\*\*(.*?)\*\*/g, (_match, content) => {
+      // Properly escape HTML entities in the content to prevent malformed tags
+      const sanitizedContent = content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').trim();
+      // Additional safety check: ensure content is not empty
+      if (!sanitizedContent) return '';
+      return `<strong class="text-emphasis">${sanitizedContent}</strong>`;
+    });
+    processed = processed.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, (_match, content) => {
+      // Properly escape HTML entities in the content to prevent malformed tags
+      const sanitizedContent = content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').trim();
+      // Additional safety check: ensure content is not empty
+      if (!sanitizedContent) return '';
+      return `<em class="text-accent">${sanitizedContent}</em>`;
+    });
     
     // Step 5: Handle quoted text
     processed = processed.replace(/"([^"]{1,79})"/g, '<span class="devotion-quote-inline">"$1"</span>');
@@ -641,10 +654,13 @@ const formatContentText = (text: string, contentType: 'devotion' | 'faithIntegra
   
   // Join all paragraphs
   let result = processedParagraphs.join('');
-  
-  // Step 9: Clean up any issues
+    // Step 9: Clean up any issues
   result = result.replace(/<p class="devotion-paragraph">\s*<\/p>/g, '');
   result = result.replace(/(<br>\s*){3,}/g, '<br><br>');
+  
+  // Additional cleanup: Fix any malformed HTML tags that might cause issues
+  result = result.replace(/text-emphasis">\s*</g, 'text-emphasis">'); // Remove orphaned closing tags
+  result = result.replace(/text-accent">\s*</g, 'text-accent">'); // Remove orphaned closing tags
   
   return result;
 };
@@ -738,6 +754,27 @@ const handleCreateNew = () => {
   if (textareaRef.value && !showBibleCardGenerator.value) {
     setTimeout(() => {
       textareaRef.value?.focus();
+    }, 100);
+  }
+};
+
+// Handle prompt selection from gallery
+const handlePromptSelection = (text: string, type: 'devotion' | 'faithIntegration') => {
+  // Set the content type first
+  selectedContentType.value = type;
+  showBibleCardGenerator.value = false;
+  
+  // Set the prompt text in the input field
+  topicInput.value = text;
+  
+  // Close content type dropdown if open
+  showContentTypeDropdown.value = false;
+  
+  // Focus on the input field and auto-resize
+  if (textareaRef.value) {
+    setTimeout(() => {
+      textareaRef.value?.focus();
+      autoResizeTextarea();
     }, 100);
   }
 };

@@ -13,7 +13,7 @@ body {
 
 /* Dark theme body background override */
 [data-bs-theme="dark"] body {
-  background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
   background-attachment: fixed;
 }
 
@@ -145,12 +145,13 @@ h1, h2, h3, h4, h5, h6 {
 /* Welcome Section */
 .welcome-area {
   text-align: center;
-  padding: 4rem 2rem;
+  /* padding: 4rem 2rem; */
   min-height: calc(100vh - 400px);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  margin-top: -50px;
 }
 
 .welcome-icon {

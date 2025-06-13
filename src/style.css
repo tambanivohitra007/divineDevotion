@@ -1,34 +1,28 @@
 /* Modern Divine Devotion Styles */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
-:root {
-  /* Typography */
+:root {  /* Typography */
   --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-display: 'Playfair Display', serif;
-  
-  /* Modern Color Palette */
-  --divine-purple: #6366f1;
-  --divine-blue: #3b82f6;
-  --divine-cyan: #06b6d4;
-  --divine-emerald: #10b981;
-  --divine-amber: #f59e0b;
+  --font-display: 'Playfair Display', serif;  /* Modern Color Palette - Teal to Purple Gradient Theme */
+  --divine-purple: #464e74;
+  --divine-blue: #5e738b;
+  --divine-cyan: #7b98a9;  --divine-emerald: #9accd6;
+  --divine-amber: #b4e7dc;
   --divine-rose: #f43f5e;
-  
-  /* Glass morphism colors */
+    /* Glass morphism colors */
   --glass-bg-light: rgba(255, 255, 255, 0.1);
-  --glass-bg-dark: rgba(0, 0, 0, 0.1);
+  --glass-bg-dark: rgba(15, 23, 42, 0.4);
   --glass-border-light: rgba(255, 255, 255, 0.2);
   --glass-border-dark: rgba(255, 255, 255, 0.1);
-  
   /* Gradient definitions */
   --gradient-divine: linear-gradient(135deg, var(--divine-purple) 0%, var(--divine-blue) 50%, var(--divine-cyan) 100%);
   --gradient-sunset: linear-gradient(135deg, var(--divine-rose) 0%, var(--divine-amber) 100%);
-  --gradient-emerald: linear-gradient(135deg, var(--divine-emerald) 0%, var(--divine-cyan) 100%);
-  --gradient-twilight: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-emerald: linear-gradient(135deg, var(--divine-emerald) 0%, var(--divine-cyan) 100%);  --gradient-twilight: linear-gradient(135deg, #b4e7dc 0%, #464e74 100%);
+  --gradient-fire: linear-gradient(45deg, #b4e7dc 0%, #9accd6 25%, #7b98a9 50%, #5e738b 75%, #464e74 100%);
   
   /* Shadows */
-  --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.3);
-  --shadow-divine: 0 20px 40px rgba(99, 102, 241, 0.2);
+  --shadow-glow: 0 0 30px rgba(123, 152, 169, 0.3);
+  --shadow-divine: 0 20px 40px rgba(70, 78, 116, 0.2);
   --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.1);
   
   /* Base settings */
@@ -67,11 +61,10 @@ body::after {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  background: 
-    radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+  height: 100%;  background: 
+    radial-gradient(circle at 20% 50%, rgba(180, 231, 220, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(154, 204, 214, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(123, 152, 169, 0.3) 0%, transparent 50%);
   animation: float 20s ease-in-out infinite;
   z-index: -1;
 }
@@ -233,13 +226,12 @@ a:hover {
     background: var(--glass-bg-dark);
     border-color: var(--glass-border-dark);
   }
-  
   .card {
     background: var(--glass-bg-dark);
     border-color: var(--glass-border-dark);
   }
   
   body::before {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
   }
 }

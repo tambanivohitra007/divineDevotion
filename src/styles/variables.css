@@ -2,28 +2,26 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 
 /* Modern Divine Devotion App Styles */
-:root {
-  /* Color System */
-  --divine-primary: #6366f1;
-  --divine-secondary: #8b5cf6;
-  --divine-accent: #06b6d4;
-  --divine-success: #10b981;
-  --divine-warning: #f59e0b;
+:root {  /* Color System - Teal to Purple Gradient Theme */
+  --divine-primary: #b4e7dc;
+  --divine-secondary: #7b98a9;
+  --divine-accent: #464e74;
+  --divine-success: #22c55e;
+  --divine-warning: #eab308;
   --divine-error: #ef4444;
   
   /* Glass Morphism */
   --glass-bg: rgba(255, 255, 255, 0.1);
   --glass-border: rgba(255, 255, 255, 0.2);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  
-  /* Gradients */
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);  /* Gradients */
   --gradient-divine: linear-gradient(135deg, var(--divine-primary) 0%, var(--divine-secondary) 50%, var(--divine-accent) 100%);
   --gradient-success: linear-gradient(135deg, var(--divine-success) 0%, var(--divine-accent) 100%);
-  --gradient-glow: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
+  --gradient-sunset: linear-gradient(135deg, #f97316 0%, #dc2626 50%, #b91c1c 100%);  --gradient-glow: linear-gradient(135deg, rgba(180, 231, 220, 0.2) 0%, rgba(70, 78, 116, 0.2) 100%);
+  --gradient-sunset: linear-gradient(135deg, #b4e7dc 0%, #9accd6 50%, #7b98a9 100%);
   
   /* Shadows & Effects */
-  --shadow-divine: 0 20px 40px rgba(99, 102, 241, 0.3);
-  --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.4);
+  --shadow-divine: 0 20px 40px rgba(123, 152, 169, 0.3);
+  --shadow-glow: 0 0 30px rgba(70, 78, 116, 0.4);
   --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.1);
   
   /* Animation */
@@ -44,12 +42,12 @@
 }
 
 [data-bs-theme="dark"] {
-  --glass-bg: rgba(51, 65, 85, 0.3); /* Even lighter dark background */
-  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-bg: rgba(15, 23, 42, 0.4); /* Much darker background */
+  --glass-border: rgba(255, 255, 255, 0.1);
   --text-primary: #f8fafc; /* Softer white for text */
   --text-secondary: #e2e8f0; /* Much lighter secondary text */
-  --surface-primary: rgba(71, 85, 105, 0.6); /* Lighter surface with more opacity */
-  --surface-secondary: rgba(100, 116, 139, 0.4); /* Even lighter secondary surface */
-  --bg-primary: rgba(51, 65, 85, 0.2); /* Much lighter primary background */
-  --border-color: rgba(255, 255, 255, 0.25); /* More visible borders */
+  --surface-primary: rgba(30, 41, 59, 0.7); /* Darker surface with more opacity */
+  --surface-secondary: rgba(51, 65, 85, 0.5); /* Darker secondary surface */
+  --bg-primary: rgba(15, 23, 42, 0.3); /* Much darker primary background */
+  --border-color: rgba(255, 255, 255, 0.15); /* Subtle borders */
 }
