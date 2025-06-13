@@ -562,9 +562,8 @@ const formattedContentForDisplay = computed(() => { // Renamed from formattedDev
   if (!currentContent.value.text) return currentContent.value;
   
   let text = currentContent.value.text;
-  
-  // Enhanced text formatting for better readability
-  text = formatContentText(text, currentContent.value.type);
+    // Enhanced text formatting for better readability
+  text = formatContentText(text);
 
   return {
     ...currentContent.value,
@@ -573,94 +572,34 @@ const formattedContentForDisplay = computed(() => { // Renamed from formattedDev
   };
 });
 
-// Enhanced text formatting function
-const formatContentText = (text: string, contentType: 'devotion' | 'faithIntegration') => {
+// Simplified text formatting function - no complex formatting
+const formatContentText = (text: string) => {
   if (!text) return '';
   
-  // Escape any existing HTML to prevent conflicts
-  let formattedText = text;
+  // Clean up any existing malformed HTML fragments
+  let cleanText = text
+    .replace(/"text-emphasis">/g, '')
+    .replace(/text-emphasis">/g, '')
+    .replace(/"text-accent">/g, '')
+    .replace(/text-accent">/g, '')
+    .replace(/class="[^"]*">/g, '');
   
-  // Step 1: Split into paragraphs first (double line breaks)
-  const paragraphs = formattedText.split(/\n\s*\n/).filter(p => p.trim());
+  // Split into paragraphs and wrap each in a simple paragraph tag
+  const paragraphs = cleanText.split(/\n\s*\n/).filter(p => p.trim());
   
-  const processedParagraphs = paragraphs.map((paragraph, index) => {
-    let processed = paragraph.trim();
+  const processedParagraphs = paragraphs.map(paragraph => {
+    const trimmed = paragraph.trim();
+    if (!trimmed) return '';
     
-    // Step 2: Handle title formatting for devotions (first paragraph only)
-    if (index === 0 && contentType === 'devotion') {
-      const titleMatch = processed.match(/^(?:\*\*([^*]+)\*\*|([^:]+?))\s*(:|—|--)\s*/);
-      if (titleMatch) {
-        const titleContent = titleMatch[1] || titleMatch[2];
-        const separator = titleMatch[3];
-        processed = processed.replace(titleMatch[0], '');
-        return `<h4 class="devotion-title-intro mb-3">${titleContent.trim()}${separator}</h4><p class="devotion-paragraph">${processed}</p>`;
-      }
-    }
+    // Replace line breaks with <br> tags within paragraphs
+    const withBreaks = trimmed.replace(/\n/g, '<br>');
     
-    // Step 3: Check if this is a special section (prayer, reflection, etc.)
-    const specialSectionMatch = processed.match(/^(Prayer:|Let us pray:|Reflection:|Application:|Consider:|Today's Challenge:)\s*([\s\S]*)/i);
-    if (specialSectionMatch) {
-      const label = specialSectionMatch[1];
-      const content = specialSectionMatch[2];
-      return `<div class="devotion-prayer-section"><strong class="prayer-label">${label}</strong> ${content}</div>`;
-    }    // Step 4: Handle markdown-style formatting
-    processed = processed.replace(/\*\*(.*?)\*\*/g, (_match, content) => {
-      // Properly escape HTML entities in the content to prevent malformed tags
-      const sanitizedContent = content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').trim();
-      // Additional safety check: ensure content is not empty
-      if (!sanitizedContent) return '';
-      return `<strong class="text-emphasis">${sanitizedContent}</strong>`;
-    });
-    processed = processed.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, (_match, content) => {
-      // Properly escape HTML entities in the content to prevent malformed tags
-      const sanitizedContent = content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').trim();
-      // Additional safety check: ensure content is not empty
-      if (!sanitizedContent) return '';
-      return `<em class="text-accent">${sanitizedContent}</em>`;
-    });
-    
-    // Step 5: Handle quoted text
-    processed = processed.replace(/"([^"]{1,79})"/g, '<span class="devotion-quote-inline">"$1"</span>');
-    processed = processed.replace(/"([^"]{80,})"/g, '<blockquote class="devotion-quote">$1</blockquote>');
-    
-    // Step 6: Handle lists
-    const lines = processed.split('\n');    const processedLines = lines.map(line => {
-      line = line.trim();
-      // Numbered lists
-      if (/^\d+\.\s+/.test(line)) {
-        const match = line.match(/^(\d+\.\s+)(.*)$/);
-        if (match) {
-          return `<div class="devotion-list-item"><span class="list-number">${match[1]}</span>${match[2]}</div>`;
-        }
-      }
-      // Bullet points
-      if (/^[-•]\s+/.test(line)) {
-        const content = line.replace(/^[-•]\s+/, '');
-        return `<div class="devotion-list-item"><span class="list-bullet">•</span> ${content}</div>`;
-      }
-      return line;
-    });
-    
-    processed = processedLines.join('<br>');
-    
-    // Step 7: Check if this paragraph contains list items
-    if (processed.includes('<div class="devotion-list-item">')) {
-      return processed; // Don't wrap list items in paragraphs
-    }
-    
-    // Step 8: Wrap in paragraph if not already wrapped
-    return `<p class="devotion-paragraph">${processed}</p>`;
+    return `<p class="devotion-paragraph">${withBreaks}</p>`;
   });
   
-  // Join all paragraphs
+  // Join all paragraphs and clean up any empty ones
   let result = processedParagraphs.join('');
-    // Step 9: Clean up any issues
   result = result.replace(/<p class="devotion-paragraph">\s*<\/p>/g, '');
-  result = result.replace(/(<br>\s*){3,}/g, '<br><br>');
-  
-  // Additional cleanup: Fix any malformed HTML tags that might cause issues
-  result = result.replace(/text-emphasis">\s*</g, 'text-emphasis">'); // Remove orphaned closing tags
-  result = result.replace(/text-accent">\s*</g, 'text-accent">'); // Remove orphaned closing tags
   
   return result;
 };
