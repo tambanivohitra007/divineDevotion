@@ -21,11 +21,16 @@
     "bibleCards": "Cartes Bibliques",
     "devotionShort": "Dévo",
     "ideaShort": "Idée"
-  },
-  "content": {
+  },  "content": {
     "yourDevotion": "Votre Dévotion",
     "yourFaithIdea": "Votre Idée Foi et Apprentissage",
-    "generating": "Génération de votre contenu..."
+    "generating": "Génération de votre contenu...",
+    "shareTitle": "Dévotion",
+    "shareTitleIdea": "Idée Foi et Apprentissage",
+    "sharePrefix": "Une Divine",
+    "sharePrefixDevotion": "Dévotion",
+    "sharePrefixIdea": "Idée",
+    "keyVerses": "Versets Clés :"
   },
   "actions": {
     "saveDevotion": "Sauvegarder la Dévotion",
@@ -48,15 +53,26 @@
     "enterTopic": "Entrez un sujet pour votre dévotion...",
     "enterTopicFaith": "Entrez un sujet pour les idées d'intégration de la foi...",
     "enterVerseReference": "Entrez une référence biblique (ex: Jean 3:16)"
-  },
-  "messages": {
+  },  "messages": {
     "loading": "Génération du contenu...",
     "error": "Une erreur s'est produite lors de la génération du contenu",
     "noResults": "Aucun contenu sauvegardé trouvé",
     "contentSaved": "Contenu sauvegardé avec succès !",
     "contentShared": "Contenu partagé avec succès !",
     "alreadySaved": "Ce contenu est déjà sauvegardé.",
-    "copyFailed": "Échec de la copie du contenu dans le presse-papiers."
+    "copyFailed": "Échec de la copie du contenu dans le presse-papiers.",
+    "shareSuccess": "Contenu partagé avec succès !",
+    "copySuccess": "Contenu copié dans le presse-papiers !",
+    "shareFallback": "Échec du partage, contenu copié dans le presse-papiers !"
+  },
+  "tooltips": {
+    "deleteContent": "Supprimer le contenu",
+    "openSidebar": "Ouvrir la barre latérale",
+    "verseLoading": "Chargement...",
+    "verseHover": "Survolez pour charger le texte du verset (KJV)",
+    "verseNotFound": "Texte du verset non disponible",
+    "verseError": "Impossible de charger le verset.",
+    "invalidVerse": "Format de verset invalide."
   },
   "sections": {
     "savedDevotions": "Dévotions Sauvegardées",
@@ -65,9 +81,16 @@
     "welcomeTitle": "Bienvenue dans Divine Dévotion",
     "welcomeText": "Générez des dévotions personnalisées et des idées d'intégration de la foi alimentées par l'IA",
     "promptGallery": "Inspirez-vous"
-  },
-  "bibleCard": {
+  },  "bibleCard": {
     "title": "Générateur de Cartes de Versets Bibliques",
+    "generateCard": "Générer Carte",
+    "generateCardTitle": "Générer une belle carte de verset biblique",
+    "download": "Télécharger",
+    "share": "Partager",
+    "regenerate": "Régénérer",
+    "generating": "Génération en cours...",
+    "tryAgain": "Réessayer",
+    "shareTitle": "Verset Biblique :",
     "progress": {
       "validating": "Validation de la référence du verset",
       "fetching": "Récupération du texte du verset",
@@ -76,7 +99,7 @@
       "finalizing": "Finalisation de la conception de la carte",
       "ready": "Carte prête"
     }
-  },  "devotionDisplay": {
+  },"devotionDisplay": {
     "bibleVerses": "Versets Bibliques :",
     "card": "Carte",
     "generateCard": "Générer une belle carte de verset",

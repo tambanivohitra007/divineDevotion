@@ -22,15 +22,14 @@
 -->
 <template>
   <div class="bible-card-container">
-    <!-- Generate Card Button -->
-    <button 
+    <!-- Generate Card Button -->    <button 
       v-if="!isGenerating && !generatedCard"
       @click="generateBibleCard" 
       class="btn btn-gradient-primary btn-sm generate-card-btn"
       :disabled="!verse"
-      title="Generate beautiful Bible verse card"
+      :title="t('bibleCard.generateCardTitle')"
     >
-      <i class="bi bi-image me-2"></i>Generate Card
+      <i class="bi bi-image me-2"></i>{{ t('bibleCard.generateCard') }}
     </button>
 
     <!-- Loading State -->
@@ -38,17 +37,16 @@
       <div class="text-center py-4">
         <div class="spinner-border text-primary mb-3" style="width: 2rem; height: 2rem;" role="status">
           <span class="visually-hidden">Generating card...</span>
-        </div>        <p class="mb-0">Generating real AI image with Gemini...</p>
-        <small class="text-muted">Using Gemini AI Imagen to generate real spiritual images</small>
+        </div>        <p class="mb-0">{{ t('bibleCard.generating') }}</p>
+        <small class="text-muted">{{ t('bibleCard.progress.generating') }}</small>
       </div>
     </div>
 
     <!-- Error State -->
     <div v-if="error" class="alert alert-warning" role="alert">
       <i class="bi bi-exclamation-triangle me-2"></i>
-      {{ error }}
-      <button @click="generateBibleCard" class="btn btn-sm btn-outline-primary ms-2">
-        Try Again
+      {{ error }}      <button @click="generateBibleCard" class="btn btn-sm btn-outline-primary ms-2">
+        {{ t('bibleCard.tryAgain') }}
       </button>
     </div>
 
@@ -67,16 +65,15 @@
         </div>
       </div>
       
-      <!-- Card Actions -->
-      <div class="card-actions mt-3">
+      <!-- Card Actions -->      <div class="card-actions mt-3">
         <button @click="downloadCard" class="btn btn-outline-primary btn-sm me-2">
-          <i class="bi bi-download me-1"></i>Download
+          <i class="bi bi-download me-1"></i>{{ t('bibleCard.download') }}
         </button>
         <button @click="shareCard" class="btn btn-outline-secondary btn-sm me-2">
-          <i class="bi bi-share me-1"></i>Share
+          <i class="bi bi-share me-1"></i>{{ t('bibleCard.share') }}
         </button>
         <button @click="regenerateCard" class="btn btn-outline-info btn-sm">
-          <i class="bi bi-arrow-clockwise me-1"></i>Regenerate
+          <i class="bi bi-arrow-clockwise me-1"></i>{{ t('bibleCard.regenerate') }}
         </button>
       </div>
     </div>
@@ -85,6 +82,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 interface BibleCardData {
   verseText: string;
@@ -342,7 +342,7 @@ const shareCard = async () => {
   if (!generatedCard.value) return;
   
   const shareData = {
-    title: `Bible Verse: ${generatedCard.value.verseReference}`,
+    title: `${t('bibleCard.shareTitle')} ${generatedCard.value.verseReference}`,
     text: `"${generatedCard.value.verseText}" - ${generatedCard.value.verseReference}`,
   };
   

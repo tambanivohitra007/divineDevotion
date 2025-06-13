@@ -32,28 +32,29 @@
           </h6>
           <p class="saved-devotion-excerpt">{{truncateText(content.text, 30)}}</p>          <span class="content-type-flag" :class="'flag-' + content.type">
               {{ content.type === 'devotion' ? $t('contentTypes.devotionShort') : $t('contentTypes.ideaShort') }}
-            </span>
-          <button 
+            </span>          <button 
             class="btn btn-sm btn-outline-danger delete-saved-btn" 
             @click.stop="handleDeleteContent(content.id)" 
             v-if="content.id"
-            title="Delete content"
+            :title="$t('tooltips.deleteContent')"
           >
             <i class="bi bi-trash3"></i>
           </button>
         </li>
-      </ul>
-        <!-- Theme toggle button at bottom of sidebar -->      <div class="sidebar-bottom" v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">
-        <LanguageSelector class="mb-3" />
-        <button @click="toggleTheme" class="btn theme-toggle-btn-sidebar" :title="isDarkMode ? $t('navigation.toggleTheme') : $t('navigation.toggleTheme')">
-          <i :class="isDarkMode ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill'"></i>
-          <span v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)" class="ms-2">
-            {{ isDarkMode ? $t('navigation.lightMode') : $t('navigation.darkMode') }}
-          </span>
-        </button>
+      </ul>        <!-- Language selector and theme toggle button at bottom of sidebar -->      <div class="sidebar-bottom" v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div class="flex-grow-1">
+            <LanguageSelector />
+          </div>          <button @click="toggleTheme" class="btn btn-sm btn-outline-light flex-shrink-0" :title="isDarkMode ? $t('navigation.toggleTheme') : $t('navigation.toggleTheme')">
+            <i :class="isDarkMode ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill'"></i>
+            <span v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)" class="ms-2">
+              {{ isDarkMode ? $t('navigation.lightMode') : $t('navigation.darkMode') }}
+            </span>
+          </button>
+        </div>
       </div>
     </div>    <div class="main-content">
-      <!-- This button is now primarily for opening sidebar on mobile, or expanding on desktop if it was collapsed -->      <button class="btn btn-sm btn-outline-light sidebar-toggle-btn-main" @click="toggleSidebar" v-if="isSidebarCollapsed" title="Open Sidebar">
+      <!-- This button is now primarily for opening sidebar on mobile, or expanding on desktop if it was collapsed -->      <button class="btn btn-sm btn-outline-light sidebar-toggle-btn-main" @click="toggleSidebar" v-if="isSidebarCollapsed" :title="$t('tooltips.openSidebar')">
          <i class="bi bi-list"></i>
       </button>      <!-- Header -->
       <header class="text-center mb-4" :class="{ 'header-hidden': !showHeader }">
@@ -460,9 +461,8 @@ const handleSaveCurrentContent = () => {
       showSaveConfirmation.value = true;
       setTimeout(() => {
         showSaveConfirmation.value = false;
-      }, 3000);
-    } else {
-      shareAlertMessage.value = 'This content is already saved.';
+      }, 3000);    } else {
+      shareAlertMessage.value = t('messages.alreadySaved');
       showShareAlert.value = true;
        setTimeout(() => {
         showShareAlert.value = false;
@@ -499,24 +499,22 @@ const viewSavedContent = (content: StoredContent) => { // Renamed from viewSaved
 
 const handleShareContent = async () => { // Renamed from handleShareDevotion
   if (!currentContent.value.text) return;
-
   const title = currentContent.value.topic 
-    ? `${currentContent.value.type === 'devotion' ? 'Devotion' : 'Faith & Learning Idea'}: ${currentContent.value.topic}` 
-    : `A Divine ${currentContent.value.type === 'devotion' ? 'Devotion' : 'Idea'}`;
+    ? `${currentContent.value.type === 'devotion' ? t('content.shareTitle') : t('content.shareTitleIdea')}: ${currentContent.value.topic}` 
+    : `${t('content.sharePrefix')} ${currentContent.value.type === 'devotion' ? t('content.sharePrefixDevotion') : t('content.sharePrefixIdea')}`;
   
   let shareText = currentContent.value.text;
   if (currentContent.value.type === 'devotion' && currentContent.value.verses && currentContent.value.verses.length > 0) {
     const versesText = currentContent.value.verses.join("\n");
-    shareText += `\n\nKey Verses:\n${versesText}`;
+    shareText += `\n\n${t('content.keyVerses')}\n${versesText}`;
   }
 
   if (navigator.share) {
     try {
       await navigator.share({
         title: title,
-        text: shareText,
-      });
-      shareAlertMessage.value = 'Content shared successfully!';
+        text: shareText,      });
+      shareAlertMessage.value = t('messages.shareSuccess');
       showShareAlert.value = true;
       setTimeout(() => { showShareAlert.value = false; }, 3000);
     } catch (err) {
@@ -531,18 +529,16 @@ const handleShareContent = async () => { // Renamed from handleShareDevotion
 };
 
 // Helper function to copy text to clipboard
-const copyToClipboard = async (text: string, context: 'fallback' | 'direct' = 'direct') => {
-  try {
+const copyToClipboard = async (text: string, context: 'fallback' | 'direct' = 'direct') => {    try {
     await navigator.clipboard.writeText(text);
     if (context === 'fallback') {
-      shareAlertMessage.value = 'Sharing failed, content copied to clipboard!';
+      shareAlertMessage.value = t('messages.shareFallback');
     } else {
-      shareAlertMessage.value = 'Content copied to clipboard!';
+      shareAlertMessage.value = t('messages.copySuccess');
     }
-    showShareAlert.value = true;
-  } catch (err) {
+    showShareAlert.value = true;  } catch (err) {
     console.error('Failed to copy: ', err);
-    shareAlertMessage.value = 'Failed to copy content to clipboard.';
+    shareAlertMessage.value = t('messages.copyFailed');
     showShareAlert.value = true; // Show error
   } finally {
     // Common timeout for the alert

@@ -51,7 +51,10 @@
 
 <script setup lang="ts">
 import { defineProps, ref, watch, nextTick, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import BibleCard from './BibleCard.vue';
+
+const { t } = useI18n();
 
 // Renamed Devotion to DisplayableContent and made verses optional
 interface DisplayableContent {
@@ -210,18 +213,16 @@ const parseVerseReference = (verse: string): ParsedVerse | null => {
   return { book: bookName, chapter, startVerse, endVerse };
 };
 
-const fetchVerseText = async (verseRef: string) => {
-  if (verseTooltipContents.value[verseRef] && verseTooltipContents.value[verseRef] !== 'Loading...') {
+const fetchVerseText = async (verseRef: string) => {  if (verseTooltipContents.value[verseRef] && verseTooltipContents.value[verseRef] !== t('tooltips.verseLoading')) {
     return;
   }
-  if (verseTooltipContents.value[verseRef] === 'Loading...') return;
+  if (verseTooltipContents.value[verseRef] === t('tooltips.verseLoading')) return;
 
-  verseTooltipContents.value[verseRef] = 'Loading...';
-  updateTooltipContent(verseRef, 'Loading...');
-
+  verseTooltipContents.value[verseRef] = t('tooltips.verseLoading');
+  updateTooltipContent(verseRef, t('tooltips.verseLoading'));
   const parsed = parseVerseReference(verseRef);
   if (!parsed) {
-    const errMsg = 'Invalid verse format.';
+    const errMsg = t('tooltips.invalidVerse');
     verseTooltipContents.value[verseRef] = errMsg;
     updateTooltipContent(verseRef, errMsg);
     console.warn(`Could not parse verse reference for fetch: ${verseRef}`);
@@ -233,10 +234,9 @@ const fetchVerseText = async (verseRef: string) => {
 
   try {
     const response = await fetch(apiUrl);
-    if (!response.ok) {
-      let errorMsg = `Error ${response.status}`;
+    if (!response.ok) {      let errorMsg = `Error ${response.status}`;
       if (response.status === 404) {
-        errorMsg = `Verse not found (${book} ${chapter}:${startVerse}).`;
+        errorMsg = `${t('tooltips.verseNotFound')} (${book} ${chapter}:${startVerse}).`;
       } else {
         try { const errorData = await response.json(); errorMsg = errorData.message || errorData.error || `API Error: ${response.status}`; } catch (e) { /* ignore */ }
       }
@@ -248,20 +248,19 @@ const fetchVerseText = async (verseRef: string) => {
       verseTooltipContents.value[verseRef] = fetchedText;
       updateTooltipContent(verseRef, fetchedText);
     } else {
-      const notFoundMsg = `Verse text not available for ${book} ${chapter}:${startVerse}.`;
+      const notFoundMsg = `${t('tooltips.verseNotFound')} ${book} ${chapter}:${startVerse}.`;
       verseTooltipContents.value[verseRef] = notFoundMsg;
       updateTooltipContent(verseRef, notFoundMsg);
-    }
-  } catch (error: any) {
+    }  } catch (error: any) {
     console.error(`Error fetching verse "${verseRef}" (parsed as ${book} ${chapter}:${startVerse}):`, error);
-    const errorLoadingMsg = error.message || 'Could not load verse.';
+    const errorLoadingMsg = error.message || t('tooltips.verseError');
     verseTooltipContents.value[verseRef] = errorLoadingMsg;
     updateTooltipContent(verseRef, errorLoadingMsg);
   }
 };
 
 const getTooltipTitle = (verse: string): string => {
-  return verseTooltipContents.value[verse] || 'Hover to load verse text (KJV)';
+  return verseTooltipContents.value[verse] || t('tooltips.verseHover');
 };
 
 const initializeOrUpdateTooltipsAndListeners = async () => {

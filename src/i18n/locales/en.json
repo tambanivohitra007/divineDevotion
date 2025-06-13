@@ -21,11 +21,16 @@
     "bibleCards": "Bible Cards",
     "devotionShort": "Devo",
     "ideaShort": "Idea"
-  },
-  "content": {
+  },  "content": {
     "yourDevotion": "Your Devotion",
     "yourFaithIdea": "Your Faith & Learning Idea",
-    "generating": "Generating your content..."
+    "generating": "Generating your content...",
+    "shareTitle": "Devotion",
+    "shareTitleIdea": "Faith & Learning Idea",
+    "sharePrefix": "A Divine",
+    "sharePrefixDevotion": "Devotion",
+    "sharePrefixIdea": "Idea",
+    "keyVerses": "Key Verses:"
   },
   "actions": {
     "saveDevotion": "Save Devotion",
@@ -48,15 +53,26 @@
     "enterTopic": "Enter a topic for your devotional...",
     "enterTopicFaith": "Enter a topic for faith integration ideas...",
     "enterVerseReference": "Enter Bible verse reference (e.g., John 3:16)"
-  },
-  "messages": {
+  },  "messages": {
     "loading": "Generating content...",
     "error": "An error occurred while generating content",
     "noResults": "No saved content found",
     "contentSaved": "Content saved successfully!",
     "contentShared": "Content shared successfully!",
     "alreadySaved": "This content is already saved.",
-    "copyFailed": "Failed to copy content to clipboard."
+    "copyFailed": "Failed to copy content to clipboard.",
+    "shareSuccess": "Content shared successfully!",
+    "copySuccess": "Content copied to clipboard!",
+    "shareFallback": "Sharing failed, content copied to clipboard!"
+  },
+  "tooltips": {
+    "deleteContent": "Delete content",
+    "openSidebar": "Open Sidebar",
+    "verseLoading": "Loading...",
+    "verseHover": "Hover to load verse text (KJV)",
+    "verseNotFound": "Verse text not available",
+    "verseError": "Could not load verse.",
+    "invalidVerse": "Invalid verse format."
   },
   "sections": {
     "savedDevotions": "Saved Devotions",
@@ -65,9 +81,16 @@
     "welcomeTitle": "Welcome to Divine Devotion",
     "welcomeText": "Generate personalized devotionals and faith integration ideas powered by AI",
     "promptGallery": "Get Inspired"
-  },
-  "bibleCard": {
+  },  "bibleCard": {
     "title": "Bible Verse Card Generator",
+    "generateCard": "Generate Card",
+    "generateCardTitle": "Generate beautiful Bible verse card",
+    "download": "Download",
+    "share": "Share",
+    "regenerate": "Regenerate",
+    "generating": "Generating...",
+    "tryAgain": "Try Again",
+    "shareTitle": "Bible Verse:",
     "progress": {
       "validating": "Validating verse reference",
       "fetching": "Fetching verse text",
@@ -76,7 +99,7 @@
       "finalizing": "Finalizing card design",
       "ready": "Card ready"
     }
-  },  "devotionDisplay": {
+  },"devotionDisplay": {
     "bibleVerses": "Bible Verses:",
     "card": "Card",
     "generateCard": "Generate beautiful verse card",

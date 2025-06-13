@@ -299,35 +299,6 @@
   right: 2rem;
 }
 
-.theme-toggle-btn-sidebar {
-  width: 100%;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  color: var(--text-primary);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border-radius: 12px;
-  padding: 0.75rem 1rem;
-  transition: var(--transition-smooth);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.theme-toggle-btn-sidebar:hover {
-  background: var(--surface-primary);
-  border-color: var(--divine-primary);
-  color: var(--divine-primary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-card);
-}
-
-.theme-toggle-btn-sidebar i {
-  font-size: 1.1rem;
-}
-
 /* Sidebar Overlay for Mobile */
 .sidebar-overlay {
   position: fixed;

@@ -15,11 +15,23 @@
     "noMatches": "Tsy misy vokatra hita.",
     "noContent": "Mbola tsy misy votoaty voatahiry.",
     "savedContent": "Votoaty Voatahiry"
-  },
-  "contentTypes": {
+  },  "contentTypes": {
     "devotion": "Fivavahana",
     "faithAndLearning": "Finoana sy Fianarana",
-    "bibleCards": "Karatra Baiboly"
+    "bibleCards": "Karatra Baiboly",
+    "devotionShort": "Fiva",
+    "ideaShort": "Hevitra"
+  },
+  "content": {
+    "yourDevotion": "Ny Fivavahanao",
+    "yourFaithIdea": "Ny Hevitrao momba ny Finoana sy Fianarana",
+    "generating": "Mamorona ny votoatinao...",
+    "shareTitle": "Fivavahana",
+    "shareTitleIdea": "Hevitra Finoana sy Fianarana",
+    "sharePrefix": "Fivavahana Masina",
+    "sharePrefixDevotion": "Fivavahana",
+    "sharePrefixIdea": "Hevitra",
+    "keyVerses": "Andinintsarito Fototra:"
   },
   "actions": {
     "generate": "Hamorona",
@@ -46,15 +58,26 @@
     "enterTopic": "Ampidiro lohahevitra ho an'ny fivavahanao...",
     "enterTopicFaith": "Ampidiro lohahevitra ho an'ny hevitra fampifangaroana finoana...",
     "enterVerseReference": "Ampidiro referansa Baiboly (ohatra: Jaona 3:16)"
-  },
-  "messages": {
+  },  "messages": {
     "loading": "Mamorona votoaty...",
     "error": "Nisy olana teo am-pamoronana ny votoaty",
     "noResults": "Tsy misy votoaty voatahiry hita",
     "contentSaved": "Voatahiry soa aman-tsara ny votoaty!",
     "contentShared": "Nizara soa aman-tsara ny votoaty!",
     "alreadySaved": "Efa voatahiry io votoaty io.",
-    "copyFailed": "Tsy nahomby ny fandikana ny votoaty tao amin'ny clipboard."
+    "copyFailed": "Tsy nahomby ny fandikana ny votoaty tao amin'ny clipboard.",
+    "shareSuccess": "Nizara soa aman-tsara ny votoaty!",
+    "copySuccess": "Nadika tao amin'ny clipboard ny votoaty!",
+    "shareFallback": "Tsy nahomby ny fizarana, nadika tao amin'ny clipboard anefa ny votoaty!"
+  },
+  "tooltips": {
+    "deleteContent": "Fafao ny votoaty",
+    "openSidebar": "Sokafy ny sidebar",
+    "verseLoading": "Eo am-pakana...",
+    "verseHover": "Mitsidihia mba haka ny lahatsoratr'ny andinintsarito (KJV)",
+    "verseNotFound": "Tsy misy lahatsoratr'ny andinintsarito",
+    "verseError": "Tsy afaka naka ny andinintsarito.",
+    "invalidVerse": "Tsy mety ny endrika andinintsarito."
   },
   "sections": {
     "savedDevotions": "Fivavahana Voatahiry",
@@ -63,9 +86,16 @@
     "welcomeTitle": "Tongasoa eto amin'ny Divine Dévotion",
     "welcomeText": "Mamorona fivavahana manokana sy hevitra fampifangaroana finoana amin'ny AI",
     "promptGallery": "Mahazo aingam-panahy"
-  },
-  "bibleCard": {
+  },  "bibleCard": {
     "title": "Mpamokatra Karatra Andinintsarito Baiboly",
+    "generateCard": "Mamorona Karatra",
+    "generateCardTitle": "Mamorona karatra andinintsarito tsara",
+    "download": "Alaina",
+    "share": "Zarao",
+    "regenerate": "Avereno atao",
+    "generating": "Eo am-pamoronana...",
+    "tryAgain": "Andramo indray",
+    "shareTitle": "Andinintsarito Baiboly:",
     "progress": {
       "validating": "Manamarina ny referansa andinintsarito",
       "fetching": "Maka ny lahatsoratr'ny andinintsarito",
