@@ -1,0 +1,228 @@
+{
+  "app": {
+    "title": "Divine Dévotion",
+    "subtitle": "Ny mpiara-dia ara-panahy aman'ny AI"
+  },
+  "navigation": {
+    "language": "Fiteny",
+    "toggleTheme": "Ovay ny endrika",
+    "lightMode": "Endrika mazava",
+    "darkMode": "Endrika maizina"
+  },
+  "sidebar": {
+    "saved": "Voatahiry",
+    "searchPlaceholder": "Hikaroka...",
+    "noMatches": "Tsy misy vokatra hita.",
+    "noContent": "Mbola tsy misy votoaty voatahiry.",
+    "savedContent": "Votoaty Voatahiry"
+  },
+  "contentTypes": {
+    "devotion": "Fivavahana",
+    "faithAndLearning": "Finoana sy Fianarana",
+    "bibleCards": "Karatra Baiboly"
+  },
+  "actions": {
+    "generate": "Hamorona",
+    "save": "Tehirizo",
+    "share": "Zarao",
+    "delete": "Fafao",
+    "close": "Hidio",
+    "saveDevotion": "Tehirizo ny fivavahana",
+    "saveIdea": "Tehirizo ny hevitra",
+    "shareContent": "Zarao ny votoaty"
+  },
+  "welcome": {
+    "title": "Tongasoa eto amin'ny Divine Dévotion",
+    "subtitle": "Mamorona fivavahana manokana sy hevitra fampifangaroana finoana amin'ny AI",
+    "instruction": "Misafidiana ohatra etsy ambany na manoratra lohahevitra ho fanombohana"
+  },
+  "alerts": {
+    "contentSaved": "Voatahiry soa aman-tsara ny votoaty!"
+  },
+  "placeholders": {
+    "devotionInput": "Ohatra: 'fitadiavana fiadanana amin'ny fahasahiranana', 'fankasitrahana', na 'fitarihana ho amin'ny fanapahan-kevitra sarotra'",
+    "faithInput": "Ohatra: 'fampianatra biolojia amin'ny finoana', 'fampidirana etika amin'ny informatika', na 'fomba fijery finoana momba ny tantara'",
+    "bibleCardInfo": "Ny famoronana karatra Baiboly dia mampiasa interface manokana",
+    "enterTopic": "Ampidiro lohahevitra ho an'ny fivavahanao...",
+    "enterTopicFaith": "Ampidiro lohahevitra ho an'ny hevitra fampifangaroana finoana...",
+    "enterVerseReference": "Ampidiro referansa Baiboly (ohatra: Jaona 3:16)"
+  },
+  "messages": {
+    "loading": "Mamorona votoaty...",
+    "error": "Nisy olana teo am-pamoronana ny votoaty",
+    "noResults": "Tsy misy votoaty voatahiry hita",
+    "contentSaved": "Voatahiry soa aman-tsara ny votoaty!",
+    "contentShared": "Nizara soa aman-tsara ny votoaty!",
+    "alreadySaved": "Efa voatahiry io votoaty io.",
+    "copyFailed": "Tsy nahomby ny fandikana ny votoaty tao amin'ny clipboard."
+  },
+  "sections": {
+    "savedDevotions": "Fivavahana Voatahiry",
+    "savedFaithLearning": "Finoana sy Fianarana Voatahiry",
+    "searchPlaceholder": "Hikaroka amin'ny votoaty voatahiry...",
+    "welcomeTitle": "Tongasoa eto amin'ny Divine Dévotion",
+    "welcomeText": "Mamorona fivavahana manokana sy hevitra fampifangaroana finoana amin'ny AI",
+    "promptGallery": "Mahazo aingam-panahy"
+  },
+  "bibleCard": {
+    "title": "Mpamokatra Karatra Andinintsarito Baiboly",
+    "progress": {
+      "validating": "Manamarina ny referansa andinintsarito",
+      "fetching": "Maka ny lahatsoratr'ny andinintsarito",
+      "generating": "Mamorona sary AI prompt",
+      "creating": "Mamorona lamosina tsara",
+      "finalizing": "Mamita ny famolavolana karatra",
+      "ready": "Vonona ny karatra"
+    }
+  },
+  "devotionDisplay": {
+    "bibleVerses": "Andinintsarito Baiboly:",
+    "card": "Karatra",
+    "generateCard": "Mamorona karatra andinintsarito tsara",
+    "delete": "Fafao"
+  },
+  "promptGallery": {
+    "title": "Galeria Fanoroana",
+    "subtitle": "Tsindrio ny ohatra rehetra mba hanombohana",
+    "devotionalIdeas": "Hevitra Fivavahana",
+    "faithLearningIdeas": "Hevitra Finoana sy Fianarana",
+    "showMore": "Asehoy ny Ohatra Bebe Kokoa",
+    "showLess": "Asehoy Kely Kokoa",
+    "prompts": {
+      "peace": {
+        "title": "Fitadiavana Fiadanana",
+        "text": "Fitadiavana fiadanana amin'ny fotoana tsy fantatra sy adin-tsaina"
+      },
+      "gratitude": {
+        "title": "Fanao Fankasitrahana",
+        "text": "Fampivoarana fo feno fankasitrahana amin'ny fiainana andavanandro"
+      },
+      "forgiveness": {
+        "title": "Famelan-keloka",
+        "text": "Fianarana famelan-keloka ny hafa sy ny tenantsika"
+      },
+      "strength": {
+        "title": "Fitadiavana Tanjaka",
+        "text": "Fitadiavana tanjaka amin'Andriamanitra amin'ny fotoana sarotra"
+      },
+      "purpose": {
+        "title": "Tanjon'ny Fiainana",
+        "text": "Fahitana ny tanjon'Andriamanitra ho an'ny fiainako"
+      },
+      "trust": {
+        "title": "Fitokinana an'Andriamanitra",
+        "text": "Fitokinana ny drakan'Andriamanitra rehefa tsy mazava ny fiainana"
+      },
+      "prayer": {
+        "title": "Fiainana Vavaka",
+        "text": "Fanalalinana ny vavaka sy fifandraisana amin'Andriamanitra"
+      },
+      "wisdom": {
+        "title": "Fitadiavana Fahendrena",
+        "text": "Fitadiavana ny fahendren'Andriamanitra ho amin'ny fanapahan-kevitra lehibe"
+      },
+      "service": {
+        "title": "Fanompoana ny Hafa",
+        "text": "Fahitana fifaliana amin'ny fanompoana ny hafa tahaka an'i Kristy"
+      },
+      "hope": {
+        "title": "Fanantenana sy Finoana",
+        "text": "Fitazonana fanantenana sy finoana mandritra ny vanim-potoana maizina"
+      },
+      "patience": {
+        "title": "Faharetana",
+        "text": "Fianarana faharetana amin'ny fotoan'Andriamanitra"
+      },
+      "love": {
+        "title": "Fitiavan'Andriamanitra",
+        "text": "Fahazoan-tsaina sy niainana ny fitiavan'Andriamanitra tsy misy fepetra"
+      },
+      "science": {
+        "title": "Siansa sy Finoana",
+        "text": "Fampifangaroana ny fitsipika Baiboly amin'ny fampianarana siansa"
+      },
+      "math": {
+        "title": "Matematika",
+        "text": "Fampianaran'ny matematika amin'ny fomba fijery Kristiana"
+      },
+      "history": {
+        "title": "Tantara sy Finoana",
+        "text": "Fahazoan-tsaina ny tantara amin'ny fomba fijery Baiboly"
+      },
+      "literature": {
+        "title": "Literatiora",
+        "text": "Famakafakana literatiora amin'ny fomba fijery mifototra amin'ny finoana"
+      },
+      "ethics": {
+        "title": "Etika",
+        "text": "Fampianaran'ny etika sy fisainana ara-moraly avy amin'ny fomba fijery Kristiana"
+      },
+      "psychology": {
+        "title": "Psikolojia",
+        "text": "Fampifangaroana finoana sy psikolojia amin'ny fahazoan-tsaina ny fitondran-tena"
+      },
+      "arts": {
+        "title": "Zava-kanto Mamorona",
+        "text": "Fampiasana zava-kanto mamorona hanehoana finoana sy lohahevitra ara-panahy"
+      },
+      "technology": {
+        "title": "Teknolojia sy Finoana",
+        "text": "Fampiasana teknolojia am-pahendrena araka ny fitsipika Baiboly"
+      },
+      "business": {
+        "title": "Etika ara-barotra",
+        "text": "Fampiharan'ny etika Kristiana amin'ny asa ara-barotra"
+      },
+      "health": {
+        "title": "Fahasalamana sy Fahasalaman-tsaina",
+        "text": "Fampianaran'ny fahasalamana feno avy amin'ny fomba fijery Kristiana"
+      },
+      "environment": {
+        "title": "Fikarakarana ny Tontolo Iainana",
+        "text": "Fikarakarana ny zavaboary amin'ny siansa tontolo iainana"
+      },
+      "justice": {
+        "title": "Rariny Sosialy",
+        "text": "Fampianaran'ny rariny sosialy amin'ny fitsipika Baiboly"
+      }
+    }
+  },
+  "bibleCardGenerator": {
+    "title": "Mpamokatra Karatra Andinintsarito Baiboly",
+    "verseReference": "Referansa Andinintsarito Baiboly",
+    "placeholder": "ohatra: Jaona 3:16, Salamo 23:1, Romana 8:28",
+    "getSuggestions": "Mahazo soso-kevitra andinintsarito AI",
+    "suggestedVerses": "Andinintsarito Naroso",
+    "backgroundStyle": "Famaritana Fomba Lamosina",
+    "stylePlaceholder": "Lazao ny lamosina tianao: tany lemana, fiposahan'ny masoandro volamena, tendrombohitra mandry fahizay, loko pastel malefaka, hazavana avy any an-danitra, sns.",
+    "styleHelp": "Mampitantara tsara! Ohatra: \"farihy tendrombohitra mandry fahizay amin'ny fiposahan'ny masoandro miaraka amin'ny zavona malefaka\", \"hazavana avy any an-danitra miditra amin'ny rahona\", \"zaridaina mandry fahizay miaraka amin'ny voninkazo mamony\"",
+    "stylePresets": "Fomba Efa Voaomana",
+    "aiEnhancement": "Fanatsarana Fomba AI",
+    "customBackground": "Lamosina Manokana (Tsy voatery)",
+    "uploadBackground": "Alefaso ny sary lamosina manokana fa tsy ny famoronana AI",
+    "aspectRatio": "Fifandanjam-pakan'ny Karatra",
+    "generateCard": "Mamorona Karatra Baiboly",
+    "generating": "Eo am-pamoronana...",
+    "preview": "Topi-maso",
+    "download": "Alaina",
+    "share": "Zarao",
+    "regenerate": "Avereno atao",
+    "placeholder_state": {
+      "title": "Hiseho Eto ny Karatra Baiboly",
+      "subtitle": "Ampidiro referansa andinintsarito sy famaritana fomba mba hanombohana"
+    },
+    "progress": {
+      "validating": "Manamarina ny referansa andinintsarito...",
+      "fetching": "Maka ny lahatsoratr'ny andinintsarito...",
+      "generating_prompt": "Mamorona sary AI prompt...",
+      "generating_image": "Mamorona sary tena AI amin'ny Gemini...",
+      "finalizing": "Mamita ny famolavolana karatra...",
+      "ready": "Vonona ny karatra!",
+      "gemini_info": "Mampiasa Gemini AI Imagen mba hamoronana sary ara-panahy marina"
+    },
+    "ai_prompt": {
+      "view": "Jereo ny Famaritana Sary Novokarin'ny AI",
+      "gemini_created": "Gemini AI no namorona ity famaritana sary ity:"
+    }
+  }
+}

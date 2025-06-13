@@ -21,8 +21,7 @@
             <span class="flag">🇺🇸</span>
             English
           </button>
-        </li>
-        <li>
+        </li>        <li>
           <button
             class="dropdown-item"
             :class="{ active: $i18n.locale === 'fr' }"
@@ -30,6 +29,16 @@
           >
             <span class="flag">🇫🇷</span>
             Français
+          </button>
+        </li>
+        <li>
+          <button
+            class="dropdown-item"
+            :class="{ active: $i18n.locale === 'mg' }"
+            @click="changeLanguage('mg')"
+          >
+            <span class="flag">🇲🇬</span>
+            Malagasy
           </button>
         </li>
       </ul>
@@ -44,7 +53,14 @@ import { useI18n } from 'vue-i18n'
 const { locale } = useI18n()
 
 const currentLanguageFlag = computed(() => {
-  return locale.value === 'fr' ? '🇫🇷' : '🇺🇸'
+  switch (locale.value) {
+    case 'fr':
+      return '🇫🇷'
+    case 'mg':
+      return '🇲🇬'
+    default:
+      return '🇺🇸'
+  }
 })
 
 const changeLanguage = (newLocale: string) => {

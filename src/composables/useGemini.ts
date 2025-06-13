@@ -23,12 +23,17 @@ export default function useGemini() {
     error.value = null;
 
     let systemPrompt = "";
-    let userPrompt = "";
-
-    // Language-specific instructions
-    const languageInstructions = locale === 'fr' 
-      ? "Please respond in French. Use proper French grammar, vocabulary, and religious terminology."
-      : "Please respond in English.";
+    let userPrompt = "";    // Language-specific instructions
+    const languageInstructions = (() => {
+      switch (locale) {
+        case 'fr':
+          return "Please respond in French. Use proper French grammar, vocabulary, and religious terminology."
+        case 'mg':
+          return "Please respond in Malagasy. Use proper Malagasy grammar, vocabulary, and religious terminology. Use traditional Malagasy religious expressions where appropriate."
+        default:
+          return "Please respond in English."
+      }
+    })();
 
     // This base prompt contains the core instructions and guardrails for the AI.
     const baseSystemPrompt = `
