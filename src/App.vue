@@ -12,30 +12,26 @@
         <i v-else-if="!isMobile && !isSidebarCollapsed" class="bi bi-arrow-left-square-fill"></i> <!-- Left arrow for desktop when open -->
         <!-- This button is now hidden if !isMobile && isSidebarCollapsed -->
       </button>
-      <h2 class="sidebar-title"><span v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">Saved</span></h2>
-      <div class="search-bar mb-3" v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">
-        <input
+      <h2 class="sidebar-title"><span v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">{{ $t('sidebar.saved') }}</span></h2>
+      <div class="search-bar mb-3" v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">        <input
           type="text"
           class="form-control form-control-sm"
-          placeholder="Search..."
+          :placeholder="$t('sidebar.searchPlaceholder')"
           v-model="searchQuery"
         />
       </div>
-      <ul class="list-unstyled saved-devotions-list" v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">
-        <li v-if="filteredContent.length === 0 && searchQuery" class="text-muted small p-2">No matches found.</li>
-        <li v-if="filteredContent.length === 0 && !searchQuery && savedContent.length > 0" class="text-muted small p-2">No content saved yet.</li>
+      <ul class="list-unstyled saved-devotions-list" v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">        <li v-if="filteredContent.length === 0 && searchQuery" class="text-muted small p-2">{{ $t('sidebar.noMatches') }}</li>
+        <li v-if="filteredContent.length === 0 && !searchQuery && savedContent.length > 0" class="text-muted small p-2">{{ $t('sidebar.noContent') }}</li>
         <li
           v-for="(content) in filteredContent"
           :key="content.id || content.topic" 
           class="saved-devotion-card"
           @click="viewSavedContent(content)"
-        >
-          <h6 class="saved-devotion-topic">
-            {{ content.topic || "Saved Content" }}            
+        >          <h6 class="saved-devotion-topic">
+            {{ content.topic || $t('sidebar.savedContent') }}            
           </h6>
-          <p class="saved-devotion-excerpt">{{truncateText(content.text, 30)}}</p>
-          <span class="content-type-flag" :class="'flag-' + content.type">
-              {{ content.type === 'devotion' ? 'Devo' : 'Idea' }}
+          <p class="saved-devotion-excerpt">{{truncateText(content.text, 30)}}</p>          <span class="content-type-flag" :class="'flag-' + content.type">
+              {{ content.type === 'devotion' ? $t('contentTypes.devotionShort') : $t('contentTypes.ideaShort') }}
             </span>
           <button 
             class="btn btn-sm btn-outline-danger delete-saved-btn" 
@@ -47,12 +43,12 @@
           </button>
         </li>
       </ul>
-        <!-- Theme toggle button at bottom of sidebar -->
-      <div class="sidebar-bottom" v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">
-        <button @click="toggleTheme" class="btn theme-toggle-btn-sidebar" :title="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+        <!-- Theme toggle button at bottom of sidebar -->      <div class="sidebar-bottom" v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">
+        <LanguageSelector class="mb-3" />
+        <button @click="toggleTheme" class="btn theme-toggle-btn-sidebar" :title="isDarkMode ? $t('navigation.toggleTheme') : $t('navigation.toggleTheme')">
           <i :class="isDarkMode ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill'"></i>
           <span v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)" class="ms-2">
-            {{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}
+            {{ isDarkMode ? $t('navigation.lightMode') : $t('navigation.darkMode') }}
           </span>
         </button>
       </div>
@@ -61,9 +57,9 @@
          <i class="bi bi-list"></i>
       </button>      <!-- Header -->
       <header class="text-center mb-4" :class="{ 'header-hidden': !showHeader }">
-        <h1 class="display-4 app-title">DivineDevotion</h1>
-        <p class="lead">Your AI-powered spiritual companion</p>
-      </header>      <!-- Content Type Button - Fixed Top Right -->
+        <h1 class="display-4 app-title">{{ $t('app.title') }}</h1>
+        <p class="lead">{{ $t('app.subtitle') }}</p>
+      </header><!-- Content Type Button - Fixed Top Right -->
       <div class="content-type-button-fixed">
         <!-- New Content Button -->
         <button
@@ -91,15 +87,14 @@
           v-if="showContentTypeDropdown" 
           class="content-type-dropdown-menu-fixed"
           ref="dropdownMenuRef"
-        >
-          <button
+        >          <button
             type="button"
             class="dropdown-item"
             :class="{ active: contentTypeSelection === 'devotion' }"
             @click="selectContentType('devotion')"
           >
             <i class="bi bi-stars me-2"></i>
-            <span>Devotion</span>
+            <span>{{ $t('contentTypes.devotion') }}</span>
           </button>
           <button
             type="button"
@@ -108,7 +103,7 @@
             @click="selectContentType('faithIntegration')"
           >
             <i class="bi bi-lightbulb-fill me-2"></i>
-            <span>Faith & Learning</span>
+            <span>{{ $t('contentTypes.faithAndLearning') }}</span>
           </button>
           <button
             type="button"
@@ -117,7 +112,7 @@
             @click="selectContentType('bibleCard')"
           >
             <i class="bi bi-card-image me-2"></i>
-            <span>Bible Cards</span>
+            <span>{{ $t('contentTypes.bibleCards') }}</span>
           </button>
         </div>
       </div>
@@ -140,7 +135,7 @@
       <div v-else-if="isLoading || (currentContent.text && !generationError)" class="card shadow-lg mx-auto current-devotion-card">
         <div class="card-header bg-transparent py-3">
           <h3 class="card-title h4 d-flex align-items-center gap-2 mb-0">
-             <i :class="currentContent.type === 'devotion' ? 'bi bi-journal-text me-2' : 'bi bi-lightbulb me-2'" style="font-size: 1.5rem;"></i>Your {{ currentContent.type === 'devotion' ? 'Devotion' : 'Faith & Learning Idea' }}
+             <i :class="currentContent.type === 'devotion' ? 'bi bi-journal-text me-2' : 'bi bi-lightbulb me-2'" style="font-size: 1.5rem;"></i>{{ currentContent.type === 'devotion' ? $t('content.yourDevotion') : $t('content.yourFaithIdea') }}
           </h3>
         </div>
         <div class="card-body">
@@ -148,7 +143,7 @@
             <div class="spinner-border text-primary mb-2" style="width: 3rem; height: 3rem;" role="status">
               <span class="visually-hidden">Loading...</span>
             </div>
-            <p class="lead mt-2">Generating your content...</p>
+            <p class="lead mt-2">{{ $t('content.generating') }}</p>
             <div class="placeholder-glow mt-4">
               <span class="placeholder col-9 mb-2 py-2"></span>
               <span class="placeholder col-12 mb-2 py-2"></span>
@@ -164,32 +159,28 @@
                 "{{ firstVerseText }}"
               </blockquote>            </div>            <DevotionDisplay :devotion="formattedContentForDisplay" :content-type="currentContent.type || 'devotion'" />
             
-            <div class="actions-toolbar text-center mt-4 pt-3 border-top border-secondary">
-              <button class="btn btn-gradient-success btn-sm me-2" @click="handleSaveCurrentContent">
-                <i class="bi bi-heart-fill me-2"></i>Save {{ currentContent.type === 'devotion' ? 'Devotion' : 'Idea' }}
+            <div class="actions-toolbar text-center mt-4 pt-3 border-top border-secondary">              <button class="btn btn-gradient-success btn-sm me-2" @click="handleSaveCurrentContent">
+                <i class="bi bi-heart-fill me-2"></i>{{ currentContent.type === 'devotion' ? $t('actions.saveDevotion') : $t('actions.saveIdea') }}
               </button>
-              <button class="btn btn-outline-info btn-sm" @click="handleShareContent" title="Share this content">
-                <i class="bi bi-share-fill me-2"></i>Share
+              <button class="btn btn-outline-info btn-sm" @click="handleShareContent" :title="$t('actions.shareContent')">
+                <i class="bi bi-share-fill me-2"></i>{{ $t('actions.share') }}
               </button>
             </div>
-          </div>      </div>      </div>      <!-- Placeholder for when nothing is generated and not loading, and no error (not shown for Bible Card Generator) -->
-      <section v-else-if="!isLoading && !currentContent.text && !generationError && !showBibleCardGenerator" class="text-center placeholder-section mx-auto p-5 rounded welcome-area">
+          </div>      </div>      </div>      <!-- Placeholder for when nothing is generated and not loading, and no error (not shown for Bible Card Generator) -->      <section v-else-if="!isLoading && !currentContent.text && !generationError && !showBibleCardGenerator" class="text-center placeholder-section mx-auto p-5 rounded welcome-area">
         <div class="welcome-content">
           <i class="bi bi-lightbulb-fill welcome-icon"></i>
-          <h2 class="welcome-title">Welcome to DivineDevotion</h2>
-          <p class="lead welcome-text">Generate personalized devotions and faith-based learning ideas</p>
-          <p class="text-muted">Choose a content type and enter your topic below to begin</p>
+          <h2 class="welcome-title">{{ $t('welcome.title') }}</h2>
+          <p class="lead welcome-text">{{ $t('welcome.subtitle') }}</p>
+          <p class="text-muted">{{ $t('welcome.instruction') }}</p>
         </div>
         
         <!-- Prompt Gallery Component -->
         <PromptGallery @prompt-selected="handlePromptSelection" />
-      </section>
-
-      <!-- Alerts -->
+      </section>      <!-- Alerts -->
       <div v-if="showSaveConfirmation" class="alert alert-success-custom alert-dismissible fade show mt-3" role="alert">
-        <i class="bi bi-check-circle-fill me-2"></i>Content saved successfully!
-        <button type="button" class="btn-close btn-close-white" @click="showSaveConfirmation = false" aria-label="Close"></button>
-      </div>      <div v-if="showShareAlert" class="alert alert-info-custom alert-dismissible fade show mt-3" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>{{ $t('alerts.contentSaved') }}
+        <button type="button" class="btn-close btn-close-white" @click="showSaveConfirmation = false" :aria-label="$t('actions.close')"></button>
+      </div><div v-if="showShareAlert" class="alert alert-info-custom alert-dismissible fade show mt-3" role="alert">
         <i class="bi bi-info-circle-fill me-2"></i>{{ shareAlertMessage }}
         <button type="button" :class="isDarkMode ? 'btn-close btn-close-white' : 'btn-close'" @click="showShareAlert = false" aria-label="Close"></button>
       </div>
@@ -240,12 +231,17 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, watchEffect, onMounted, onUnmounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import DevotionDisplay from './components/DevotionDisplay.vue';
 import BibleCardGenerator from './components/BibleCardGenerator.vue';
 import PromptGallery from './components/PromptGallery.vue';
+import LanguageSelector from './components/LanguageSelector.vue';
 import useGemini from './composables/useGemini';
 // Correctly import useContentStorage and StoredContent type
 import useContentStorage, { type StoredContent } from './composables/useDevotions';
+
+// Initialize i18n
+const { t, locale } = useI18n();
 
 const selectedContentType = ref<'devotion' | 'faithIntegration'>('devotion');
 const showBibleCardGenerator = ref(false);
@@ -363,11 +359,11 @@ onUnmounted(() => {
 // Computed properties for dynamic UI text
 const topicInputPlaceholder = computed(() => {
   if (showBibleCardGenerator.value) {
-    return "Bible card generation uses its own interface";
+    return t('placeholders.bibleCardInfo');
   }
   return selectedContentType.value === 'devotion' 
-    ? "E.g., 'finding peace in hardship', 'gratitude', or 'guidance for a tough decision'"
-    : "E.g., 'teaching biology through a faith lens', 'integrating ethics in computer science', or 'faith perspectives on history'";
+    ? t('placeholders.devotionInput')
+    : t('placeholders.faithInput');
 });
 
 // Fetch the text of the first verse when currentContent.verses changes
@@ -434,11 +430,10 @@ const handleGenerateContent = async () => {
   if (showBibleCardGenerator.value) {
     return;
   }
-  
-  const newId = `content-${Date.now()}`; // Generate ID here
+    const newId = `content-${Date.now()}`; // Generate ID here
   currentContent.value = { id: newId, text: '', verses: [], topic: '', type: selectedContentType.value }; // Initialize with selected type and ID
   try {
-    const result = await generateGeminiContent(topicInput.value, selectedContentType.value);
+    const result = await generateGeminiContent(topicInput.value, selectedContentType.value, locale.value);
     currentContent.value = { 
       id: newId, // Persist ID
       text: result.text, 
@@ -632,13 +627,13 @@ const currentContentTypeIcon = computed(() => {
 const currentContentTypeLabel = computed(() => {
   switch (contentTypeSelection.value) {
     case 'devotion':
-      return 'Devotion';
+      return t('contentTypes.devotion');
     case 'faithIntegration':
-      return 'Faith & Learning';
+      return t('contentTypes.faithAndLearning');
     case 'bibleCard':
-      return 'Bible Cards';
+      return t('contentTypes.bibleCards');
     default:
-      return 'Devotion';
+      return t('contentTypes.devotion');
   }
 });
 

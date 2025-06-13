@@ -4,18 +4,17 @@
       <div class="row">
         <!-- Input Panel -->
         <div class="col-lg-5 col-md-6">
-          <div class="card generator-panel">
-            <div class="card-header">
+          <div class="card generator-panel">            <div class="card-header">
               <h4 class="card-title mb-0">
                 <i class="bi bi-palette me-2"></i>
-                Bible Verse Card Generator
+                {{ $t('bibleCardGenerator.title') }}
               </h4>
             </div>
             <div class="card-body">
               <!-- Verse Input Section -->
               <div class="mb-4">
                 <label for="verseInput" class="form-label fw-semibold">
-                  <i class="bi bi-book me-1"></i>Bible Verse Reference
+                  <i class="bi bi-book me-1"></i>{{ $t('bibleCardGenerator.verseReference') }}
                 </label>
                 <div class="input-group">
                   <input
@@ -23,14 +22,14 @@
                     v-model="verseReference"
                     type="text"
                     class="form-control"
-                    placeholder="e.g., John 3:16, Psalm 23:1, Romans 8:28"
+                    :placeholder="$t('bibleCardGenerator.placeholder')"
                     @input="validateVerse"
                   />
                   <button 
                     @click="suggestVerse" 
                     class="btn btn-outline-secondary"
                     :disabled="isSuggestingVerse"
-                    title="Get AI verse suggestions"
+                    :title="$t('bibleCardGenerator.getSuggestions')"
                   >
                     <i v-if="isSuggestingVerse" class="bi bi-arrow-repeat spinner"></i>
                     <i v-else class="bi bi-lightbulb"></i>
@@ -39,12 +38,10 @@
                 <div v-if="verseValidationMessage" class="form-text" :class="verseValidationClass">
                   {{ verseValidationMessage }}
                 </div>
-              </div>
-
-              <!-- Verse Suggestions -->
+              </div>              <!-- Verse Suggestions -->
               <div v-if="verseSuggestions.length > 0" class="mb-4">
                 <label class="form-label fw-semibold">
-                  <i class="bi bi-stars me-1"></i>Suggested Verses
+                  <i class="bi bi-stars me-1"></i>{{ $t('bibleCardGenerator.suggestedVerses') }}
                 </label>
                 <div class="verse-suggestions">
                   <button
@@ -61,24 +58,24 @@
               <!-- Style Description -->
               <div class="mb-4">
                 <label for="styleInput" class="form-label fw-semibold">
-                  <i class="bi bi-brush me-1"></i>Background Style Description
+                  <i class="bi bi-brush me-1"></i>{{ $t('bibleCardGenerator.backgroundStyle') }}
                 </label>
                 <textarea
                   id="styleInput"
                   v-model="styleDescription"
                   class="form-control"
                   rows="3"
-                  placeholder="Describe your ideal background: serene landscape, golden sunrise, peaceful mountains, soft pastel colors, heavenly light, etc."
+                  :placeholder="$t('bibleCardGenerator.stylePlaceholder')"
                 ></textarea>
                 <div class="form-text">
-                  Be descriptive! Examples: "peaceful mountain lake at sunrise with soft mist", "heavenly light breaking through clouds", "serene garden with blooming flowers"
+                  {{ $t('bibleCardGenerator.styleHelp') }}
                 </div>
               </div>
 
               <!-- Style Presets -->
               <div class="mb-4">
                 <label class="form-label fw-semibold">
-                  <i class="bi bi-grid me-1"></i>Style Presets
+                  <i class="bi bi-grid me-1"></i>{{ $t('bibleCardGenerator.stylePresets') }}
                 </label>
                 <div class="style-presets">
                   <button
@@ -90,18 +87,17 @@
                   >
                     {{ preset.name }}
                   </button>
-                </div>
-                <button @click="refineStyle" class="btn btn-link btn-sm p-0" :disabled="isRefiningStyle">
+                </div>                <button @click="refineStyle" class="btn btn-link btn-sm p-0" :disabled="isRefiningStyle">
                   <i v-if="isRefiningStyle" class="bi bi-arrow-repeat spinner me-1"></i>
                   <i v-else class="bi bi-magic me-1"></i>
-                  AI Style Enhancement
+                  {{ $t('bibleCardGenerator.aiEnhancement') }}
                 </button>
               </div>
 
               <!-- Custom Background Upload -->
               <div class="mb-4">
                 <label class="form-label fw-semibold">
-                  <i class="bi bi-image me-1"></i>Custom Background (Optional)
+                  <i class="bi bi-image me-1"></i>{{ $t('bibleCardGenerator.customBackground') }}
                 </label>
                 <input
                   type="file"
@@ -111,7 +107,7 @@
                   ref="fileInput"
                 />
                 <div class="form-text">
-                  Upload your own background image instead of AI generation
+                  {{ $t('bibleCardGenerator.uploadBackground') }}
                 </div>
                 <div v-if="customBackground" class="mt-2">
                   <img :src="customBackground" alt="Custom background preview" class="custom-bg-preview" />
@@ -119,12 +115,10 @@
                     <i class="bi bi-trash"></i>
                   </button>
                 </div>
-              </div>
-
-              <!-- Aspect Ratio Selection -->
+              </div>              <!-- Aspect Ratio Selection -->
               <div class="mb-4">
                 <label class="form-label fw-semibold">
-                  <i class="bi bi-aspect-ratio me-1"></i>Card Aspect Ratio
+                  <i class="bi bi-aspect-ratio me-1"></i>{{ $t('bibleCardGenerator.aspectRatio') }}
                 </label>
                 <div class="aspect-ratio-buttons">
                   <button
@@ -149,7 +143,7 @@
                 >
                   <i v-if="isGenerating" class="bi bi-arrow-repeat spinner me-2"></i>
                   <i v-else class="bi bi-magic me-2"></i>
-                  {{ isGenerating ? 'Generating...' : 'Generate Bible Card' }}
+                  {{ isGenerating ? $t('bibleCardGenerator.generating') : $t('bibleCardGenerator.generateCard') }}
                 </button>
               </div>
 
@@ -164,20 +158,19 @@
 
         <!-- Preview Panel -->
         <div class="col-lg-7 col-md-6">
-          <div class="card preview-panel">
-            <div class="card-header d-flex justify-content-between align-items-center">
+          <div class="card preview-panel">            <div class="card-header d-flex justify-content-between align-items-center">
               <h5 class="card-title mb-0">
-                <i class="bi bi-eye me-2"></i>Preview
+                <i class="bi bi-eye me-2"></i>{{ $t('bibleCardGenerator.preview') }}
               </h5>
               <div v-if="generatedCard" class="card-actions">
                 <button @click="downloadCard" class="btn btn-default btn-sm me-2">
-                  <i class="bi bi-download me-1"></i>Download
+                  <i class="bi bi-download me-1"></i>{{ $t('bibleCardGenerator.download') }}
                 </button>
                 <button @click="shareCard" class="btn btn-outline-secondary btn-sm me-2">
-                  <i class="bi bi-share me-1"></i>Share
+                  <i class="bi bi-share me-1"></i>{{ $t('bibleCardGenerator.share') }}
                 </button>
                 <button @click="regenerateCard" class="btn btn-outline-info btn-sm">
-                  <i class="bi bi-arrow-clockwise me-1"></i>Regenerate
+                  <i class="bi bi-arrow-clockwise me-1"></i>{{ $t('bibleCardGenerator.regenerate') }}
                 </button>
               </div>
             </div>
@@ -186,33 +179,33 @@
                 <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
                   <span class="visually-hidden">Generating...</span>
                 </div>
-                <h6>Creating Your Bible Card with AI</h6>
+                <h6>{{ $t('bibleCardGenerator.progress.gemini_info') }}</h6>
                 <div class="generation-status mb-3">
                   <div v-if="generationProgress <= 20" class="text-muted">
-                    <i class="bi bi-search me-1"></i>Validating verse reference...
+                    <i class="bi bi-search me-1"></i>{{ $t('bibleCardGenerator.progress.validating') }}
                   </div>
                   <div v-else-if="generationProgress <= 40" class="text-muted">
-                    <i class="bi bi-book me-1"></i>Fetching verse text...
+                    <i class="bi bi-book me-1"></i>{{ $t('bibleCardGenerator.progress.fetching') }}
                   </div>
                   <div v-else-if="generationProgress <= 60" class="text-muted">
-                    <i class="bi bi-magic me-1"></i>Generating AI image prompt...
+                    <i class="bi bi-magic me-1"></i>{{ $t('bibleCardGenerator.progress.generating_prompt') }}
                   </div>                  <div v-else-if="generationProgress <= 70" class="text-muted">
-                    <i class="bi bi-image me-1"></i>Generating real AI image with Gemini...
+                    <i class="bi bi-image me-1"></i>{{ $t('bibleCardGenerator.progress.generating_image') }}
                   </div>
                   <div v-else-if="generationProgress <= 90" class="text-muted">
-                    <i class="bi bi-image me-1"></i>Finalizing card design...
+                    <i class="bi bi-image me-1"></i>{{ $t('bibleCardGenerator.progress.finalizing') }}
                   </div>
                   <div v-else class="text-success">
-                    <i class="bi bi-check-circle me-1"></i>Card ready!
+                    <i class="bi bi-check-circle me-1"></i>{{ $t('bibleCardGenerator.progress.ready') }}
                   </div>
                 </div>
                 <div class="progress">
                   <div class="progress-bar progress-bar-striped progress-bar-animated" 
                        :style="{ width: generationProgress + '%' }"></div>
                 </div>                <small class="text-muted mt-2 d-block">
-                  Using Gemini AI Imagen to generate real spiritual images
+                  {{ $t('bibleCardGenerator.progress.gemini_info') }}
                 </small>
-              </div>              <!-- Generated Card Display -->
+              </div><!-- Generated Card Display -->
               <div v-else-if="generatedCard" class="generated-card-container">
                 <div 
                   class="bible-card-preview" 
@@ -234,8 +227,7 @@
                     </div>
                   </div>
                 </div>
-                
-                <!-- AI Generation Info -->
+                  <!-- AI Generation Info -->
                 <div v-if="!customBackground && lastGeneratedImagePrompt" class="mt-3">
                   <div class="ai-prompt-info">
                     <button 
@@ -247,26 +239,24 @@
                       aria-controls="aiPromptCollapse"
                     >
                       <i class="bi bi-robot me-1"></i>
-                      View AI-Generated Image Description
+                      {{ $t('bibleCardGenerator.ai_prompt.view') }}
                       <i class="bi bi-chevron-down ms-1"></i>
                     </button>
                     <div class="collapse mt-2" id="aiPromptCollapse">
                       <div class="card card-body bg-light">
                         <small class="text-muted mb-1">
-                          <i class="bi bi-magic me-1"></i>Gemini AI created this image description:
+                          <i class="bi bi-magic me-1"></i>{{ $t('bibleCardGenerator.ai_prompt.gemini_created') }}
                         </small>
                         <p class="mb-0 small fst-italic">{{ lastGeneratedImagePrompt }}</p>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <!-- Placeholder State -->
+              </div>              <!-- Placeholder State -->
               <div v-else class="placeholder-state text-center py-5">
                 <i class="bi bi-image display-1 text-muted mb-3"></i>
-                <h5 class="text-muted">Your Bible Card Will Appear Here</h5>
-                <p class="text-muted">Enter a verse reference and style description to get started</p>
+                <h5 class="text-muted">{{ $t('bibleCardGenerator.placeholder_state.title') }}</h5>
+                <p class="text-muted">{{ $t('bibleCardGenerator.placeholder_state.subtitle') }}</p>
               </div>
             </div>
           </div>

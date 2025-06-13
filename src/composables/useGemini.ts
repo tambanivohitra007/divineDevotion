@@ -14,15 +14,26 @@ export default function useGemini() {
   const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
   const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
-  const generateGeminiContent = async (topic: string, contentType: 'devotion' | 'faithIntegration'): Promise<GeminiContentResponse> => {
+  const generateGeminiContent = async (
+    topic: string, 
+    contentType: 'devotion' | 'faithIntegration',
+    locale: string = 'en'
+  ): Promise<GeminiContentResponse> => {
     isLoading.value = true;
     error.value = null;
 
     let systemPrompt = "";
     let userPrompt = "";
 
+    // Language-specific instructions
+    const languageInstructions = locale === 'fr' 
+      ? "Please respond in French. Use proper French grammar, vocabulary, and religious terminology."
+      : "Please respond in English.";
+
     // This base prompt contains the core instructions and guardrails for the AI.
     const baseSystemPrompt = `
+${languageInstructions}
+
 You are an AI assistant creating biblically-based content. Your internal knowledge base and guiding principles for generating all content are strictly rooted in and aligned with:
 (1) The Holy Bible (66-book Protestant canon, preferably KJV or NKJV).
 (2) The complete, published writings of Ellen G. White.

@@ -1,0 +1,228 @@
+{
+  "app": {
+    "title": "Divine Devotion",
+    "subtitle": "Your AI-powered spiritual companion"
+  },
+  "navigation": {
+    "language": "Language",
+    "toggleTheme": "Toggle theme",
+    "lightMode": "Light Mode",
+    "darkMode": "Dark Mode"
+  },  "sidebar": {
+    "saved": "Saved",
+    "searchPlaceholder": "Search...",
+    "noMatches": "No matches found.",
+    "noContent": "No content saved yet.",
+    "savedContent": "Saved Content"
+  },
+  "contentTypes": {
+    "devotion": "Devotion",
+    "faithAndLearning": "Faith & Learning",
+    "bibleCards": "Bible Cards",
+    "devotionShort": "Devo",
+    "ideaShort": "Idea"
+  },
+  "content": {
+    "yourDevotion": "Your Devotion",
+    "yourFaithIdea": "Your Faith & Learning Idea",
+    "generating": "Generating your content..."
+  },
+  "actions": {
+    "saveDevotion": "Save Devotion",
+    "saveIdea": "Save Idea",
+    "share": "Share",
+    "shareContent": "Share this content",
+    "close": "Close"
+  },
+  "welcome": {
+    "title": "Welcome to DivineDevotion",
+    "subtitle": "Generate personalized devotions and faith-based learning ideas",
+    "instruction": "Choose a content type and enter your topic below to begin"
+  },  "alerts": {
+    "contentSaved": "Content saved successfully!"
+  },
+  "placeholders": {
+    "devotionInput": "E.g., 'finding peace in hardship', 'gratitude', or 'guidance for a tough decision'",
+    "faithInput": "E.g., 'teaching biology through a faith lens', 'integrating ethics in computer science', or 'faith perspectives on history'",
+    "bibleCardInfo": "Bible card generation uses its own interface",
+    "enterTopic": "Enter a topic for your devotional...",
+    "enterTopicFaith": "Enter a topic for faith integration ideas...",
+    "enterVerseReference": "Enter Bible verse reference (e.g., John 3:16)"
+  },
+  "messages": {
+    "loading": "Generating content...",
+    "error": "An error occurred while generating content",
+    "noResults": "No saved content found",
+    "contentSaved": "Content saved successfully!",
+    "contentShared": "Content shared successfully!",
+    "alreadySaved": "This content is already saved.",
+    "copyFailed": "Failed to copy content to clipboard."
+  },
+  "sections": {
+    "savedDevotions": "Saved Devotions",
+    "savedFaithLearning": "Saved Faith & Learning",
+    "searchPlaceholder": "Search saved content...",
+    "welcomeTitle": "Welcome to Divine Devotion",
+    "welcomeText": "Generate personalized devotionals and faith integration ideas powered by AI",
+    "promptGallery": "Get Inspired"
+  },
+  "bibleCard": {
+    "title": "Bible Verse Card Generator",
+    "progress": {
+      "validating": "Validating verse reference",
+      "fetching": "Fetching verse text",
+      "generating": "Generating AI image prompt",
+      "creating": "Creating beautiful background",
+      "finalizing": "Finalizing card design",
+      "ready": "Card ready"
+    }
+  },  "devotionDisplay": {
+    "bibleVerses": "Bible Verses:",
+    "card": "Card",
+    "generateCard": "Generate beautiful verse card",
+    "delete": "Delete"
+  },
+  "promptGallery": {
+    "title": "Prompt Gallery",
+    "subtitle": "Click any example to get started",
+    "devotionalIdeas": "Devotional Ideas",
+    "faithLearningIdeas": "Faith & Learning Ideas",
+    "showMore": "Show More Examples",
+    "showLess": "Show Less",    "prompts": {
+      "peace": {
+        "title": "Finding Peace",
+        "text": "Finding peace in times of uncertainty and stress"
+      },
+      "gratitude": {
+        "title": "Gratitude Practice",
+        "text": "Developing a heart of gratitude in daily life"
+      },
+      "forgiveness": {
+        "title": "Forgiveness",
+        "text": "Learning to forgive others and ourselves"
+      },
+      "strength": {
+        "title": "Finding Strength",
+        "text": "Finding strength in God during difficult times"
+      },
+      "purpose": {
+        "title": "Life Purpose",
+        "text": "Discovering God's purpose for my life"
+      },
+      "trust": {
+        "title": "Trusting God",
+        "text": "Trusting God's plan when life doesn't make sense"
+      },
+      "prayer": {
+        "title": "Prayer Life",
+        "text": "Deepening my prayer and communion with God"
+      },
+      "wisdom": {
+        "title": "Seeking Wisdom",
+        "text": "Seeking God's wisdom for important decisions"
+      },
+      "service": {
+        "title": "Serving Others",
+        "text": "Finding joy in serving others as Christ did"
+      },
+      "hope": {
+        "title": "Hope & Faith",
+        "text": "Maintaining hope and faith during dark seasons"
+      },
+      "patience": {
+        "title": "Patience",
+        "text": "Learning patience in God's timing"
+      },
+      "love": {
+        "title": "God's Love",
+        "text": "Understanding and experiencing God's unconditional love"
+      },
+      "science": {
+        "title": "Science & Faith",
+        "text": "Integrating biblical principles into science education"
+      },
+      "math": {
+        "title": "Mathematics",
+        "text": "Teaching mathematics through a Christian worldview"
+      },
+      "history": {
+        "title": "History & Faith",
+        "text": "Understanding history through a biblical worldview"
+      },
+      "literature": {
+        "title": "Literature",
+        "text": "Analyzing literature through a faith-based perspective"
+      },
+      "ethics": {
+        "title": "Ethics",
+        "text": "Teaching ethics and moral reasoning from a Christian perspective"
+      },
+      "psychology": {
+        "title": "Psychology",
+        "text": "Integrating faith and psychology in understanding human behavior"
+      },
+      "arts": {
+        "title": "Creative Arts",
+        "text": "Using creative arts to express faith and spiritual themes"
+      },
+      "technology": {
+        "title": "Technology & Faith",
+        "text": "Using technology wisely according to biblical principles"
+      },
+      "business": {
+        "title": "Business Ethics",
+        "text": "Applying Christian ethics in business practices"
+      },
+      "health": {
+        "title": "Health & Wellness",
+        "text": "Teaching holistic health from a Christian perspective"
+      },
+      "environment": {
+        "title": "Environmental Care",
+        "text": "Stewardship of creation in environmental science"
+      },
+      "justice": {
+        "title": "Social Justice",
+        "text": "Teaching social justice through biblical principles"
+      }
+    }
+  },
+  "bibleCardGenerator": {
+    "title": "Bible Verse Card Generator",
+    "verseReference": "Bible Verse Reference",
+    "placeholder": "e.g., John 3:16, Psalm 23:1, Romans 8:28",
+    "getSuggestions": "Get AI verse suggestions",
+    "suggestedVerses": "Suggested Verses",
+    "backgroundStyle": "Background Style Description",
+    "stylePlaceholder": "Describe your ideal background: serene landscape, golden sunrise, peaceful mountains, soft pastel colors, heavenly light, etc.",
+    "styleHelp": "Be descriptive! Examples: \"peaceful mountain lake at sunrise with soft mist\", \"heavenly light breaking through clouds\", \"serene garden with blooming flowers\"",
+    "stylePresets": "Style Presets",
+    "aiEnhancement": "AI Style Enhancement",
+    "customBackground": "Custom Background (Optional)",
+    "uploadBackground": "Upload your own background image instead of AI generation",
+    "aspectRatio": "Card Aspect Ratio",
+    "generateCard": "Generate Bible Card",
+    "generating": "Generating...",
+    "preview": "Preview",
+    "download": "Download",
+    "share": "Share",
+    "regenerate": "Regenerate",
+    "placeholder_state": {
+      "title": "Your Bible Card Will Appear Here",
+      "subtitle": "Enter a verse reference and style description to get started"
+    },
+    "progress": {
+      "validating": "Validating verse reference...",
+      "fetching": "Fetching verse text...",
+      "generating_prompt": "Generating AI image prompt...",
+      "generating_image": "Generating real AI image with Gemini...",
+      "finalizing": "Finalizing card design...",
+      "ready": "Card ready!",
+      "gemini_info": "Using Gemini AI Imagen to generate real spiritual images"
+    },
+    "ai_prompt": {
+      "view": "View AI-Generated Image Description",
+      "gemini_created": "Gemini AI created this image description:"
+    }
+  }
+}

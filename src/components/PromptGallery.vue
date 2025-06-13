@@ -3,9 +3,9 @@
     <div class="prompt-gallery-header">
       <h4 class="gallery-title">
         <i class="bi bi-lightbulb me-2"></i>
-        Prompt Gallery
+        {{ $t('promptGallery.title') }}
       </h4>
-      <p class="gallery-subtitle">Click any example to get started</p>
+      <p class="gallery-subtitle">{{ $t('promptGallery.subtitle') }}</p>
     </div>
 
     <div class="prompt-categories">
@@ -15,21 +15,20 @@
           <div class="prompt-category">
             <h5 class="category-title">
               <i class="bi bi-stars me-2"></i>
-              Devotional Ideas
+              {{ $t('promptGallery.devotionalIdeas') }}
             </h5>
-            <div class="prompt-list">
-              <button
+            <div class="prompt-list">              <button
                 v-for="prompt in visibleDevotionPrompts"
                 :key="prompt.id"
                 class="prompt-card"
-                @click="selectPrompt(prompt.text, 'devotion')"
+                @click="selectPrompt(prompt.id, 'devotion')"
               >
                 <div class="prompt-icon">
                   <i :class="prompt.icon"></i>
                 </div>
                 <div class="prompt-content">
-                  <h6 class="prompt-title">{{ prompt.title }}</h6>
-                  <p class="prompt-text">{{ prompt.text }}</p>
+                  <h6 class="prompt-title">{{ $t(`promptGallery.prompts.${prompt.id}.title`) }}</h6>
+                  <p class="prompt-text">{{ $t(`promptGallery.prompts.${prompt.id}.text`) }}</p>
                 </div>
               </button>
             </div>
@@ -41,21 +40,20 @@
           <div class="prompt-category">
             <h5 class="category-title">
               <i class="bi bi-lightbulb-fill me-2"></i>
-              Faith & Learning Ideas
+              {{ $t('promptGallery.faithLearningIdeas') }}
             </h5>
-            <div class="prompt-list">
-              <button
+            <div class="prompt-list">              <button
                 v-for="prompt in visibleFaithLearningPrompts"
                 :key="prompt.id"
                 class="prompt-card"
-                @click="selectPrompt(prompt.text, 'faithIntegration')"
+                @click="selectPrompt(prompt.id, 'faithIntegration')"
               >
                 <div class="prompt-icon">
                   <i :class="prompt.icon"></i>
                 </div>
                 <div class="prompt-content">
-                  <h6 class="prompt-title">{{ prompt.title }}</h6>
-                  <p class="prompt-text">{{ prompt.text }}</p>
+                  <h6 class="prompt-title">{{ $t(`promptGallery.prompts.${prompt.id}.title`) }}</h6>
+                  <p class="prompt-text">{{ $t(`promptGallery.prompts.${prompt.id}.text`) }}</p>
                 </div>
               </button>
             </div>
@@ -70,7 +68,7 @@
           @click="toggleShowMore"
         >
           <i class="bi bi-chevron-down me-2"></i>
-          Show More Examples
+          {{ $t('promptGallery.showMore') }}
         </button>
       </div>
 
@@ -81,7 +79,7 @@
           @click="toggleShowMore"
         >
           <i class="bi bi-chevron-up me-2"></i>
-          Show Less
+          {{ $t('promptGallery.showLess') }}
         </button>
       </div>
     </div>
@@ -90,6 +88,9 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 interface PromptExample {
   id: string;
@@ -109,73 +110,72 @@ const showAllPrompts = ref(false);
 // Devotional prompt examples
 const devotionPrompts: PromptExample[] = [
   {
-    id: 'peace-1',
+    id: 'peace',
     title: 'Finding Peace',
     text: 'Finding peace in times of uncertainty and stress',
     icon: 'bi bi-heart-fill'
   },
   {
-    id: 'gratitude-1',
+    id: 'gratitude',
     title: 'Gratitude Practice',
     text: 'Developing a heart of gratitude in daily life',
     icon: 'bi bi-sun-fill'
   },
   {
-    id: 'forgiveness-1',
+    id: 'forgiveness',
     title: 'Forgiveness',
     text: 'Learning to forgive others and ourselves',
     icon: 'bi bi-hand-thumbs-up-fill'
   },
   {
-    id: 'strength-1',
+    id: 'strength',
     title: 'Divine Strength',
     text: 'Finding strength in God during difficult times',
     icon: 'bi bi-shield-fill'
   },
   {
-    id: 'purpose-1',
+    id: 'purpose',
     title: 'Life Purpose',
     text: 'Discovering God\'s purpose for my life',
     icon: 'bi bi-compass-fill'
   },
   {
-    id: 'trust-1',
+    id: 'trust',
     title: 'Trusting God',
     text: 'Trusting God\'s plan when life doesn\'t make sense',
     icon: 'bi bi-tree-fill'
   },
   {
-    id: 'prayer-1',
+    id: 'prayer',
     title: 'Prayer Life',
     text: 'Deepening my prayer and communion with God',
-    icon: 'bi bi-chat-heart-fill'
-  },
+    icon: 'bi bi-chat-heart-fill'  },
   {
-    id: 'wisdom-1',
+    id: 'wisdom',
     title: 'Seeking Wisdom',
     text: 'Seeking God\'s wisdom for important decisions',
     icon: 'bi bi-book-fill'
   },
   {
-    id: 'service-1',
+    id: 'service',
     title: 'Serving Others',
     text: 'Finding joy in serving others as Christ did',
     icon: 'bi bi-people-fill'
   },
   {
-    id: 'hope-1',
+    id: 'hope',
     title: 'Hope & Faith',
     text: 'Maintaining hope and faith during dark seasons',
     icon: 'bi bi-brightness-high-fill'
   },
   {
-    id: 'patience-1',
+    id: 'patience',
     title: 'Patience',
     text: 'Learning patience in God\'s timing',
     icon: 'bi bi-hourglass-split'
   },
   {
-    id: 'love-1',
+    id: 'love',
     title: 'God\'s Love',
     text: 'Understanding and experiencing God\'s unconditional love',
     icon: 'bi bi-heart-pulse-fill'
@@ -185,73 +185,72 @@ const devotionPrompts: PromptExample[] = [
 // Faith & Learning prompt examples
 const faithLearningPrompts: PromptExample[] = [
   {
-    id: 'science-1',
+    id: 'science',
     title: 'Science & Faith',
     text: 'Integrating biblical principles into science education',
     icon: 'bi bi-flask'
   },
   {
-    id: 'math-1',
+    id: 'math',
     title: 'Mathematics',
     text: 'Teaching mathematics through a Christian worldview',
     icon: 'bi bi-calculator'
   },
   {
-    id: 'history-1',
+    id: 'history',
     title: 'History Lessons',
     text: 'Connecting historical events with biblical principles',
     icon: 'bi bi-clock-history'
   },
   {
-    id: 'literature-1',
+    id: 'literature',
     title: 'Literature',
     text: 'Analyzing literature through a faith-based perspective',
     icon: 'bi bi-journal-bookmark'
   },
   {
-    id: 'ethics-1',
+    id: 'ethics',
     title: 'Ethics',
     text: 'Teaching ethics and moral reasoning from a Christian perspective',
     icon: 'bi bi-balance-scale'
   },
   {
-    id: 'psychology-1',
+    id: 'psychology',
     title: 'Psychology',
     text: 'Integrating faith and psychology in understanding human behavior',
-    icon: 'bi bi-brain'
-  },
+    icon: 'bi bi-brain'  },
   {
-    id: 'arts-1',
+    id: 'arts',
     title: 'Creative Arts',
     text: 'Using creative arts to express faith and spiritual themes',
     icon: 'bi bi-palette-fill'
   },
   {
-    id: 'technology-1',
+    id: 'technology',
     title: 'Technology',
     text: 'Teaching responsible technology use through Christian values',
     icon: 'bi bi-laptop'
   },
   {
-    id: 'business-1',
+    id: 'business',
     title: 'Business Ethics',
     text: 'Applying Christian principles to business and economics',
     icon: 'bi bi-briefcase-fill'
   },
   {
-    id: 'health-1',
+    id: 'health',
     title: 'Health & Wellness',
     text: 'Teaching holistic health from a Christian perspective',
     icon: 'bi bi-heart-pulse'
   },
   {
-    id: 'environment-1',
+    id: 'environment',
     title: 'Environmental Care',
     text: 'Stewardship of creation in environmental science',
     icon: 'bi bi-globe'
   },
   {
-    id: 'social-1',
+    id: 'justice',
     title: 'Social Justice',
     text: 'Teaching social justice through biblical principles',
     icon: 'bi bi-people-fill'
@@ -273,8 +272,10 @@ const toggleShowMore = () => {
 };
 
 // Method to handle prompt selection
-const selectPrompt = (text: string, type: 'devotion' | 'faithIntegration') => {
-  emit('promptSelected', text, type);
+const selectPrompt = (promptId: string, type: 'devotion' | 'faithIntegration') => {
+  // Get the translated text using the translation key
+  const translatedText = t(`promptGallery.prompts.${promptId}.text`);
+  emit('promptSelected', translatedText, type);
 };
 </script>
 

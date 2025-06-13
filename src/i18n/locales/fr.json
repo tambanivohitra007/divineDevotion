@@ -1,0 +1,228 @@
+{
+  "app": {
+    "title": "Divine Dévotion",
+    "subtitle": "Votre compagnon spirituel alimenté par l'IA"
+  },
+  "navigation": {
+    "language": "Langue",
+    "toggleTheme": "Changer le thème",
+    "lightMode": "Mode Clair",
+    "darkMode": "Mode Sombre"
+  },  "sidebar": {
+    "saved": "Sauvegardé",
+    "searchPlaceholder": "Rechercher...",
+    "noMatches": "Aucun résultat trouvé.",
+    "noContent": "Aucun contenu sauvegardé pour le moment.",
+    "savedContent": "Contenu Sauvegardé"
+  },
+  "contentTypes": {
+    "devotion": "Dévotion",
+    "faithAndLearning": "Foi et Apprentissage",
+    "bibleCards": "Cartes Bibliques",
+    "devotionShort": "Dévo",
+    "ideaShort": "Idée"
+  },
+  "content": {
+    "yourDevotion": "Votre Dévotion",
+    "yourFaithIdea": "Votre Idée Foi et Apprentissage",
+    "generating": "Génération de votre contenu..."
+  },
+  "actions": {
+    "saveDevotion": "Sauvegarder la Dévotion",
+    "saveIdea": "Sauvegarder l'Idée",
+    "share": "Partager",
+    "shareContent": "Partager ce contenu",
+    "close": "Fermer"
+  },
+  "welcome": {
+    "title": "Bienvenue dans Divine Dévotion",
+    "subtitle": "Générez des dévotions personnalisées et des idées d'apprentissage basées sur la foi",
+    "instruction": "Choisissez un type de contenu et entrez votre sujet ci-dessous pour commencer"
+  },  "alerts": {
+    "contentSaved": "Contenu sauvegardé avec succès !"
+  },
+  "placeholders": {
+    "devotionInput": "Ex: 'trouver la paix dans l'épreuve', 'gratitude', ou 'guidance pour une décision difficile'",
+    "faithInput": "Ex: 'enseigner la biologie à travers la foi', 'intégrer l'éthique en informatique', ou 'perspectives de foi sur l'histoire'",
+    "bibleCardInfo": "La génération de cartes bibliques utilise sa propre interface",
+    "enterTopic": "Entrez un sujet pour votre dévotion...",
+    "enterTopicFaith": "Entrez un sujet pour les idées d'intégration de la foi...",
+    "enterVerseReference": "Entrez une référence biblique (ex: Jean 3:16)"
+  },
+  "messages": {
+    "loading": "Génération du contenu...",
+    "error": "Une erreur s'est produite lors de la génération du contenu",
+    "noResults": "Aucun contenu sauvegardé trouvé",
+    "contentSaved": "Contenu sauvegardé avec succès !",
+    "contentShared": "Contenu partagé avec succès !",
+    "alreadySaved": "Ce contenu est déjà sauvegardé.",
+    "copyFailed": "Échec de la copie du contenu dans le presse-papiers."
+  },
+  "sections": {
+    "savedDevotions": "Dévotions Sauvegardées",
+    "savedFaithLearning": "Foi et Apprentissage Sauvegardés",
+    "searchPlaceholder": "Rechercher dans le contenu sauvegardé...",
+    "welcomeTitle": "Bienvenue dans Divine Dévotion",
+    "welcomeText": "Générez des dévotions personnalisées et des idées d'intégration de la foi alimentées par l'IA",
+    "promptGallery": "Inspirez-vous"
+  },
+  "bibleCard": {
+    "title": "Générateur de Cartes de Versets Bibliques",
+    "progress": {
+      "validating": "Validation de la référence du verset",
+      "fetching": "Récupération du texte du verset",
+      "generating": "Génération de l'invite d'image IA",
+      "creating": "Création d'un bel arrière-plan",
+      "finalizing": "Finalisation de la conception de la carte",
+      "ready": "Carte prête"
+    }
+  },  "devotionDisplay": {
+    "bibleVerses": "Versets Bibliques :",
+    "card": "Carte",
+    "generateCard": "Générer une belle carte de verset",
+    "delete": "Supprimer"
+  },
+  "promptGallery": {
+    "title": "Galerie de Suggestions",
+    "subtitle": "Cliquez sur n'importe quel exemple pour commencer",
+    "devotionalIdeas": "Idées de Dévotion",
+    "faithLearningIdeas": "Idées Foi et Apprentissage",
+    "showMore": "Voir Plus d'Exemples",
+    "showLess": "Voir Moins",    "prompts": {
+      "peace": {
+        "title": "Trouver la Paix",
+        "text": "Trouver la paix en temps d'incertitude et de stress"
+      },
+      "gratitude": {
+        "title": "Pratique de Gratitude",
+        "text": "Développer un cœur de gratitude dans la vie quotidienne"
+      },
+      "forgiveness": {
+        "title": "Pardon",
+        "text": "Apprendre à pardonner aux autres et à nous-mêmes"
+      },
+      "strength": {
+        "title": "Trouver la Force",
+        "text": "Trouver la force en Dieu pendant les moments difficiles"
+      },
+      "purpose": {
+        "title": "But de la Vie",
+        "text": "Découvrir le but de Dieu pour ma vie"
+      },
+      "trust": {
+        "title": "Faire Confiance à Dieu",
+        "text": "Faire confiance au plan de Dieu quand la vie n'a pas de sens"
+      },
+      "prayer": {
+        "title": "Vie de Prière",
+        "text": "Approfondir ma prière et ma communion avec Dieu"
+      },
+      "wisdom": {
+        "title": "Chercher la Sagesse",
+        "text": "Chercher la sagesse de Dieu pour des décisions importantes"
+      },
+      "service": {
+        "title": "Servir les Autres",
+        "text": "Trouver la joie en servant les autres comme Christ l'a fait"
+      },
+      "hope": {
+        "title": "Espoir et Foi",
+        "text": "Maintenir l'espoir et la foi pendant les saisons sombres"
+      },
+      "patience": {
+        "title": "Patience",
+        "text": "Apprendre la patience dans le timing de Dieu"
+      },
+      "love": {
+        "title": "Amour de Dieu",
+        "text": "Comprendre et expérimenter l'amour inconditionnel de Dieu"
+      },
+      "science": {
+        "title": "Science et Foi",
+        "text": "Intégrer les principes bibliques dans l'éducation scientifique"
+      },
+      "math": {
+        "title": "Mathématiques",
+        "text": "Enseigner les mathématiques à travers une vision du monde chrétienne"
+      },
+      "history": {
+        "title": "Histoire et Foi",
+        "text": "Comprendre l'histoire à travers une vision du monde biblique"
+      },
+      "literature": {
+        "title": "Littérature",
+        "text": "Analyser la littérature à travers une perspective basée sur la foi"
+      },
+      "ethics": {
+        "title": "Éthique",
+        "text": "Enseigner l'éthique et le raisonnement moral d'un point de vue chrétien"
+      },
+      "psychology": {
+        "title": "Psychologie",
+        "text": "Intégrer la foi et la psychologie dans la compréhension du comportement humain"
+      },
+      "arts": {
+        "title": "Arts Créatifs",
+        "text": "Utiliser les arts créatifs pour exprimer la foi et les thèmes spirituels"
+      },
+      "technology": {
+        "title": "Technologie et Foi",
+        "text": "Utiliser la technologie sagement selon les principes bibliques"
+      },
+      "business": {
+        "title": "Éthique des Affaires",
+        "text": "Appliquer l'éthique chrétienne dans les pratiques commerciales"
+      },
+      "health": {
+        "title": "Santé et Bien-être",
+        "text": "Enseigner la santé holistique d'un point de vue chrétien"
+      },
+      "environment": {
+        "title": "Soin de l'Environnement",
+        "text": "Intendance de la création dans les sciences environnementales"
+      },
+      "justice": {
+        "title": "Justice Sociale",
+        "text": "Enseigner la justice sociale à travers les principes bibliques"
+      }
+    }
+  },
+  "bibleCardGenerator": {
+    "title": "Générateur de Cartes de Versets Bibliques",
+    "verseReference": "Référence du Verset Biblique",
+    "placeholder": "ex: Jean 3:16, Psaume 23:1, Romains 8:28",
+    "getSuggestions": "Obtenir des suggestions de versets IA",
+    "suggestedVerses": "Versets Suggérés",
+    "backgroundStyle": "Description du Style d'Arrière-plan",
+    "stylePlaceholder": "Décrivez votre arrière-plan idéal : paysage serein, lever de soleil doré, montagnes paisibles, couleurs pastel douces, lumière céleste, etc.",
+    "styleHelp": "Soyez descriptif ! Exemples : \"lac de montagne paisible au lever du soleil avec une brume douce\", \"lumière céleste perçant les nuages\", \"jardin serein avec des fleurs épanouies\"",
+    "stylePresets": "Préréglages de Style",
+    "aiEnhancement": "Amélioration de Style IA",
+    "customBackground": "Arrière-plan Personnalisé (Optionnel)",
+    "uploadBackground": "Téléchargez votre propre image d'arrière-plan au lieu de la génération IA",
+    "aspectRatio": "Rapport d'Aspect de la Carte",
+    "generateCard": "Générer une Carte Biblique",
+    "generating": "Génération en cours...",
+    "preview": "Aperçu",
+    "download": "Télécharger",
+    "share": "Partager",
+    "regenerate": "Régénérer",
+    "placeholder_state": {
+      "title": "Votre Carte Biblique Apparaîtra Ici",
+      "subtitle": "Entrez une référence de verset et une description de style pour commencer"
+    },
+    "progress": {
+      "validating": "Validation de la référence du verset...",
+      "fetching": "Récupération du texte du verset...",
+      "generating_prompt": "Génération de l'invite d'image IA...",
+      "generating_image": "Génération d'une vraie image IA avec Gemini...",
+      "finalizing": "Finalisation de la conception de la carte...",
+      "ready": "Carte prête !",
+      "gemini_info": "Utilisation de Gemini AI Imagen pour générer de vraies images spirituelles"
+    },
+    "ai_prompt": {
+      "view": "Voir la Description d'Image Générée par l'IA",
+      "gemini_created": "Gemini AI a créé cette description d'image :"
+    }
+  }
+}

@@ -5,7 +5,7 @@
       <div class="verses-section">
         <h6 class="verses-section-title mb-3">
           <i class="bi bi-book-half me-2"></i>
-          Bible Verses:
+          {{ $t('devotionDisplay.bibleVerses') }}
         </h6>        <ul class="list-group list-group-flush">
           <li v-for="(verse, index) in props.devotion.verses" :key="index" class="list-group-item px-0 py-2">
             <div class="d-flex justify-content-between align-items-center">
@@ -27,9 +27,9 @@
               <button 
                 @click="generateCardForVerse(verse)" 
                 class="btn btn-outline-primary btn-sm ms-2"
-                title="Generate beautiful verse card"
+                :title="$t('devotionDisplay.generateCard')"
               >
-                <i class="bi bi-image me-1"></i>Card
+                <i class="bi bi-image me-1"></i>{{ $t('devotionDisplay.card') }}
               </button>
             </div>
             
