@@ -2,13 +2,13 @@
   "app": {
     "title": "Divine Devotion",
     "subtitle": "Your AI-powered spiritual companion"
-  },
-  "navigation": {
+  },  "navigation": {
     "language": "Language",
     "toggleTheme": "Toggle theme",
     "lightMode": "Light Mode",
-    "darkMode": "Dark Mode"
-  },  "sidebar": {
+    "darkMode": "Dark Mode",
+    "contentTypes": "Content Types"
+  },"sidebar": {
     "saved": "Saved",
     "searchPlaceholder": "Search...",
     "noMatches": "No matches found.",
@@ -20,7 +20,11 @@
     "bibleCards": "Bible Cards",
     "bibleExegesis": "Bible Exegesis",
     "devotionShort": "Devo",
-    "ideaShort": "Idea"
+    "ideaShort": "Idea",
+    "devotionDesc": "Generate personalized devotional content and spiritual insights",
+    "faithLearningDesc": "Integrate faith with academic learning and everyday life",
+    "bibleCardsDesc": "Create beautiful, shareable Bible verse cards with AI imagery",
+    "bibleExegesisDesc": "Deep scriptural analysis with critical interpretation and theology"
   },"content": {
     "yourDevotion": "Your Devotion",
     "yourFaithIdea": "Your Faith & Learning Idea",
@@ -31,13 +35,13 @@
     "sharePrefixDevotion": "Devotion",
     "sharePrefixIdea": "Idea",
     "keyVerses": "Key Verses:"
-  },
-  "actions": {
+  },  "actions": {
     "saveDevotion": "Save Devotion",
     "saveIdea": "Save Idea",
     "share": "Share",
     "shareContent": "Share this content",
-    "close": "Close"
+    "close": "Close",
+    "createNew": "Create New"
   },
   "welcome": {
     "title": "Welcome to DivineDevotion",

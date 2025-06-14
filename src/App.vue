@@ -60,69 +60,102 @@
       <header class="text-center mb-4" :class="{ 'header-hidden': !showHeader }">
         <h1 class="display-4 app-title">{{ $t('app.title') }}</h1>
         <p class="lead">{{ $t('app.subtitle') }}</p>
-      </header><!-- Content Type Button - Fixed Top Right -->
-      <div class="content-type-button-fixed">
-        <!-- New Content Button -->
-        <button
-          type="button"
-          class="btn new-content-btn-fixed"
-          @click="handleCreateNew"
-          title="Create New Content"
-        >
-          <i class="bi bi-plus-lg"></i>
-        </button>
-        
-        <!-- Content Type Toggle Button -->
-        <button
-          type="button"
-          class="btn content-type-btn-fixed"
-          @click="toggleContentTypeDropdown"
-          :title="currentContentTypeLabel"
-          ref="contentTypeButtonRef"
-        >
-          <i :class="currentContentTypeIcon"></i>
-        </button>
-        
-        <!-- Dropdown Menu -->
-        <div 
-          v-if="showContentTypeDropdown" 
-          class="content-type-dropdown-menu-fixed"
-          ref="dropdownMenuRef"
-        >          <button
-            type="button"
-            class="dropdown-item"
-            :class="{ active: contentTypeSelection === 'devotion' }"
-            @click="selectContentType('devotion')"
-          >
-            <i class="bi bi-stars me-2"></i>
-            <span>{{ $t('contentTypes.devotion') }}</span>
-          </button>
-          <button
-            type="button"
-            class="dropdown-item"
-            :class="{ active: contentTypeSelection === 'faithIntegration' }"
-            @click="selectContentType('faithIntegration')"
-          >
-            <i class="bi bi-lightbulb-fill me-2"></i>
-            <span>{{ $t('contentTypes.faithAndLearning') }}</span>
-          </button>          <button
-            type="button"
-            class="dropdown-item"
-            :class="{ active: contentTypeSelection === 'bibleCard' }"
-            @click="selectContentType('bibleCard')"
-          >
-            <i class="bi bi-card-image me-2"></i>
-            <span>{{ $t('contentTypes.bibleCards') }}</span>
-          </button>
-          <button
-            type="button"
-            class="dropdown-item"
-            :class="{ active: contentTypeSelection === 'bibleExegesis' }"
-            @click="selectContentType('bibleExegesis')"
-          >
-            <i class="bi bi-book-half me-2"></i>
-            <span>{{ $t('contentTypes.bibleExegesis') }}</span>
-          </button>
+      </header><!-- Content Type Menu - Fixed Right Side -->
+      <!-- Menu Toggle Button (Always Visible) -->
+      <button
+        type="button"
+        class="btn content-type-menu-toggle"
+        @click="toggleContentTypeMenu"
+        :title="$t('navigation.contentTypes')"
+        ref="contentTypeButtonRef"
+      >
+        <i :class="currentContentTypeIcon"></i>
+      </button>
+      
+      <!-- Menu Overlay -->
+      <div class="content-type-menu-overlay" v-if="showContentTypeMenu" @click="closeContentTypeMenu"></div>
+      
+      <!-- Menu Panel -->
+      <div class="content-type-menu-right" :class="{ 'menu-open': showContentTypeMenu }">
+        <div class="content-type-menu-panel" ref="menuPanelRef">
+          <div class="menu-header">
+            <h6 class="menu-title">{{ $t('navigation.contentTypes') }}</h6>
+            <button type="button" class="btn-close" @click="closeContentTypeMenu" :aria-label="$t('actions.close')"></button>
+          </div>
+          
+          <div class="menu-items">
+            <button
+              type="button"
+              class="menu-item"
+              :class="{ active: contentTypeSelection === 'devotion' }"
+              @click="selectContentType('devotion')"
+            >
+              <div class="menu-item-icon">
+                <i class="bi bi-stars"></i>
+              </div>
+              <div class="menu-item-content">
+                <div class="menu-item-title">{{ $t('contentTypes.devotion') }}</div>
+                <div class="menu-item-desc">{{ $t('contentTypes.devotionDesc') }}</div>
+              </div>
+            </button>
+            
+            <button
+              type="button"
+              class="menu-item"
+              :class="{ active: contentTypeSelection === 'faithIntegration' }"
+              @click="selectContentType('faithIntegration')"
+            >
+              <div class="menu-item-icon">
+                <i class="bi bi-lightbulb-fill"></i>
+              </div>
+              <div class="menu-item-content">
+                <div class="menu-item-title">{{ $t('contentTypes.faithAndLearning') }}</div>
+                <div class="menu-item-desc">{{ $t('contentTypes.faithLearningDesc') }}</div>
+              </div>
+            </button>
+            
+            <button
+              type="button"
+              class="menu-item"
+              :class="{ active: contentTypeSelection === 'bibleCard' }"
+              @click="selectContentType('bibleCard')"
+            >
+              <div class="menu-item-icon">
+                <i class="bi bi-card-image"></i>
+              </div>
+              <div class="menu-item-content">
+                <div class="menu-item-title">{{ $t('contentTypes.bibleCards') }}</div>
+                <div class="menu-item-desc">{{ $t('contentTypes.bibleCardsDesc') }}</div>
+              </div>
+            </button>
+            
+            <button
+              type="button"
+              class="menu-item"
+              :class="{ active: contentTypeSelection === 'bibleExegesis' }"
+              @click="selectContentType('bibleExegesis')"
+            >
+              <div class="menu-item-icon">
+                <i class="bi bi-book-half"></i>
+              </div>
+              <div class="menu-item-content">
+                <div class="menu-item-title">{{ $t('contentTypes.bibleExegesis') }}</div>
+                <div class="menu-item-desc">{{ $t('contentTypes.bibleExegesisDesc') }}</div>
+              </div>
+            </button>
+          </div>
+          
+          <!-- New Content Button at bottom -->
+          <div class="menu-footer">
+            <button
+              type="button"
+              class="btn btn-primary w-100 new-content-btn-menu"
+              @click="handleCreateNew"
+            >
+              <i class="bi bi-plus-lg me-2"></i>
+              {{ $t('actions.createNew') }}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -297,12 +330,12 @@ const textareaRef = ref<HTMLTextAreaElement>();
 // Ref for the content area
 const contentAreaRef = ref<HTMLElement>();
 
-// Refs for content type dropdown
+// Refs for content type menu
 const contentTypeButtonRef = ref<HTMLButtonElement>();
-const dropdownMenuRef = ref<HTMLDivElement>();
+const menuPanelRef = ref<HTMLDivElement>();
 
-// Content type dropdown state
-const showContentTypeDropdown = ref(false);
+// Content type menu state
+const showContentTypeMenu = ref(false);
 
 // Fade effects state
 const showTopFade = ref(false);
@@ -358,9 +391,8 @@ onMounted(() => {
     isSidebarCollapsed.value = true; // Ensure sidebar is collapsed on mobile initial load
   }
   window.addEventListener('resize', checkMobile);
-  
-  // Add click outside listener for dropdown
-  document.addEventListener('click', closeDropdownOnClickOutside);
+    // Add click outside listener for menu
+  document.addEventListener('click', closeMenuOnClickOutside);
 
   // Theme initialization
   const theme = isDarkMode.value ? 'dark' : 'light';
@@ -369,7 +401,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', checkMobile);
-  document.removeEventListener('click', closeDropdownOnClickOutside);
+  document.removeEventListener('click', closeMenuOnClickOutside);
 });
 
 // Computed properties for dynamic UI text
@@ -637,24 +669,13 @@ const currentContentTypeIcon = computed(() => {
   }
 });
 
-const currentContentTypeLabel = computed(() => {
-  switch (contentTypeSelection.value) {
-    case 'devotion':
-      return t('contentTypes.devotion');
-    case 'faithIntegration':
-      return t('contentTypes.faithAndLearning');
-    case 'bibleCard':
-      return t('contentTypes.bibleCards');
-    case 'bibleExegesis':
-      return t('contentTypes.bibleExegesis');
-    default:
-      return t('contentTypes.devotion');
-  }
-});
+// Content type menu methods
+const toggleContentTypeMenu = () => {
+  showContentTypeMenu.value = !showContentTypeMenu.value;
+};
 
-// Content type dropdown methods
-const toggleContentTypeDropdown = () => {
-  showContentTypeDropdown.value = !showContentTypeDropdown.value;
+const closeContentTypeMenu = () => {
+  showContentTypeMenu.value = false;
 };
 
 const selectContentType = (type: string) => {
@@ -669,20 +690,19 @@ const selectContentType = (type: string) => {
   } else {
     showBibleCardGenerator.value = false;
     showBibleExegesis.value = false;
-    selectedContentType.value = type as 'devotion' | 'faithIntegration';
-  }
-  showContentTypeDropdown.value = false;
+    selectedContentType.value = type as 'devotion' | 'faithIntegration';  }
+  showContentTypeMenu.value = false;
 };
 
-// Close dropdown when clicking outside
-const closeDropdownOnClickOutside = (event: Event) => {
-  if (showContentTypeDropdown.value) {
+// Close menu when clicking outside
+const closeMenuOnClickOutside = (event: Event) => {
+  if (showContentTypeMenu.value) {
     const target = event.target as Node;
     const button = contentTypeButtonRef.value;
-    const dropdown = dropdownMenuRef.value;
+    const menu = menuPanelRef.value;
     
-    if (button && dropdown && !button.contains(target) && !dropdown.contains(target)) {
-      showContentTypeDropdown.value = false;
+    if (button && menu && !button.contains(target) && !menu.contains(target)) {
+      showContentTypeMenu.value = false;
     }
   }
 };
@@ -701,9 +721,8 @@ const handleCreateNew = () => {
   
   // Clear the input field
   topicInput.value = '';
-  
-  // Close the content type dropdown if it's open
-  showContentTypeDropdown.value = false;
+    // Close the content type menu if it's open
+  showContentTypeMenu.value = false;
     // Focus on the input field for immediate typing
   if (textareaRef.value && !showBibleCardGenerator.value && !showBibleExegesis.value) {
     setTimeout(() => {
@@ -721,9 +740,8 @@ const handlePromptSelection = (text: string, type: 'devotion' | 'faithIntegratio
   
   // Set the prompt text in the input field
   topicInput.value = text;
-  
-  // Close content type dropdown if open
-  showContentTypeDropdown.value = false;
+    // Close content type menu if open
+  showContentTypeMenu.value = false;
   
   // Focus on the input field and auto-resize
   if (textareaRef.value) {

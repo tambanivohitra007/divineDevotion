@@ -2,12 +2,12 @@
   "app": {
     "title": "Divine Dévotion",
     "subtitle": "Ny mpiara-dia ara-panahy aman'ny AI"
-  },
-  "navigation": {
+  },  "navigation": {
     "language": "Fiteny",
     "toggleTheme": "Ovay ny endrika",
     "lightMode": "Endrika mazava",
-    "darkMode": "Endrika maizina"
+    "darkMode": "Endrika maizina",
+    "contentTypes": "Karazana Votoaty"
   },
   "sidebar": {
     "saved": "Voatahiry",
@@ -21,7 +21,11 @@
     "bibleCards": "Karatra Baiboly",
     "bibleExegesis": "Famakafakana Baiboly",
     "devotionShort": "Fiva",
-    "ideaShort": "Hevitra"
+    "ideaShort": "Hevitra",
+    "devotionDesc": "Hamorona votoaty fanompoam-pivavahana manokana sy fahitana ara-panahy",
+    "faithLearningDesc": "Hampifangaro ny finoana amin'ny fianarana sy ny fiainana andavanandro",
+    "bibleCardsDesc": "Hamorona karatra andinintsarito baiboly tsara tarehy azo zaraina miaraka amin'ny sary AI",
+    "bibleExegesisDesc": "Famakafakana lalina ara-baiboly miaraka amin'ny fandikana sy teolojia"
   },
   "content": {
     "yourDevotion": "Ny Fivavahanao",
@@ -33,8 +37,7 @@
     "sharePrefixDevotion": "Fivavahana",
     "sharePrefixIdea": "Hevitra",
     "keyVerses": "Andinintsarito Fototra:"
-  },
-  "actions": {
+  },  "actions": {
     "generate": "Hamorona",
     "save": "Tehirizo",
     "share": "Zarao",
@@ -42,7 +45,8 @@
     "close": "Hidio",
     "saveDevotion": "Tehirizo ny fivavahana",
     "saveIdea": "Tehirizo ny hevitra",
-    "shareContent": "Zarao ny votoaty"
+    "shareContent": "Zarao ny votoaty",
+    "createNew": "Hamorona Vaovao"
   },
   "welcome": {
     "title": "Tongasoa eto amin'ny Divine Dévotion",

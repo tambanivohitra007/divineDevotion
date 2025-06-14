@@ -2,13 +2,13 @@
   "app": {
     "title": "Divine Dévotion",
     "subtitle": "Votre compagnon spirituel alimenté par l'IA"
-  },
-  "navigation": {
+  },  "navigation": {
     "language": "Langue",
     "toggleTheme": "Changer le thème",
     "lightMode": "Mode Clair",
-    "darkMode": "Mode Sombre"
-  },  "sidebar": {
+    "darkMode": "Mode Sombre",
+    "contentTypes": "Types de Contenu"
+  },"sidebar": {
     "saved": "Sauvegardé",
     "searchPlaceholder": "Rechercher...",
     "noMatches": "Aucun résultat trouvé.",
@@ -20,7 +20,11 @@
     "bibleCards": "Cartes Bibliques",
     "bibleExegesis": "Exégèse Biblique",
     "devotionShort": "Dévo",
-    "ideaShort": "Idée"
+    "ideaShort": "Idée",
+    "devotionDesc": "Générez du contenu de dévotion personnalisé et des insights spirituels",
+    "faithLearningDesc": "Intégrez la foi avec l'apprentissage académique et la vie quotidienne",
+    "bibleCardsDesc": "Créez de belles cartes de versets bibliques partageables avec des images IA",
+    "bibleExegesisDesc": "Analyse scripturaire approfondie avec interprétation critique et théologie"
   },"content": {
     "yourDevotion": "Votre Dévotion",
     "yourFaithIdea": "Votre Idée Foi et Apprentissage",
@@ -31,13 +35,13 @@
     "sharePrefixDevotion": "Dévotion",
     "sharePrefixIdea": "Idée",
     "keyVerses": "Versets Clés :"
-  },
-  "actions": {
+  },  "actions": {
     "saveDevotion": "Sauvegarder la Dévotion",
     "saveIdea": "Sauvegarder l'Idée",
     "share": "Partager",
     "shareContent": "Partager ce contenu",
-    "close": "Fermer"
+    "close": "Fermer",
+    "createNew": "Créer Nouveau"
   },
   "welcome": {
     "title": "Bienvenue dans Divine Dévotion",
