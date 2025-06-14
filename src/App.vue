@@ -105,8 +105,7 @@
           >
             <i class="bi bi-lightbulb-fill me-2"></i>
             <span>{{ $t('contentTypes.faithAndLearning') }}</span>
-          </button>
-          <button
+          </button>          <button
             type="button"
             class="dropdown-item"
             :class="{ active: contentTypeSelection === 'bibleCard' }"
@@ -114,6 +113,15 @@
           >
             <i class="bi bi-card-image me-2"></i>
             <span>{{ $t('contentTypes.bibleCards') }}</span>
+          </button>
+          <button
+            type="button"
+            class="dropdown-item"
+            :class="{ active: contentTypeSelection === 'bibleExegesis' }"
+            @click="selectContentType('bibleExegesis')"
+          >
+            <i class="bi bi-book-half me-2"></i>
+            <span>{{ $t('contentTypes.bibleExegesis') }}</span>
           </button>
         </div>
       </div>
@@ -126,10 +134,14 @@
           :class="{ 'visible': showTopFade }"
         ></div>
         
-        <div class="content-area" ref="contentAreaRef" @scroll="handleContentScroll">
-          <!-- Bible Card Generator Section -->
+        <div class="content-area" ref="contentAreaRef" @scroll="handleContentScroll">          <!-- Bible Card Generator Section -->
           <div v-if="showBibleCardGenerator" class="bible-card-section">
             <BibleCardGenerator />
+          </div>
+
+          <!-- Bible Exegesis Section -->
+          <div v-else-if="showBibleExegesis" class="bible-exegesis-section">
+            <BibleExegesis />
           </div>
 
       <!-- Content Display Section (for devotions and faith integration) -->
@@ -167,7 +179,7 @@
                 <i class="bi bi-share-fill me-2"></i>{{ $t('actions.share') }}
               </button>
             </div>
-          </div>      </div>      </div>      <!-- Placeholder for when nothing is generated and not loading, and no error (not shown for Bible Card Generator) -->      <section v-else-if="!isLoading && !currentContent.text && !generationError && !showBibleCardGenerator" class="text-center placeholder-section mx-auto p-5 rounded welcome-area">
+          </div>      </div>      </div>      <!-- Placeholder for when nothing is generated and not loading, and no error (not shown for Bible Card Generator or Bible Exegesis) -->      <section v-else-if="!isLoading && !currentContent.text && !generationError && !showBibleCardGenerator && !showBibleExegesis" class="text-center placeholder-section mx-auto p-5 rounded welcome-area">
         <div class="welcome-content">
           <i class="bi bi-lightbulb-fill welcome-icon"></i>
           <h2 class="welcome-title">{{ $t('welcome.title') }}</h2>
@@ -194,8 +206,8 @@
         ></div>
       </div>    <!-- Bottom Input Area (Gemini-like) -->
     <div class="bottom-input-area" :class="{ 'input-hidden': !showBottomInput }">
-      <div class="input-container">        <!-- Input Form (hidden when Bible Card Generator is selected) -->
-        <form v-if="!showBibleCardGenerator" @submit.prevent="handleGenerateContent" class="input-form">
+      <div class="input-container">        <!-- Input Form (hidden when Bible Card Generator or Bible Exegesis is selected) -->
+        <form v-if="!showBibleCardGenerator && !showBibleExegesis" @submit.prevent="handleGenerateContent" class="input-form">
           <div class="input-group">
             <textarea
               id="topicInput"
@@ -235,6 +247,7 @@ import { ref, computed, watch, watchEffect, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DevotionDisplay from './components/DevotionDisplay.vue';
 import BibleCardGenerator from './components/BibleCardGenerator.vue';
+import BibleExegesis from './components/BibleExegesis.vue';
 import PromptGallery from './components/PromptGallery.vue';
 import LanguageSelector from './components/LanguageSelector.vue';
 import useGemini from './composables/useGemini';
@@ -246,12 +259,14 @@ const { t, locale } = useI18n();
 
 const selectedContentType = ref<'devotion' | 'faithIntegration'>('devotion');
 const showBibleCardGenerator = ref(false);
+const showBibleExegesis = ref(false);
 const topicInput = ref(''); // Renamed from devotionTopic
 
 // Computed property for dropdown selection that combines selectedContentType and showBibleCardGenerator
 const contentTypeSelection = computed({
   get: () => {
     if (showBibleCardGenerator.value) return 'bibleCard';
+    if (showBibleExegesis.value) return 'bibleExegesis';
     return selectedContentType.value;
   },
   set: () => {
@@ -615,6 +630,8 @@ const currentContentTypeIcon = computed(() => {
       return 'bi bi-lightbulb-fill';
     case 'bibleCard':
       return 'bi bi-card-image';
+    case 'bibleExegesis':
+      return 'bi bi-book-half';
     default:
       return 'bi bi-stars';
   }
@@ -628,6 +645,8 @@ const currentContentTypeLabel = computed(() => {
       return t('contentTypes.faithAndLearning');
     case 'bibleCard':
       return t('contentTypes.bibleCards');
+    case 'bibleExegesis':
+      return t('contentTypes.bibleExegesis');
     default:
       return t('contentTypes.devotion');
   }
@@ -641,9 +660,15 @@ const toggleContentTypeDropdown = () => {
 const selectContentType = (type: string) => {
   if (type === 'bibleCard') {
     showBibleCardGenerator.value = true;
+    showBibleExegesis.value = false;
+    selectedContentType.value = 'devotion'; // Default fallback
+  } else if (type === 'bibleExegesis') {
+    showBibleCardGenerator.value = false;
+    showBibleExegesis.value = true;
     selectedContentType.value = 'devotion'; // Default fallback
   } else {
     showBibleCardGenerator.value = false;
+    showBibleExegesis.value = false;
     selectedContentType.value = type as 'devotion' | 'faithIntegration';
   }
   showContentTypeDropdown.value = false;
@@ -679,9 +704,8 @@ const handleCreateNew = () => {
   
   // Close the content type dropdown if it's open
   showContentTypeDropdown.value = false;
-  
-  // Focus on the input field for immediate typing
-  if (textareaRef.value && !showBibleCardGenerator.value) {
+    // Focus on the input field for immediate typing
+  if (textareaRef.value && !showBibleCardGenerator.value && !showBibleExegesis.value) {
     setTimeout(() => {
       textareaRef.value?.focus();
     }, 100);
@@ -693,6 +717,7 @@ const handlePromptSelection = (text: string, type: 'devotion' | 'faithIntegratio
   // Set the content type first
   selectedContentType.value = type;
   showBibleCardGenerator.value = false;
+  showBibleExegesis.value = false;
   
   // Set the prompt text in the input field
   topicInput.value = text;

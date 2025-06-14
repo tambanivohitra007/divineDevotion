@@ -14,14 +14,14 @@
     "noMatches": "No matches found.",
     "noContent": "No content saved yet.",
     "savedContent": "Saved Content"
-  },
-  "contentTypes": {
+  },  "contentTypes": {
     "devotion": "Devotion",
     "faithAndLearning": "Faith & Learning",
     "bibleCards": "Bible Cards",
+    "bibleExegesis": "Bible Exegesis",
     "devotionShort": "Devo",
     "ideaShort": "Idea"
-  },  "content": {
+  },"content": {
     "yourDevotion": "Your Devotion",
     "yourFaithIdea": "Your Faith & Learning Idea",
     "generating": "Generating your content...",
@@ -236,8 +236,7 @@
     },
     "progress": {
       "validating": "Validating verse reference...",
-      "fetching": "Fetching verse text...",
-      "generating_prompt": "Generating AI image prompt...",
+      "fetching": "Fetching verse text...",      "generating_prompt": "Generating AI image prompt...",
       "generating_image": "Generating real AI image with Gemini...",
       "finalizing": "Finalizing card design...",
       "ready": "Card ready!",
@@ -246,6 +245,52 @@
     "ai_prompt": {
       "view": "View AI-Generated Image Description",
       "gemini_created": "Gemini AI created this image description:"
+    }
+  },
+  "bibleExegesis": {
+    "title": "Bible Exegesis & Hermeneutics",
+    "subtitle": "Deep scriptural analysis with critical interpretation and theological principles",
+    "passageLabel": "Bible Passage",
+    "referencePlaceholder": "e.g., John 3:16, Romans 8:28-30",
+    "textPlaceholder": "Enter the Bible text you want to analyze, or use the fetch button to retrieve it automatically...",
+    "fetchText": "Fetch passage text",
+    "analysisType": "Analysis Type",
+    "exegesis": "Exegesis",
+    "exegesisDesc": "Critical interpretation focusing on the text itself - original language, context, structure",
+    "hermeneutics": "Hermeneutics", 
+    "hermeneuticsDesc": "Interpretive principles for understanding meaning and contemporary application",
+    "focusAreasLabel": "Focus Areas",
+    "generateAnalysis": "Generate Analysis",
+    "generating": "Analyzing...",
+    "analysisResults": "Analysis Results",
+    "analyzingText": "Performing deep scriptural analysis...",
+    "exegesisTitle": "Exegetical Analysis",
+    "hermeneuticsTitle": "Hermeneutical Interpretation", 
+    "keyInsights": "Key Insights",
+    "saveAnalysis": "Save Analysis",
+    "shareAnalysis": "Share Analysis",
+    "newAnalysis": "New Analysis",
+    "errorTitle": "Analysis Error",
+    "welcomeTitle": "Ready for Biblical Analysis",
+    "welcomeDesc": "Enter a Bible passage and select your analysis preferences to begin deep scriptural study",
+    "validReference": "Valid Bible reference format",
+    "invalidReference": "Please use format like 'John 3:16' or 'Romans 8:28-30'",
+    "invalidReferenceFormat": "Invalid reference format. Please use format like 'John 3:16'",
+    "verseNotFound": "Verse not found. Please check the reference and try again.",
+    "fetchError": "Error fetching verse text. Please try again.",
+    "unknownError": "An unexpected error occurred.",
+    "analysisError": "Error generating analysis. Please try again.",
+    "apiKeyMissing": "API key is missing. Please check your configuration.",
+    "noContentGenerated": "No analysis content was generated. Please try again.",
+    "analysisSaved": "Analysis saved successfully!",
+    "copiedToClipboard": "Analysis copied to clipboard!",
+    "focusAreas": {
+      "historical": "Historical Context",
+      "literary": "Literary Analysis", 
+      "theological": "Theological Significance",
+      "cultural": "Cultural Background",
+      "linguistic": "Original Languages",
+      "canonical": "Biblical Canon"
     }
   }
 }

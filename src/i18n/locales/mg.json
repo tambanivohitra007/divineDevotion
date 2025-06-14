@@ -19,6 +19,7 @@
     "devotion": "Fivavahana",
     "faithAndLearning": "Finoana sy Fianarana",
     "bibleCards": "Karatra Baiboly",
+    "bibleExegesis": "Famakafakana Baiboly",
     "devotionShort": "Fiva",
     "ideaShort": "Hevitra"
   },
@@ -253,6 +254,52 @@
     "ai_prompt": {
       "view": "Jereo ny Famaritana Sary Novokarin'ny AI",
       "gemini_created": "Gemini AI no namorona ity famaritana sary ity:"
+    }
+  },
+  "bibleExegesis": {
+    "title": "Fandinihana sy Famakafanana Baiboly",
+    "subtitle": "Fandalinana lalina ara-baiboly amin'ny famakafakana sy fitsipika ara-pilazantsara",
+    "passageLabel": "Andininy na Toko Baiboly",
+    "referencePlaceholder": "oh: Jaona 3:16, Romana 8:28-30",
+    "textPlaceholder": "Ampidiro eto ny lahatsoratra baiboly tianao hohadihadiana, na tsindrio ny bokotra haka azy ho azy...",
+    "fetchText": "Makà lahatsoratra andininy",
+    "analysisType": "Karazana Famakafanana",
+    "exegesis": "Exegesis",
+    "exegesisDesc": "Famakafakana lalina mifantoka amin'ny lahatsoratra sy teny tany am-boalohany, tantara, rafitra",
+    "hermeneutics": "Hermeneutika",
+    "hermeneuticsDesc": "Fitsipika amin'ny fandraisana sy fampiharana amin'ny fiainana ankehitriny",
+    "focusAreasLabel": "Zavatra Ifantohana",
+    "generateAnalysis": "Hamorona Famakafanana",
+    "generating": "Mamakafaka...",
+    "analysisResults": "Vokatry ny Famakafanana",
+    "analyzingText": "Manao famakafakana lalina ara-baiboly...",
+    "exegesisTitle": "Famakafanana Exegetika",
+    "hermeneuticsTitle": "Fandikana Hermeneutika",
+    "keyInsights": "Hevitra Manan-danja",
+    "saveAnalysis": "Tehirizo ny Famakafanana",
+    "shareAnalysis": "Zarao ny Famakafanana",
+    "newAnalysis": "Famakafanana Vaovao",
+    "errorTitle": "Nisy Olana tamin'ny Famakafanana",
+    "welcomeTitle": "Vonona amin'ny Famakafanana Baiboly",
+    "welcomeDesc": "Ampidiro andininy na toko baiboly ary safidio ny tianao hohadihadiana ho amin'ny fandalinana lalina",
+    "validReference": "Endrika referansa baiboly mety",
+    "invalidReference": "Ampiasao endrika toy ny 'Jaona 3:16' na 'Romana 8:28-30'",
+    "invalidReferenceFormat": "Endrika referansa tsy mety. Ampiasao toy ny 'Jaona 3:16'",
+    "verseNotFound": "Tsy hita ilay andininy. Hamarino ny referansa azafady.",
+    "fetchError": "Nisy olana tamin'ny fakana lahatsoratra. Andramo indray azafady.",
+    "unknownError": "Nisy olana tsy ampoizina.",
+    "analysisError": "Nisy olana tamin'ny famoronana famakafanana. Andramo indray azafady.",
+    "apiKeyMissing": "Tsy hita ny API key. Hamarino ny fikirakirana azafady.",
+    "noContentGenerated": "Tsy nisy famakafanana novokarina. Andramo indray azafady.",
+    "analysisSaved": "Voatahiry soa aman-tsara ny famakafanana!",
+    "copiedToClipboard": "Voakopy ao amin'ny clipboard ny famakafanana!",
+    "focusAreas": {
+      "historical": "Tantara sy Toe-javatra",
+      "literary": "Famakafanana Literera",
+      "theological": "Hevitra Ara-pilazantsara",
+      "cultural": "Kolontsaina sy Fiarahamonina",
+      "linguistic": "Teny tany am-boalohany",
+      "canonical": "Kanona Baiboly"
     }
   }
 }

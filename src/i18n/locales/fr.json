@@ -14,14 +14,14 @@
     "noMatches": "Aucun résultat trouvé.",
     "noContent": "Aucun contenu sauvegardé pour le moment.",
     "savedContent": "Contenu Sauvegardé"
-  },
-  "contentTypes": {
+  },  "contentTypes": {
     "devotion": "Dévotion",
     "faithAndLearning": "Foi et Apprentissage",
     "bibleCards": "Cartes Bibliques",
+    "bibleExegesis": "Exégèse Biblique",
     "devotionShort": "Dévo",
     "ideaShort": "Idée"
-  },  "content": {
+  },"content": {
     "yourDevotion": "Votre Dévotion",
     "yourFaithIdea": "Votre Idée Foi et Apprentissage",
     "generating": "Génération de votre contenu...",
@@ -236,8 +236,7 @@
     },
     "progress": {
       "validating": "Validation de la référence du verset...",
-      "fetching": "Récupération du texte du verset...",
-      "generating_prompt": "Génération de l'invite d'image IA...",
+      "fetching": "Récupération du texte du verset...",      "generating_prompt": "Génération de l'invite d'image IA...",
       "generating_image": "Génération d'une vraie image IA avec Gemini...",
       "finalizing": "Finalisation de la conception de la carte...",
       "ready": "Carte prête !",
@@ -246,6 +245,52 @@
     "ai_prompt": {
       "view": "Voir la Description d'Image Générée par l'IA",
       "gemini_created": "Gemini AI a créé cette description d'image :"
+    }
+  },
+  "bibleExegesis": {
+    "title": "Exégèse et Herméneutique Biblique",
+    "subtitle": "Analyse scripturaire approfondie avec interprétation critique et principes théologiques",
+    "passageLabel": "Passage Biblique",
+    "referencePlaceholder": "ex: Jean 3:16, Romains 8:28-30",
+    "textPlaceholder": "Entrez le texte biblique que vous voulez analyser, ou utilisez le bouton de récupération...",
+    "fetchText": "Récupérer le texte du passage",
+    "analysisType": "Type d'Analyse",
+    "exegesis": "Exégèse",
+    "exegesisDesc": "Interprétation critique se concentrant sur le texte lui-même - langue originale, contexte, structure",
+    "hermeneutics": "Herméneutique", 
+    "hermeneuticsDesc": "Principes interprétatifs pour comprendre le sens et l'application contemporaine",
+    "focusAreasLabel": "Domaines d'Attention",
+    "generateAnalysis": "Générer l'Analyse",
+    "generating": "Analyse en cours...",
+    "analysisResults": "Résultats de l'Analyse",
+    "analyzingText": "Réalisation d'une analyse scripturaire approfondie...",
+    "exegesisTitle": "Analyse Exégétique",
+    "hermeneuticsTitle": "Interprétation Herméneutique", 
+    "keyInsights": "Aperçus Clés",
+    "saveAnalysis": "Sauvegarder l'Analyse",
+    "shareAnalysis": "Partager l'Analyse",
+    "newAnalysis": "Nouvelle Analyse",
+    "errorTitle": "Erreur d'Analyse",
+    "welcomeTitle": "Prêt pour l'Analyse Biblique",
+    "welcomeDesc": "Entrez un passage biblique et sélectionnez vos préférences d'analyse pour commencer l'étude scripturaire approfondie",
+    "validReference": "Format de référence biblique valide",
+    "invalidReference": "Veuillez utiliser un format comme 'Jean 3:16' ou 'Romains 8:28-30'",
+    "invalidReferenceFormat": "Format de référence invalide. Veuillez utiliser un format comme 'Jean 3:16'",
+    "verseNotFound": "Verset non trouvé. Veuillez vérifier la référence et réessayer.",
+    "fetchError": "Erreur lors de la récupération du texte du verset. Veuillez réessayer.",
+    "unknownError": "Une erreur inattendue s'est produite.",
+    "analysisError": "Erreur lors de la génération de l'analyse. Veuillez réessayer.",
+    "apiKeyMissing": "La clé API est manquante. Veuillez vérifier votre configuration.",
+    "noContentGenerated": "Aucun contenu d'analyse n'a été généré. Veuillez réessayer.",
+    "analysisSaved": "Analyse sauvegardée avec succès !",
+    "copiedToClipboard": "Analyse copiée dans le presse-papiers !",
+    "focusAreas": {
+      "historical": "Contexte Historique",
+      "literary": "Analyse Littéraire", 
+      "theological": "Signification Théologique",
+      "cultural": "Contexte Culturel",
+      "linguistic": "Langues Originales",
+      "canonical": "Canon Biblique"
     }
   }
 }
