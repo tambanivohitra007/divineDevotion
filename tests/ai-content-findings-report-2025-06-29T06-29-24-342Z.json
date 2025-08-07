@@ -1,0 +1,450 @@
+{
+  "metadata": {
+    "testDate": "2025-06-29T06:30:11.859Z",
+    "testVersion": "1.0.0",
+    "sampleSize": 10,
+    "languagesTested": [
+      "en",
+      "fr",
+      "mg"
+    ],
+    "educationalLevels": [
+      "elementary",
+      "secondary",
+      "adult"
+    ]
+  },
+  "keyFindings": {
+    "reliability": {
+      "contentConsistency": "HIGH",
+      "averageProcessingTime": 1497,
+      "performanceVariability": 1597,
+      "qualityConsistency": "MEASURED"
+    },
+    "correctness": {
+      "biblicalAccuracy": "100.0%",
+      "doctrinalCompliance": "100.0%",
+      "multilingualSupport": 3,
+      "averageReadability": 54
+    },
+    "applicability": {
+      "educationalLevelAdaptation": 3,
+      "subjectAreaIntegration": 5,
+      "practicalImplementation": 5,
+      "ageAppropriateContent": "VARIED"
+    },
+    "performance": {
+      "averageResponseTime": 1537,
+      "qualitySpeedTradeoff": "INVERSE_RELATIONSHIP",
+      "scalabilityIndicators": "TESTED",
+      "resourceEfficiency": "OPTIMIZED"
+    }
+  },
+  "detailedResults": {
+    "reliability": {
+      "contentConsistency": [
+        {
+          "iteration": 1,
+          "wordCount": 215,
+          "paragraphCount": 4,
+          "spiritualTerms": 7,
+          "readabilityScore": 54,
+          "processingTime": 1136
+        },
+        {
+          "iteration": 2,
+          "wordCount": 215,
+          "paragraphCount": 4,
+          "spiritualTerms": 7,
+          "readabilityScore": 54,
+          "processingTime": 653
+        },
+        {
+          "iteration": 3,
+          "wordCount": 215,
+          "paragraphCount": 4,
+          "spiritualTerms": 7,
+          "readabilityScore": 54,
+          "processingTime": 2250
+        },
+        {
+          "iteration": 4,
+          "wordCount": 215,
+          "paragraphCount": 4,
+          "spiritualTerms": 7,
+          "readabilityScore": 54,
+          "processingTime": 1688
+        },
+        {
+          "iteration": 5,
+          "wordCount": 215,
+          "paragraphCount": 4,
+          "spiritualTerms": 7,
+          "readabilityScore": 54,
+          "processingTime": 1757
+        }
+      ],
+      "processingTimes": [
+        1136,
+        653,
+        2250,
+        1688,
+        1757
+      ],
+      "errorRates": [],
+      "qualityVariation": []
+    },
+    "correctness": {
+      "biblicalAccuracy": [
+        {
+          "topic": "Faith in difficult times",
+          "totalVerses": 4,
+          "validVerses": 4,
+          "validityRate": 1,
+          "verseDetails": [
+            {
+              "verse": "Isaiah 55:8-9",
+              "isValid": true,
+              "format": "correct"
+            },
+            {
+              "verse": "Habakkuk 3:17-18",
+              "isValid": true,
+              "format": "correct"
+            },
+            {
+              "verse": "Romans 8:28",
+              "isValid": true,
+              "format": "correct"
+            },
+            {
+              "verse": "Jeremiah 29:11",
+              "isValid": true,
+              "format": "correct"
+            }
+          ]
+        },
+        {
+          "topic": "The meaning of grace",
+          "totalVerses": 4,
+          "validVerses": 4,
+          "validityRate": 1,
+          "verseDetails": [
+            {
+              "verse": "Isaiah 55:8-9",
+              "isValid": true,
+              "format": "correct"
+            },
+            {
+              "verse": "Habakkuk 3:17-18",
+              "isValid": true,
+              "format": "correct"
+            },
+            {
+              "verse": "Romans 8:28",
+              "isValid": true,
+              "format": "correct"
+            },
+            {
+              "verse": "Jeremiah 29:11",
+              "isValid": true,
+              "format": "correct"
+            }
+          ]
+        },
+        {
+          "topic": "Finding peace through prayer",
+          "totalVerses": 4,
+          "validVerses": 4,
+          "validityRate": 1,
+          "verseDetails": [
+            {
+              "verse": "Isaiah 55:8-9",
+              "isValid": true,
+              "format": "correct"
+            },
+            {
+              "verse": "Habakkuk 3:17-18",
+              "isValid": true,
+              "format": "correct"
+            },
+            {
+              "verse": "Romans 8:28",
+              "isValid": true,
+              "format": "correct"
+            },
+            {
+              "verse": "Jeremiah 29:11",
+              "isValid": true,
+              "format": "correct"
+            }
+          ]
+        },
+        {
+          "topic": "Trusting God's plan",
+          "totalVerses": 4,
+          "validVerses": 4,
+          "validityRate": 1,
+          "verseDetails": [
+            {
+              "verse": "Isaiah 55:8-9",
+              "isValid": true,
+              "format": "correct"
+            },
+            {
+              "verse": "Habakkuk 3:17-18",
+              "isValid": true,
+              "format": "correct"
+            },
+            {
+              "verse": "Romans 8:28",
+              "isValid": true,
+              "format": "correct"
+            },
+            {
+              "verse": "Jeremiah 29:11",
+              "isValid": true,
+              "format": "correct"
+            }
+          ]
+        },
+        {
+          "topic": "Love your neighbor",
+          "totalVerses": 4,
+          "validVerses": 4,
+          "validityRate": 1,
+          "verseDetails": [
+            {
+              "verse": "Isaiah 55:8-9",
+              "isValid": true,
+              "format": "correct"
+            },
+            {
+              "verse": "Habakkuk 3:17-18",
+              "isValid": true,
+              "format": "correct"
+            },
+            {
+              "verse": "Romans 8:28",
+              "isValid": true,
+              "format": "correct"
+            },
+            {
+              "verse": "Jeremiah 29:11",
+              "isValid": true,
+              "format": "correct"
+            }
+          ]
+        }
+      ],
+      "doctrinalCompliance": [
+        {
+          "topic": "Faith in difficult times",
+          "isCompliant": true,
+          "violations": [],
+          "spiritualTerms": 7,
+          "theologicalDepth": 0
+        },
+        {
+          "topic": "The meaning of grace",
+          "isCompliant": true,
+          "violations": [],
+          "spiritualTerms": 7,
+          "theologicalDepth": 0
+        },
+        {
+          "topic": "Finding peace through prayer",
+          "isCompliant": true,
+          "violations": [],
+          "spiritualTerms": 7,
+          "theologicalDepth": 0
+        },
+        {
+          "topic": "Trusting God's plan",
+          "isCompliant": true,
+          "violations": [],
+          "spiritualTerms": 7,
+          "theologicalDepth": 0
+        },
+        {
+          "topic": "Love your neighbor",
+          "isCompliant": true,
+          "violations": [],
+          "spiritualTerms": 7,
+          "theologicalDepth": 0
+        }
+      ],
+      "factualCorrectness": [],
+      "languageAccuracy": [
+        {
+          "language": "en",
+          "contentLength": 1238,
+          "readabilityScore": 54,
+          "structureQuality": "good",
+          "hasValidVerses": true
+        },
+        {
+          "language": "fr",
+          "contentLength": 1238,
+          "readabilityScore": 54,
+          "structureQuality": "good",
+          "hasValidVerses": true
+        },
+        {
+          "language": "mg",
+          "contentLength": 1238,
+          "readabilityScore": 54,
+          "structureQuality": "good",
+          "hasValidVerses": true
+        }
+      ]
+    },
+    "applicability": {
+      "educationalAdaptability": [
+        {
+          "level": "elementary",
+          "educationalTerms": 8,
+          "pedagogicalStructure": 1,
+          "readabilityScore": 0,
+          "ageAppropriateTerms": 0,
+          "hasLearningObjectives": false,
+          "hasAssessmentGuidance": true,
+          "hasPracticalStrategies": true
+        },
+        {
+          "level": "secondary",
+          "educationalTerms": 8,
+          "pedagogicalStructure": 1,
+          "readabilityScore": 0,
+          "ageAppropriateTerms": 1,
+          "hasLearningObjectives": false,
+          "hasAssessmentGuidance": true,
+          "hasPracticalStrategies": true
+        },
+        {
+          "level": "adult",
+          "educationalTerms": 8,
+          "pedagogicalStructure": 1,
+          "readabilityScore": 0,
+          "ageAppropriateTerms": 0,
+          "hasLearningObjectives": false,
+          "hasAssessmentGuidance": true,
+          "hasPracticalStrategies": true
+        }
+      ],
+      "subjectIntegration": [
+        {
+          "subject": "science",
+          "subjectRelevantTerms": 2,
+          "educationalTerms": 8,
+          "spiritualTerms": 4,
+          "integrationQuality": 3,
+          "hasPracticalStrategies": true
+        },
+        {
+          "subject": "mathematics",
+          "subjectRelevantTerms": 1,
+          "educationalTerms": 8,
+          "spiritualTerms": 4,
+          "integrationQuality": 2.5,
+          "hasPracticalStrategies": true
+        },
+        {
+          "subject": "history",
+          "subjectRelevantTerms": 0,
+          "educationalTerms": 8,
+          "spiritualTerms": 4,
+          "integrationQuality": 2,
+          "hasPracticalStrategies": true
+        },
+        {
+          "subject": "literature",
+          "subjectRelevantTerms": 2,
+          "educationalTerms": 8,
+          "spiritualTerms": 4,
+          "integrationQuality": 3,
+          "hasPracticalStrategies": true
+        },
+        {
+          "subject": "art",
+          "subjectRelevantTerms": 1,
+          "educationalTerms": 8,
+          "spiritualTerms": 4,
+          "integrationQuality": 2.5,
+          "hasPracticalStrategies": true
+        }
+      ],
+      "ageAppropriateContent": [],
+      "practicalImplementation": []
+    },
+    "performance": {
+      "responseTimesByContentType": {
+        "devotional": {
+          "average": 1536,
+          "min": 1005,
+          "max": 2245,
+          "variance": 450
+        },
+        "faith_learning": {
+          "average": 1538,
+          "min": 1089,
+          "max": 2106,
+          "variance": 365
+        }
+      },
+      "qualityVsSpeedTradeoffs": [
+        {
+          "qualityLevel": "high_quality",
+          "processingTime": 692,
+          "wordCount": 207,
+          "readabilityScore": 0,
+          "structureScore": 10,
+          "theologicalScore": 4,
+          "verseCount": 4
+        },
+        {
+          "qualityLevel": "medium_quality",
+          "processingTime": 1807,
+          "wordCount": 105,
+          "readabilityScore": 21,
+          "structureScore": 7,
+          "theologicalScore": 4,
+          "verseCount": 3
+        },
+        {
+          "qualityLevel": "low_quality",
+          "processingTime": 1262,
+          "wordCount": 35,
+          "readabilityScore": 65,
+          "structureScore": 2,
+          "theologicalScore": 2,
+          "verseCount": 2
+        }
+      ],
+      "scalabilityMetrics": [],
+      "resourceUtilization": []
+    }
+  },
+  "recommendations": {
+    "reliability": [
+      "Implement content caching to improve consistency",
+      "Add quality assurance checks before content delivery",
+      "Monitor processing time variations for performance optimization"
+    ],
+    "correctness": [
+      "Enhance Bible verse validation system",
+      "Implement doctrinal compliance checking",
+      "Improve multilingual content generation accuracy"
+    ],
+    "applicability": [
+      "Develop age-specific content templates",
+      "Create subject-specific integration guidelines",
+      "Provide practical implementation examples"
+    ],
+    "performance": [
+      "Optimize response times for interactive use",
+      "Balance quality and speed based on use case",
+      "Implement progressive content generation"
+    ]
+  }
+}

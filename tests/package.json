@@ -1,0 +1,62 @@
+{
+  "name": "divine-devotion-test-suite",
+  "version": "1.0.0",
+  "description": "Comprehensive test suite for Divine Devotion AI content evaluation",
+  "main": "comprehensive-evaluation-runner.js",
+  "scripts": {
+    "test": "node comprehensive-evaluation-runner.js",
+    "test:findings": "node ai-content-key-findings.test.js",
+    "test:research": "node research-findings-validation.test.js",
+    "test:comprehensive": "node comprehensive-evaluation-runner.js",
+    "test:reliability": "node -e \"require('./ai-content-key-findings.test.js').testReliabilityFindings().then(console.log)\"",
+    "test:correctness": "node -e \"require('./ai-content-key-findings.test.js').testCorrectnessFindings().then(console.log)\"",
+    "test:applicability": "node -e \"require('./ai-content-key-findings.test.js').testApplicabilityFindings().then(console.log)\"",
+    "test:performance": "node -e \"require('./ai-content-key-findings.test.js').testPerformanceFindings().then(console.log)\"",
+    "validate:h1": "node -e \"require('./research-findings-validation.test.js').validateHypothesis1().then(console.log)\"",
+    "validate:h2": "node -e \"require('./research-findings-validation.test.js').validateHypothesis2().then(console.log)\"",
+    "validate:h3": "node -e \"require('./research-findings-validation.test.js').validateHypothesis3().then(console.log)\"",
+    "validate:h4": "node -e \"require('./research-findings-validation.test.js').validateHypothesis4().then(console.log)\"",
+    "validate:h5": "node -e \"require('./research-findings-validation.test.js').validateHypothesis5().then(console.log)\"",
+    "generate:reports": "node comprehensive-evaluation-runner.js && echo 'Reports generated in ./reports directory'",
+    "clean": "rimraf reports/* && echo 'Test reports cleaned'"
+  },
+  "keywords": [
+    "ai",
+    "education",
+    "religious-content",
+    "testing",
+    "evaluation",
+    "research",
+    "devotional",
+    "faith-learning",
+    "content-generation"
+  ],
+  "author": "Divine Devotion Development Team",
+  "license": "MIT",
+  "devDependencies": {
+    "vitest": "^1.0.0",
+    "@vitest/ui": "^1.0.0",
+    "rimraf": "^5.0.0"
+  },
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/divine-devotion.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/divine-devotion/issues"
+  },
+  "homepage": "https://github.com/your-org/divine-devotion#readme",
+  "config": {
+    "test_environment": "node",
+    "report_format": "json",
+    "sample_size": 50,
+    "significance_level": 0.05
+  }
+}
