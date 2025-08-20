@@ -302,7 +302,7 @@ const topicInputPlaceholder = computed(() => {
   }
   return selectedContentType.value === 'devotion' 
     ? "E.g., 'finding peace in hardship', 'gratitude', or 'guidance for a tough decision'"
-    : "E.g., 'teaching biology through a faith lens', 'integrating ethics in computer science', or 'faith perspectives on history'";
+    : "E.g., 'teaching biology through a faith lens', or 'faith perspectives on history'";
 });
 
 // Fetch the text of the first verse when currentContent.verses changes

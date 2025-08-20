@@ -52,7 +52,7 @@
   },
   "placeholders": {
     "devotionInput": "E.g., 'finding peace in hardship', 'gratitude', or 'guidance for a tough decision'",
-    "faithInput": "E.g., 'teaching biology through a faith lens', 'integrating ethics in computer science', or 'faith perspectives on history'",
+    "faithInput": "E.g., 'teaching biology through a faith lens', or 'faith perspectives on history'",
     "bibleCardInfo": "Bible card generation uses its own interface",
     "enterTopic": "Enter a topic for your devotional...",
     "enterTopicFaith": "Enter a topic for faith integration ideas...",
