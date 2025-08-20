@@ -1,85 +1,67 @@
 <template>
-  <div class="prompt-gallery">
-    <div class="prompt-gallery-header">
-      <h4 class="gallery-title">
-        <i class="bi bi-lightbulb me-2"></i>
-        {{ $t('promptGallery.title') }}
-      </h4>
+  <div class="modern-prompt-gallery">
+    <div class="gallery-header">
+      <h3 class="gallery-title">{{ $t('promptGallery.title') }}</h3>
       <p class="gallery-subtitle">{{ $t('promptGallery.subtitle') }}</p>
     </div>
 
-    <div class="prompt-categories">
-      <div class="prompt-columns">
-        <!-- Left Column - Devotion Examples -->
-        <div class="prompt-column">
-          <div class="prompt-category">
-            <h5 class="category-title">
-              <i class="bi bi-stars me-2"></i>
-              {{ $t('promptGallery.devotionalIdeas') }}
-            </h5>
-            <div class="prompt-list">              <button
-                v-for="prompt in visibleDevotionPrompts"
-                :key="prompt.id"
-                class="prompt-card"
-                @click="selectPrompt(prompt.id, 'devotion')"
-              >
-                <div class="prompt-icon">
-                  <i :class="prompt.icon"></i>
-                </div>
-                <div class="prompt-content">
-                  <h6 class="prompt-title">{{ $t(`promptGallery.prompts.${prompt.id}.title`) }}</h6>
-                  <p class="prompt-text">{{ $t(`promptGallery.prompts.${prompt.id}.text`) }}</p>
-                </div>
-              </button>
+    <div class="prompt-grid">
+      <!-- Devotion Prompts -->
+      <div class="prompt-section">
+        <h4 class="section-title">
+          <i class="bi bi-stars"></i>
+          <span>{{ $t('promptGallery.devotionalIdeas') }}</span>
+        </h4>
+        <div class="prompt-cards">
+          <button
+            v-for="prompt in visibleDevotionPrompts"
+            :key="prompt.id"
+            class="prompt-card devotion-card"
+            @click="selectPrompt(prompt.id, 'devotion')"
+          >
+            <div class="card-icon">
+              <i :class="prompt.icon"></i>
             </div>
-          </div>
-        </div>
-
-        <!-- Right Column - Faith & Learning Examples -->
-        <div class="prompt-column">
-          <div class="prompt-category">
-            <h5 class="category-title">
-              <i class="bi bi-lightbulb-fill me-2"></i>
-              {{ $t('promptGallery.faithLearningIdeas') }}
-            </h5>
-            <div class="prompt-list">              <button
-                v-for="prompt in visibleFaithLearningPrompts"
-                :key="prompt.id"
-                class="prompt-card"
-                @click="selectPrompt(prompt.id, 'faithIntegration')"
-              >
-                <div class="prompt-icon">
-                  <i :class="prompt.icon"></i>
-                </div>
-                <div class="prompt-content">
-                  <h6 class="prompt-title">{{ $t(`promptGallery.prompts.${prompt.id}.title`) }}</h6>
-                  <p class="prompt-text">{{ $t(`promptGallery.prompts.${prompt.id}.text`) }}</p>
-                </div>
-              </button>
+            <div class="card-content">
+              <h5 class="card-title">{{ $t(`promptGallery.prompts.${prompt.id}.title`) }}</h5>
+              <p class="card-description">{{ $t(`promptGallery.prompts.${prompt.id}.text`) }}</p>
             </div>
-          </div>
+          </button>
         </div>
       </div>
 
-      <!-- Show More Button -->
-      <div class="show-more-container" v-if="!showAllPrompts && (devotionPrompts.length > 2 || faithLearningPrompts.length > 2)">
-        <button 
-          class="btn show-more-btn"
-          @click="toggleShowMore"
-        >
-          <i class="bi bi-chevron-down me-2"></i>
-          {{ $t('promptGallery.showMore') }}
-        </button>
+      <!-- Faith & Learning Prompts -->
+      <div class="prompt-section">
+        <h4 class="section-title">
+          <i class="bi bi-lightbulb"></i>
+          <span>{{ $t('promptGallery.faithLearningIdeas') }}</span>
+        </h4>
+        <div class="prompt-cards">
+          <button
+            v-for="prompt in visibleFaithLearningPrompts"
+            :key="prompt.id"
+            class="prompt-card faith-card"
+            @click="selectPrompt(prompt.id, 'faithIntegration')"
+          >
+            <div class="card-icon">
+              <i :class="prompt.icon"></i>
+            </div>
+            <div class="card-content">
+              <h5 class="card-title">{{ $t(`promptGallery.prompts.${prompt.id}.title`) }}</h5>
+              <p class="card-description">{{ $t(`promptGallery.prompts.${prompt.id}.text`) }}</p>
+            </div>
+          </button>
+        </div>
       </div>
 
-      <!-- Show Less Button -->
-      <div class="show-more-container" v-if="showAllPrompts">
+      <!-- Show More/Less Button -->
+      <div class="gallery-actions" v-if="devotionPrompts.length > 3 || faithLearningPrompts.length > 3">
         <button 
-          class="btn show-more-btn"
+          class="show-more-button"
           @click="toggleShowMore"
         >
-          <i class="bi bi-chevron-up me-2"></i>
-          {{ $t('promptGallery.showLess') }}
+          <span>{{ showAllPrompts ? $t('promptGallery.showLess') : $t('promptGallery.showMore') }}</span>
+          <i :class="showAllPrompts ? 'bi bi-chevron-up' : 'bi bi-chevron-down'"></i>
         </button>
       </div>
     </div>
@@ -257,13 +239,13 @@ const faithLearningPrompts: PromptExample[] = [
   }
 ];
 
-// Computed properties for visible prompts (show 2 initially, all when expanded)
+// Computed properties for visible prompts (show 3 initially, all when expanded)
 const visibleDevotionPrompts = computed(() => {
-  return showAllPrompts.value ? devotionPrompts : devotionPrompts.slice(0, 2);
+  return showAllPrompts.value ? devotionPrompts : devotionPrompts.slice(0, 3);
 });
 
 const visibleFaithLearningPrompts = computed(() => {
-  return showAllPrompts.value ? faithLearningPrompts : faithLearningPrompts.slice(0, 2);
+  return showAllPrompts.value ? faithLearningPrompts : faithLearningPrompts.slice(0, 3);
 });
 
 // Method to toggle show more/less
@@ -280,131 +262,121 @@ const selectPrompt = (promptId: string, type: 'devotion' | 'faithIntegration') =
 </script>
 
 <style scoped>
-.prompt-gallery {
-  margin-bottom: 2rem;
+/* Modern Prompt Gallery Styles */
+.modern-prompt-gallery {
+  max-width: 100%;
 }
 
-.prompt-gallery-header {
+.gallery-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: var(--space-2xl);
 }
 
 .gallery-title {
-  color: var(--text-primary);
+  font-size: 20px;
   font-weight: 600;
-  margin-bottom: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.gallery-title i {
-  color: var(--divine-primary);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-sm) 0;
 }
 
 .gallery-subtitle {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 14px;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
-.prompt-categories {
+.prompt-grid {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-2xl);
 }
 
-.prompt-columns {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  align-items: start;
+.prompt-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
 }
 
-.prompt-column {
-  width: 100%;
-}
-
-.prompt-category {
-  width: 100%;
-}
-
-.category-title {
-  color: var(--text-primary);
-  font-weight: 600;
-  margin-bottom: 1rem;
+.section-title {
   display: flex;
   align-items: center;
-  font-size: 1.1rem;
+  gap: var(--space-sm);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
 }
 
-.category-title i {
-  color: var(--divine-primary);
+.section-title i {
+  color: var(--color-accent);
+  font-size: 18px;
 }
 
-.prompt-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+.prompt-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-lg);
 }
 
 .prompt-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 1.25rem;
-  cursor: pointer;
-  transition: var(--transition-smooth);
-  text-align: left;
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
-  box-shadow: var(--shadow-card);
+  gap: var(--space-lg);
+  padding: var(--space-xl);
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+  box-shadow: var(--shadow-sm);
 }
 
 .prompt-card:hover {
-  background: var(--surface-primary);
-  border-color: var(--divine-primary);
+  background: var(--color-background);
+  border-color: var(--color-accent);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(249, 115, 22, 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
-.prompt-icon {
+.card-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--color-accent);
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: var(--gradient-divine);
-  border-radius: 12px;
+  color: white;
+  font-size: 18px;
   flex-shrink: 0;
 }
 
-.prompt-icon i {
-  color: white;
-  font-size: 1.2rem;
+.devotion-card .card-icon {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
 }
 
-.prompt-content {
+.faith-card .card-icon {
+  background: linear-gradient(135deg, var(--color-success), #059669);
+}
+
+.card-content {
   flex: 1;
   min-width: 0;
 }
 
-.prompt-title {
-  color: var(--text-primary);
+.card-title {
+  font-size: 15px;
   font-weight: 600;
-  font-size: 0.95rem;
-  margin-bottom: 0.5rem;
-  line-height: 1.3;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-sm) 0;
+  line-height: 1.4;
 }
 
-.prompt-text {
-  color: var(--text-secondary);
-  font-size: 0.85rem;
-  line-height: 1.4;
+.card-description {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
   margin: 0;
   overflow: hidden;
   display: -webkit-box;
@@ -413,112 +385,82 @@ const selectPrompt = (promptId: string, type: 'devotion' | 'faithIntegration') =
   -webkit-box-orient: vertical;
 }
 
-/* Show More Button Styles */
-.show-more-container {
+.gallery-actions {
   display: flex;
   justify-content: center;
-  margin-top: 1.5rem;
+  margin-top: var(--space-2xl);
 }
 
-.show-more-btn {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  padding: 0.75rem 1.5rem;
-  color: var(--text-primary);
-  font-weight: 500;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: var(--transition-smooth);
+.show-more-button {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  box-shadow: var(--shadow-card);
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
-.show-more-btn:hover {
-  background: var(--surface-primary);
-  border-color: var(--divine-primary);
-  color: var(--divine-primary);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(249, 115, 22, 0.15);
+.show-more-button:hover {
+  background: var(--color-background);
+  border-color: var(--color-border-hover);
+  color: var(--color-text-primary);
+  transform: translateY(-1px);
 }
 
-.show-more-btn i {
-  transition: var(--transition-smooth);
+.show-more-button i {
+  font-size: 14px;
+  transition: transform var(--transition-fast);
 }
 
-/* Mobile responsiveness */
+/* Responsive Design */
 @media (max-width: 768px) {
-  .prompt-columns {
+  .prompt-cards {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-  
-  .prompt-list {
-    gap: 0.6rem;
+    gap: var(--space-md);
   }
   
   .prompt-card {
-    padding: 1rem;
-    gap: 0.75rem;
+    padding: var(--space-lg);
+    gap: var(--space-md);
   }
   
-  .prompt-icon {
+  .card-icon {
     width: 36px;
     height: 36px;
+    font-size: 16px;
   }
   
-  .prompt-icon i {
-    font-size: 1.1rem;
+  .card-title {
+    font-size: 14px;
   }
   
-  .prompt-title {
-    font-size: 0.9rem;
+  .card-description {
+    font-size: 12px;
   }
   
-  .prompt-text {
-    font-size: 0.8rem;
-  }
-  
-  .category-title {
-    font-size: 1rem;
+  .section-title {
+    font-size: 15px;
   }
   
   .gallery-title {
-    font-size: 1.3rem;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .prompt-card {
+    padding: var(--space-md);
   }
   
-  .prompt-categories {
-    gap: 1rem;
+  .card-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
   }
-  
-  .show-more-btn {
-    padding: 0.6rem 1.2rem;
-    font-size: 0.85rem;
-  }
-}
-
-/* Dark mode adjustments */
-[data-bs-theme="dark"] .prompt-card {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-[data-bs-theme="dark"] .prompt-card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--divine-primary);
-}
-
-[data-bs-theme="dark"] .show-more-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-[data-bs-theme="dark"] .show-more-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--divine-primary);
-}
-</style>
+}</style>

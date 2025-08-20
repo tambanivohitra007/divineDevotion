@@ -320,24 +320,147 @@ watch(() => props.devotion, async () => {
 </script>
 
 <style scoped>
-.devotion-display {
-  border: none; 
+/* Modern DevotionDisplay Styles */
+.devotion-display-content {
+  width: 100%;
 }
-.main-devotion-text { /* Was .card-text */
-  /* Removed white-space: pre-wrap since we're now handling formatting with HTML */
-  font-size: 1.1rem;
+
+.main-devotion-text {
+  font-size: 16px;
   line-height: 1.7;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-xl);
 }
+
+.main-devotion-text :deep(p) {
+  margin-bottom: var(--space-lg);
+}
+
+.main-devotion-text :deep(p:last-child) {
+  margin-bottom: 0;
+}
+
+.verses-section {
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-xl);
+  margin-top: var(--space-xl);
+}
+
+.verses-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.verses-section-title i {
+  color: var(--color-accent);
+}
+
+.list-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
 .list-group-item {
-  background-color: transparent;
-  border: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  transition: all var(--transition-fast);
 }
-.list-group-item a,
-:deep(.inline-verse-link) { /* Apply styles to inline links via :deep */
-  transition: color 0.15s ease-in-out;
+
+.list-group-item:hover {
+  background: var(--color-background);
+  border-color: var(--color-border-hover);
+  transform: translateY(-1px);
 }
-.list-group-item a:hover,
+
+.verse-link {
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  transition: all var(--transition-fast);
+}
+
+.verse-link:hover {
+  color: var(--color-accent-hover);
+  text-decoration: none;
+}
+
+.verse-link i {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+:deep(.inline-verse-link) {
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px solid transparent;
+  transition: all var(--transition-fast);
+}
+
 :deep(.inline-verse-link:hover) {
-  text-decoration: underline;
+  color: var(--color-accent-hover);
+  border-bottom-color: var(--color-accent);
+  text-decoration: none;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-outline-primary {
+  background: transparent;
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+}
+
+.btn-outline-primary:hover {
+  background: var(--color-accent);
+  color: white;
+  transform: translateY(-1px);
+}
+
+/* Bible Card Component Spacing */
+.mt-3 {
+  margin-top: var(--space-lg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .main-devotion-text {
+    font-size: 15px;
+  }
+  
+  .list-group-item {
+    padding: var(--space-md);
+  }
+  
+  .verse-link {
+    font-size: 14px;
+  }
+  
+  .verses-section-title {
+    font-size: 15px;
+  }
 }
 </style>

@@ -74,95 +74,107 @@ const changeLanguage = (newLocale: string) => {
 </script>
 
 <style scoped>
+/* Modern Language Selector */
 .language-selector {
   position: relative;
 }
 
 .language-btn {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  color: var(--text-primary);
-  padding: 0.5rem 0.75rem;
-  transition: var(--transition-smooth);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  padding: var(--space-sm) var(--space-md);
+  font-size: 13px;
+  transition: all var(--transition-fast);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-sm);
   min-width: auto;
+  cursor: pointer;
 }
 
 .language-btn:hover {
-  border-color: var(--divine-primary);
+  background: var(--color-surface);
+  border-color: var(--color-border-hover);
+  color: var(--color-text-primary);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
-  color: var(--text-primary);
 }
 
 .language-btn:focus {
-  border-color: var(--divine-primary);
-  box-shadow: 0 0 0 0.2rem rgba(249, 115, 22, 0.25);
-  color: var(--text-primary);
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-light);
+}
+
+.language-btn i {
+  font-size: 14px;
+  opacity: 0.7;
 }
 
 .language-text {
-  font-size: 1.2rem;
+  font-size: 16px;
+  line-height: 1;
 }
 
 .dropdown-menu {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  padding: 0.5rem 0;
-  min-width: 140px;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  padding: var(--space-sm) 0;
+  min-width: 160px;
+  margin-top: var(--space-xs);
 }
 
 .dropdown-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  color: var(--text-primary);
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  color: var(--color-text-primary);
   background: transparent;
   border: none;
   width: 100%;
   text-align: left;
-  transition: var(--transition-smooth);
+  font-size: 14px;
+  transition: all var(--transition-fast);
+  cursor: pointer;
 }
 
 .dropdown-item:hover {
-  background: rgba(249, 115, 22, 0.1);
-  color: var(--divine-primary);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
 }
 
 .dropdown-item.active {
-  background: rgba(249, 115, 22, 0.2);
-  color: var(--divine-primary);
-  font-weight: 600;
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+  font-weight: 500;
 }
 
 .flag {
-  font-size: 1.1rem;
+  font-size: 16px;
+  flex-shrink: 0;
 }
 
-/* Dark mode adjustments */
-[data-bs-theme="dark"] .language-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+/* Remove Bootstrap dropdown arrow */
+.language-btn::after {
+  display: none;
 }
 
-[data-bs-theme="dark"] .dropdown-menu {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-[data-bs-theme="dark"] .dropdown-item {
-  color: #ffffff;
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .language-btn {
+    padding: var(--space-sm);
+  }
+  
+  .language-text {
+    font-size: 14px;
+  }
+  
+  .dropdown-menu {
+    min-width: 140px;
+  }
 }
 </style>

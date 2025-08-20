@@ -1,278 +1,339 @@
 <template>
-  <div id="app" :class="{ 'sidebar-collapsed': isSidebarCollapsed, 'mobile-view': isMobile }">
-    <div v-if="isMobile && !isSidebarCollapsed" class="sidebar-overlay" @click="toggleSidebar"></div>
-    <div class="sidebar">
-      <button 
-        class="btn btn-sm btn-outline-light sidebar-toggle-btn top-right-absolute" 
-        @click="toggleSidebar"
-        v-if="!(isSidebarCollapsed && !isMobile)"
-      >
-        <!-- Icon changes based on desktop/mobile and collapsed state -->
-        <i v-if="isMobile && !isSidebarCollapsed" class="bi bi-x-lg"></i> <!-- Close icon for mobile overlay when open -->
-        <i v-else-if="!isMobile && !isSidebarCollapsed" class="bi bi-arrow-left-square-fill"></i> <!-- Left arrow for desktop when open -->
-        <!-- This button is now hidden if !isMobile && isSidebarCollapsed -->
-      </button>
-      <h2 class="sidebar-title"><span v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">{{ $t('sidebar.saved') }}</span></h2>
-      <div class="search-bar mb-3" v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">        <input
-          type="text"
-          class="form-control form-control-sm"
-          :placeholder="$t('sidebar.searchPlaceholder')"
-          v-model="searchQuery"
-        />
+  <div id="app" class="perplexity-layout">
+    <!-- Search-Centric Header -->
+    <header class="main-header" :class="{ 'scrolled': showTopFade }">
+      <div class="header-container">
+        <!-- Logo/Brand -->
+        <div class="brand-section">
+          <div class="logo-container">
+            <i class="bi bi-stars brand-icon"></i>
+            <span class="brand-text">{{ $t('app.title') }}</span>
+          </div>
+          <p class="brand-subtitle">{{ $t('app.subtitle') }}</p>
+        </div>
+        
+        <!-- Main Action Buttons -->
+        <div class="header-actions">
+          <button 
+            class="action-btn saved-btn" 
+            @click="toggleSidebar"
+            :title="$t('tooltips.openSidebar')"
+          >
+            <i class="bi bi-collection"></i>
+            <span class="btn-label">{{ $t('sidebar.saved') }}</span>
+          </button>
+          
+          <button 
+            class="action-btn theme-btn" 
+            @click="toggleTheme" 
+            :title="isDarkMode ? $t('navigation.lightMode') : $t('navigation.darkMode')"
+          >
+            <i :class="isDarkMode ? 'bi bi-sun' : 'bi bi-moon'"></i>
+          </button>
+          
+          <div class="language-selector-container">
+            <LanguageSelector />
+          </div>
+        </div>
       </div>
-      <ul class="list-unstyled saved-devotions-list" v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">        <li v-if="filteredContent.length === 0 && searchQuery" class="text-muted small p-2">{{ $t('sidebar.noMatches') }}</li>
-        <li v-if="filteredContent.length === 0 && !searchQuery && savedContent.length > 0" class="text-muted small p-2">{{ $t('sidebar.noContent') }}</li>
-        <li
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" :class="{ 'sidebar-open': !isSidebarCollapsed, 'sidebar-collapsed': isSidebarCollapsed }">
+      <div class="sidebar-header">
+        <h3 class="sidebar-title" v-show="!isSidebarCollapsed">
+          <i class="bi bi-collection me-2"></i>
+          {{ $t('sidebar.saved') }}
+        </h3>
+        <button class="toggle-btn" @click="toggleSidebar" :title="isSidebarCollapsed ? $t('tooltips.expandSidebar') : $t('tooltips.collapseSidebar')">
+          <i :class="isSidebarCollapsed ? 'bi bi-chevron-left' : 'bi bi-chevron-right'"></i>
+        </button>
+      </div>
+      
+      <!-- Sidebar Search -->
+      <div class="sidebar-search" v-show="!isSidebarCollapsed">
+        <div class="search-input-container">
+          <i class="bi bi-search search-icon"></i>
+          <input
+            type="text"
+            class="search-input"
+            :placeholder="$t('sidebar.searchPlaceholder')"
+            v-model="searchQuery"
+          />
+        </div>
+      </div>
+      
+      <!-- Collapsed Sidebar Icons -->
+      <div class="sidebar-icons" v-show="isSidebarCollapsed">
+        <button class="sidebar-icon-btn" @click="toggleSidebar" :title="$t('sidebar.saved')">
+          <i class="bi bi-collection"></i>
+        </button>
+        <button class="sidebar-icon-btn" @click="toggleTheme" :title="isDarkMode ? $t('navigation.lightMode') : $t('navigation.darkMode')">
+          <i :class="isDarkMode ? 'bi bi-sun' : 'bi bi-moon'"></i>
+        </button>
+      </div>
+      
+      <!-- Saved Content List -->
+      <div class="saved-content-list" v-show="!isSidebarCollapsed">
+        <div v-if="filteredContent.length === 0 && searchQuery" class="empty-state">
+          <i class="bi bi-search empty-icon"></i>
+          <p class="empty-text">{{ $t('sidebar.noMatches') }}</p>
+        </div>
+        <div v-if="filteredContent.length === 0 && !searchQuery && savedContent.length > 0" class="empty-state">
+          <i class="bi bi-collection empty-icon"></i>
+          <p class="empty-text">{{ $t('sidebar.noContent') }}</p>
+        </div>
+        <div
           v-for="(content) in filteredContent"
           :key="content.id || content.topic" 
-          class="saved-devotion-card"
+          class="saved-item"
           @click="viewSavedContent(content)"
-        >          <h6 class="saved-devotion-topic">
-            {{ content.topic || $t('sidebar.savedContent') }}            
-          </h6>
-          <p class="saved-devotion-excerpt">{{truncateText(content.text, 30)}}</p>          <span class="content-type-flag" :class="'flag-' + content.type">
-              {{ content.type === 'devotion' ? $t('contentTypes.devotionShort') : $t('contentTypes.ideaShort') }}
-            </span>          <button 
-            class="btn btn-sm btn-outline-danger delete-saved-btn" 
+        >
+          <div class="saved-item-content">
+            <div class="saved-item-header">
+              <h4 class="saved-item-title">
+                {{ content.topic || $t('sidebar.savedContent') }}
+              </h4>
+              <span class="content-type-badge" :class="'badge-' + content.type">
+                {{ content.type === 'devotion' ? $t('contentTypes.devotionShort') : $t('contentTypes.ideaShort') }}
+              </span>
+            </div>
+            <p class="saved-item-excerpt">{{truncateText(content.text, 80)}}</p>
+            <div class="saved-item-meta">
+              <span class="meta-icon">
+                <i :class="content.type === 'devotion' ? 'bi bi-stars' : 'bi bi-lightbulb'"></i>
+              </span>
+              <time class="meta-date">Recently saved</time>
+            </div>
+          </div>
+          <button 
+            class="delete-btn" 
             @click.stop="handleDeleteContent(content.id)" 
             v-if="content.id"
             :title="$t('tooltips.deleteContent')"
           >
             <i class="bi bi-trash3"></i>
           </button>
-        </li>
-      </ul>        <!-- Language selector and theme toggle button at bottom of sidebar -->      <div class="sidebar-bottom" v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)">
-        <div class="d-flex align-items-center gap-2 mb-3">
-          <div class="flex-grow-1">
-            <LanguageSelector />
-          </div>          <button @click="toggleTheme" class="btn btn-sm btn-outline-light flex-shrink-0" :title="isDarkMode ? $t('navigation.toggleTheme') : $t('navigation.toggleTheme')">
-            <i :class="isDarkMode ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill'"></i>
-            <span v-if="!isSidebarCollapsed || (isMobile && !isSidebarCollapsed)" class="ms-2">
-              {{ isDarkMode ? $t('navigation.lightMode') : $t('navigation.darkMode') }}
-            </span>
+        </div>
+      </div>
+    </aside>    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Content Type Selection -->
+      <div class="content-type-selector">
+        <div class="content-type-tabs">
+          <button
+            class="content-type-tab"
+            :class="{ active: contentTypeSelection === 'devotion' }"
+            @click="selectContentType('devotion')"
+          >
+            <i class="bi bi-stars"></i>
+            <span>{{ $t('contentTypes.devotion') }}</span>
+          </button>
+          
+          <button
+            class="content-type-tab"
+            :class="{ active: contentTypeSelection === 'faithIntegration' }"
+            @click="selectContentType('faithIntegration')"
+          >
+            <i class="bi bi-lightbulb"></i>
+            <span>{{ $t('contentTypes.faithAndLearning') }}</span>
+          </button>
+          
+          <button
+            class="content-type-tab"
+            :class="{ active: contentTypeSelection === 'bibleCard' }"
+            @click="selectContentType('bibleCard')"
+          >
+            <i class="bi bi-card-image"></i>
+            <span>{{ $t('contentTypes.bibleCards') }}</span>
+          </button>
+          
+          <button
+            class="content-type-tab"
+            :class="{ active: contentTypeSelection === 'bibleExegesis' }"
+            @click="selectContentType('bibleExegesis')"
+          >
+            <i class="bi bi-book-half"></i>
+            <span>{{ $t('contentTypes.bibleExegesis') }}</span>
           </button>
         </div>
       </div>
-    </div>    <div class="main-content">
-      <!-- This button is now primarily for opening sidebar on mobile, or expanding on desktop if it was collapsed -->      <button class="btn btn-sm btn-outline-light sidebar-toggle-btn-main" @click="toggleSidebar" v-if="isSidebarCollapsed" :title="$t('tooltips.openSidebar')">
-         <i class="bi bi-list"></i>
-      </button>      <!-- Header -->
-      <header class="text-center mb-4" :class="{ 'header-hidden': !showHeader }">
-        <h1 class="display-4 app-title">{{ $t('app.title') }}</h1>
-        <p class="lead">{{ $t('app.subtitle') }}</p>
-      </header><!-- Content Type Menu - Fixed Right Side -->
-      <!-- Menu Toggle Button (Always Visible) -->
-      <button
-        type="button"
-        class="btn content-type-menu-toggle"
-        @click="toggleContentTypeMenu"
-        :title="$t('navigation.contentTypes')"
-        ref="contentTypeButtonRef"
-      >
-        <i :class="currentContentTypeIcon"></i>
-      </button>
-      
-      <!-- Menu Overlay -->
-      <div class="content-type-menu-overlay" v-if="showContentTypeMenu" @click="closeContentTypeMenu"></div>
-      
-      <!-- Menu Panel -->
-      <div class="content-type-menu-right" :class="{ 'menu-open': showContentTypeMenu }">
-        <div class="content-type-menu-panel" ref="menuPanelRef">
-          <div class="menu-header">
-            <h6 class="menu-title">{{ $t('navigation.contentTypes') }}</h6>
-            <button type="button" class="btn-close" @click="closeContentTypeMenu" :aria-label="$t('actions.close')"></button>
-          </div>
-          
-          <div class="menu-items">
-            <button
-              type="button"
-              class="menu-item"
-              :class="{ active: contentTypeSelection === 'devotion' }"
-              @click="selectContentType('devotion')"
-            >
-              <div class="menu-item-icon">
-                <i class="bi bi-stars"></i>
-              </div>
-              <div class="menu-item-content">
-                <div class="menu-item-title">{{ $t('contentTypes.devotion') }}</div>
-                <div class="menu-item-desc">{{ $t('contentTypes.devotionDesc') }}</div>
-              </div>
-            </button>
-            
-            <button
-              type="button"
-              class="menu-item"
-              :class="{ active: contentTypeSelection === 'faithIntegration' }"
-              @click="selectContentType('faithIntegration')"
-            >
-              <div class="menu-item-icon">
-                <i class="bi bi-lightbulb-fill"></i>
-              </div>
-              <div class="menu-item-content">
-                <div class="menu-item-title">{{ $t('contentTypes.faithAndLearning') }}</div>
-                <div class="menu-item-desc">{{ $t('contentTypes.faithLearningDesc') }}</div>
-              </div>
-            </button>
-            
-            <button
-              type="button"
-              class="menu-item"
-              :class="{ active: contentTypeSelection === 'bibleCard' }"
-              @click="selectContentType('bibleCard')"
-            >
-              <div class="menu-item-icon">
-                <i class="bi bi-card-image"></i>
-              </div>
-              <div class="menu-item-content">
-                <div class="menu-item-title">{{ $t('contentTypes.bibleCards') }}</div>
-                <div class="menu-item-desc">{{ $t('contentTypes.bibleCardsDesc') }}</div>
-              </div>
-            </button>
-            
-            <button
-              type="button"
-              class="menu-item"
-              :class="{ active: contentTypeSelection === 'bibleExegesis' }"
-              @click="selectContentType('bibleExegesis')"
-            >
-              <div class="menu-item-icon">
-                <i class="bi bi-book-half"></i>
-              </div>
-              <div class="menu-item-content">
-                <div class="menu-item-title">{{ $t('contentTypes.bibleExegesis') }}</div>
-                <div class="menu-item-desc">{{ $t('contentTypes.bibleExegesisDesc') }}</div>
-              </div>
-            </button>
-          </div>
-          
-          <!-- New Content Button at bottom -->
-          <div class="menu-footer">
-            <button
-              type="button"
-              class="btn btn-primary w-100 new-content-btn-menu"
-              @click="handleCreateNew"
-            >
-              <i class="bi bi-plus-lg me-2"></i>
-              {{ $t('actions.createNew') }}
-            </button>
-          </div>
-        </div>
-      </div>
 
-<!-- Main Content Area -->
-      <div class="content-area-wrapper">
-        <!-- Top fade overlay -->
-        <div 
-          class="scroll-fade-overlay scroll-fade-top" 
-          :class="{ 'visible': showTopFade }"
-        ></div>
-        
-        <div class="content-area" ref="contentAreaRef" @scroll="handleContentScroll">          <!-- Bible Card Generator Section -->
-          <div v-if="showBibleCardGenerator" class="bible-card-section">
+      <!-- Main Content Container -->
+      <div class="content-container" ref="contentAreaRef" @scroll="handleContentScroll">
+        <div class="content-wrapper">
+          <!-- Generated Content Display -->
+          <div v-if="isLoading || (currentContent.text && !generationError)" class="content-card">
+          <!-- Loading State -->
+          <div v-if="isLoading" class="loading-state">
+            <div class="loading-spinner">
+              <div class="spinner"></div>
+            </div>
+            <h3 class="loading-title">{{ $t('content.generating') }}</h3>
+            <div class="loading-skeleton">
+              <div class="skeleton-line skeleton-line-long"></div>
+              <div class="skeleton-line skeleton-line-medium"></div>
+              <div class="skeleton-line skeleton-line-short"></div>
+              <div class="skeleton-line skeleton-line-long"></div>
+            </div>
+          </div>
+          
+          <!-- Content Display -->
+          <div v-else-if="currentContent.text && !generationError" class="generated-content">
+            <!-- Content Header -->
+            <div class="content-header">
+              <div class="content-meta">
+                <div class="content-type-icon">
+                  <i :class="currentContent.type === 'devotion' ? 'bi bi-stars' : 'bi bi-lightbulb'"></i>
+                </div>
+                <div class="content-info">
+                  <h2 class="content-title">
+                    {{ currentContent.type === 'devotion' ? $t('content.yourDevotion') : $t('content.yourFaithIdea') }}
+                  </h2>
+                  <p class="content-subtitle" v-if="currentContent.topic">
+                    {{ currentContent.topic }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- First Verse Highlight -->
+            <div v-if="currentContent.type === 'devotion' && currentContent.verses && currentContent.verses.length > 0" class="verse-highlight">
+              <div class="verse-reference">
+                <i class="bi bi-quote"></i>
+                <span class="verse-ref-text">{{ currentContent.verses[0] }}</span>
+              </div>
+              <blockquote v-if="firstVerseText" class="verse-quote">
+                {{ firstVerseText }}
+              </blockquote>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="content-body">
+              <DevotionDisplay :devotion="formattedContentForDisplay" :content-type="currentContent.type || 'devotion'" />
+            </div>
+            
+            <!-- Content Actions -->
+            <div class="content-actions">
+              <button class="action-button primary" @click="handleSaveCurrentContent">
+                <i class="bi bi-bookmark"></i>
+                <span>{{ currentContent.type === 'devotion' ? $t('actions.saveDevotion') : $t('actions.saveIdea') }}</span>
+              </button>
+              <button class="action-button secondary" @click="handleShareContent">
+                <i class="bi bi-share"></i>
+                <span>{{ $t('actions.share') }}</span>
+              </button>
+            </div>
+          </div>
+          </div>
+          
+          <!-- Specialized Components -->
+          <div v-else-if="showBibleCardGenerator" class="specialized-content">
             <BibleCardGenerator />
           </div>
 
-          <!-- Bible Exegesis Section -->
-          <div v-else-if="showBibleExegesis" class="bible-exegesis-section">
+          <div v-else-if="showBibleExegesis" class="specialized-content">
             <BibleExegesis />
           </div>
-
-      <!-- Content Display Section (for devotions and faith integration) -->
-      <div v-else-if="isLoading || (currentContent.text && !generationError)" class="card shadow-lg mx-auto current-devotion-card">
-        <div class="card-header bg-transparent py-3">
-          <h3 class="card-title h4 d-flex align-items-center gap-2 mb-0">
-             <i :class="currentContent.type === 'devotion' ? 'bi bi-journal-text me-2' : 'bi bi-lightbulb me-2'" style="font-size: 1.5rem;"></i>{{ currentContent.type === 'devotion' ? $t('content.yourDevotion') : $t('content.yourFaithIdea') }}
-          </h3>
-        </div>
-        <div class="card-body">
-          <div v-if="isLoading" class="text-center py-3">
-            <div class="spinner-border text-primary mb-2" style="width: 3rem; height: 3rem;" role="status">
-              <span class="visually-hidden">Loading...</span>
+          
+          <!-- Welcome/Empty State -->
+          <div v-else-if="!isLoading && !currentContent.text && !generationError && !showBibleCardGenerator && !showBibleExegesis" class="welcome-state">
+            <div class="welcome-content">
+              <div class="welcome-icon">
+                <i class="bi bi-stars"></i>
+              </div>
+              <h2 class="welcome-title">{{ $t('welcome.title') }}</h2>
+              <p class="welcome-subtitle">{{ $t('welcome.subtitle') }}</p>
+              
+              <!-- Quick Start Button -->
+              <button class="quick-start-btn" @click="showPromptGallery = true">
+                <i class="bi bi-lightbulb"></i>
+                <span>{{ $t('welcome.browsePrompts') }}</span>
+                <i class="bi bi-arrow-right"></i>
+              </button>
             </div>
-            <p class="lead mt-2">{{ $t('content.generating') }}</p>
-            <div class="placeholder-glow mt-4">
-              <span class="placeholder col-9 mb-2 py-2"></span>
-              <span class="placeholder col-12 mb-2 py-2"></span>
-              <span class="placeholder col-10 mb-2 py-2"></span>
-              <span class="placeholder col-12 py-2"></span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Notifications -->
+      <div class="notifications">
+        <div v-if="showSaveConfirmation" class="notification success">
+          <i class="bi bi-check-circle"></i>
+          <span>{{ $t('alerts.contentSaved') }}</span>
+          <button @click="showSaveConfirmation = false" class="notification-close">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+        
+        <div v-if="showShareAlert" class="notification info">
+          <i class="bi bi-info-circle"></i>
+          <span>{{ shareAlertMessage }}</span>
+          <button @click="showShareAlert = false" class="notification-close">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Prompt Gallery Modal -->
+    <div v-if="showPromptGallery" class="prompt-gallery-modal">
+      <div class="prompt-gallery-overlay" @click="showPromptGallery = false"></div>
+      <div class="prompt-gallery-panel">
+        <div class="prompt-gallery-header">
+          <h2 class="gallery-modal-title">{{ $t('promptGallery.title') }}</h2>
+          <button class="gallery-close-btn" @click="showPromptGallery = false">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+        <div class="prompt-gallery-content">
+          <PromptGallery @prompt-selected="handlePromptSelection" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Input Area -->
+    <div class="search-area" :class="{ 'search-hidden': !showBottomInput }">
+      <div class="search-container">
+        <form v-if="!showBibleCardGenerator && !showBibleExegesis" @submit.prevent="handleGenerateContent" class="search-form">
+          <div class="search-input-wrapper">
+            <div class="search-input-container">
+              <textarea
+                id="topicInput"
+                class="search-input"
+                rows="1"
+                :placeholder="topicInputPlaceholder"
+                v-model="topicInput"
+                @input="autoResizeTextarea"
+                ref="textareaRef"
+              ></textarea>
+              <button
+                type="submit"
+                class="search-submit-btn"
+                :disabled="isLoading || !topicInput.trim()"
+              >
+                <span v-if="isLoading" class="submit-loading">
+                  <div class="submit-spinner"></div>
+                </span>
+                <span v-else class="submit-icon">
+                  <i class="bi bi-arrow-up"></i>
+                </span>
+              </button>
             </div>
           </div>
           
-          <div v-else-if="currentContent.text && !generationError">
-            <div v-if="currentContent.type === 'devotion' && currentContent.verses && currentContent.verses.length > 0" class="first-verse-highlight">
-              <span class="verse-reference-bold">{{ currentContent.verses[0] }}</span>
-              <blockquote v-if="firstVerseText" class="verse-text-blockquote">
-                "{{ firstVerseText }}"
-              </blockquote>            </div>            <DevotionDisplay :devotion="formattedContentForDisplay" :content-type="currentContent.type || 'devotion'" />
-            
-            <div class="actions-toolbar text-center mt-4 pt-3 border-top border-secondary">              <button class="btn btn-gradient-success btn-sm me-2" @click="handleSaveCurrentContent">
-                <i class="bi bi-heart-fill me-2"></i>{{ currentContent.type === 'devotion' ? $t('actions.saveDevotion') : $t('actions.saveIdea') }}
-              </button>
-              <button class="btn btn-outline-info btn-sm" @click="handleShareContent" :title="$t('actions.shareContent')">
-                <i class="bi bi-share-fill me-2"></i>{{ $t('actions.share') }}
-              </button>
-            </div>
-          </div>      </div>      </div>      <!-- Placeholder for when nothing is generated and not loading, and no error (not shown for Bible Card Generator or Bible Exegesis) -->      <section v-else-if="!isLoading && !currentContent.text && !generationError && !showBibleCardGenerator && !showBibleExegesis" class="text-center placeholder-section mx-auto p-5 rounded welcome-area">
-        <div class="welcome-content">
-          <i class="bi bi-lightbulb-fill welcome-icon"></i>
-          <h2 class="welcome-title">{{ $t('welcome.title') }}</h2>
-          <p class="lead welcome-text">{{ $t('welcome.subtitle') }}</p>
-          <p class="text-muted">{{ $t('welcome.instruction') }}</p>
-        </div>
-        
-        <!-- Prompt Gallery Component -->
-        <PromptGallery @prompt-selected="handlePromptSelection" />
-      </section>      <!-- Alerts -->
-      <div v-if="showSaveConfirmation" class="alert alert-success-custom alert-dismissible fade show mt-3" role="alert">
-        <i class="bi bi-check-circle-fill me-2"></i>{{ $t('alerts.contentSaved') }}
-        <button type="button" class="btn-close btn-close-white" @click="showSaveConfirmation = false" :aria-label="$t('actions.close')"></button>
-      </div><div v-if="showShareAlert" class="alert alert-info-custom alert-dismissible fade show mt-3" role="alert">
-        <i class="bi bi-info-circle-fill me-2"></i>{{ shareAlertMessage }}
-        <button type="button" :class="isDarkMode ? 'btn-close btn-close-white' : 'btn-close'" @click="showShareAlert = false" aria-label="Close"></button>
-      </div>
-        </div>
-        
-        <!-- Bottom fade overlay -->
-        <div 
-          class="scroll-fade-overlay scroll-fade-bottom" 
-          :class="{ 'visible': showBottomFade }"
-        ></div>
-      </div>    <!-- Bottom Input Area (Gemini-like) -->
-    <div class="bottom-input-area" :class="{ 'input-hidden': !showBottomInput }">
-      <div class="input-container">        <!-- Input Form (hidden when Bible Card Generator or Bible Exegesis is selected) -->
-        <form v-if="!showBibleCardGenerator && !showBibleExegesis" @submit.prevent="handleGenerateContent" class="input-form">
-          <div class="input-group">
-            <textarea
-              id="topicInput"
-              class="form-control bottom-textarea"
-              rows="1"
-              :placeholder="topicInputPlaceholder"
-              v-model="topicInput"
-              aria-label="Enter your topic or request"
-              @input="autoResizeTextarea"
-              ref="textareaRef"
-            ></textarea>
-            <button
-              type="submit"
-              class="btn btn-primary send-btn"
-              :disabled="isLoading || !topicInput.trim()"
-              title="Generate content"
-            >
-              <span v-if="isLoading">
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-              </span>
-              <span v-else>
-                <i class="bi bi-send-fill"></i>
-              </span>
-            </button>
+          <div v-if="generationError" class="error-message">
+            <i class="bi bi-exclamation-triangle"></i>
+            <span>{{ generationError }}</span>
           </div>
-          <div v-if="generationError" class="alert alert-danger mt-2" role="alert">
-            <strong>Error:</strong> {{ generationError }}
-          </div>        </form>
+        </form>
+        
+        <div class="search-footer">
+          <p class="search-hint">{{ $t('welcome.instruction') }}</p>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script setup lang="ts">
@@ -293,6 +354,7 @@ const { t, locale } = useI18n();
 const selectedContentType = ref<'devotion' | 'faithIntegration'>('devotion');
 const showBibleCardGenerator = ref(false);
 const showBibleExegesis = ref(false);
+const showPromptGallery = ref(false);
 const topicInput = ref(''); // Renamed from devotionTopic
 
 // Computed property for dropdown selection that combines selectedContentType and showBibleCardGenerator
@@ -740,8 +802,9 @@ const handlePromptSelection = (text: string, type: 'devotion' | 'faithIntegratio
   
   // Set the prompt text in the input field
   topicInput.value = text;
-    // Close content type menu if open
-  showContentTypeMenu.value = false;
+  
+  // Close prompt gallery modal
+  showPromptGallery.value = false;
   
   // Focus on the input field and auto-resize
   if (textareaRef.value) {
@@ -843,6 +906,8 @@ onUnmounted(() => {
 </script>
 
 <style>
-/* Import modular CSS styles */
+/* Import Perplexity-inspired design system */
+@import './styles/perplexity.css';
+/* Import existing styles for components that need them */
 @import './styles/index.css';
 </style>
