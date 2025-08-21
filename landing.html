@@ -71,54 +71,47 @@
             50% { transform: translateY(-10px); }
         }
         
+        .btn-hover {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 44px;
+            min-width: 44px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
         .btn-hover:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
         
-        .dark-hero {
+        /* Unified background for entire page */
+        body {
             background: 
                 radial-gradient(ellipse at 20% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 60%),
                 radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.12) 0%, transparent 60%),
                 radial-gradient(ellipse at 50% 10%, rgba(168, 85, 247, 0.08) 0%, transparent 70%),
                 radial-gradient(ellipse at 30% 90%, rgba(14, 165, 233, 0.1) 0%, transparent 70%),
                 linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-            background-size: 1200px 1200px, 800px 800px, 600px 600px, 700px 700px, 100% 100%;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        
+        .dark-hero {
+            background: transparent;
             position: relative;
         }
         
         .dark-hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                repeating-linear-gradient(
-                    0deg,
-                    transparent,
-                    transparent 98px,
-                    rgba(255, 255, 255, 0.02) 100px
-                ),
-                repeating-linear-gradient(
-                    90deg,
-                    transparent,
-                    transparent 98px,
-                    rgba(255, 255, 255, 0.02) 100px
-                );
-            pointer-events: none;
+            /* Removed rectangular grid pattern for clearer star visibility */
+            display: none;
         }
         
         .light-beam {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            width: 600px;
-            height: 100%;
-            background: linear-gradient(180deg, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
-            transform: translateX(-50%);
-            pointer-events: none;
+            /* Removed light beam gradient lines for cleaner star visibility */
+            display: none;
         }
         
         .floating-particles {
@@ -241,51 +234,168 @@
         }
         
         .dark-dots {
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(14, 165, 233, 0.15) 0%, transparent 70%),
-                radial-gradient(circle at 80% 30%, rgba(168, 85, 247, 0.1) 0%, transparent 70%),
-                linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+            background: transparent;
             position: relative;
         }
         
         .dark-dots::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                radial-gradient(circle at center, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            background-position: 0 0, 20px 20px;
-            pointer-events: none;
+            /* Removed dot texture for clearer star visibility */
+            display: none;
         }
         
         .dark-waves {
-            background: 
-                radial-gradient(ellipse at 30% 20%, rgba(59, 130, 246, 0.12) 0%, transparent 60%),
-                radial-gradient(ellipse at 70% 80%, rgba(14, 165, 233, 0.08) 0%, transparent 60%),
-                linear-gradient(125deg, #1e293b 0%, #0f172a 100%);
+            background: transparent;
             position: relative;
         }
         
         .dark-waves::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                repeating-linear-gradient(
-                    45deg,
-                    transparent,
-                    transparent 60px,
-                    rgba(255, 255, 255, 0.015) 62px,
-                    rgba(255, 255, 255, 0.015) 64px
-                );
-            pointer-events: none;
+            /* Removed wave texture for clearer star visibility */
+            display: none;
+        }
+        
+        /* Responsive Typography System */
+        :root {
+            /* Fluid typography using clamp() */
+            --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+            --text-sm: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+            --text-base: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+            --text-lg: clamp(1.125rem, 1rem + 0.625vw, 1.25rem);
+            --text-xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
+            --text-2xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+            --text-3xl: clamp(1.875rem, 1.6rem + 1.375vw, 2.5rem);
+            --text-4xl: clamp(2.25rem, 1.9rem + 1.75vw, 3rem);
+            --text-5xl: clamp(3rem, 2.5rem + 2.5vw, 4rem);
+            --text-6xl: clamp(3.75rem, 3rem + 3.75vw, 5rem);
+            
+            /* Responsive spacing */
+            --spacing-xs: clamp(0.25rem, 0.2rem + 0.25vw, 0.375rem);
+            --spacing-sm: clamp(0.5rem, 0.4rem + 0.5vw, 0.75rem);
+            --spacing-base: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+            --spacing-lg: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem);
+            --spacing-xl: clamp(2rem, 1.6rem + 2vw, 3rem);
+            --spacing-2xl: clamp(2.5rem, 2rem + 2.5vw, 4rem);
+            --spacing-3xl: clamp(3rem, 2.4rem + 3vw, 5rem);
+            --spacing-4xl: clamp(4rem, 3.2rem + 4vw, 6rem);
+            --spacing-5xl: clamp(5rem, 4rem + 5vw, 8rem);
+            
+            /* Container sizes */
+            --container-sm: 640px;
+            --container-md: 768px;
+            --container-lg: 1024px;
+            --container-xl: 1280px;
+            --container-2xl: 1536px;
+            
+            /* Colors for better readability */
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --primary-100: #dbeafe;
+        }
+        
+        /* Global responsive typography */
+        h1 { 
+            font-size: var(--text-6xl);
+            line-height: 1.1;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        h2 { 
+            font-size: var(--text-4xl);
+            line-height: 1.2;
+            margin-bottom: var(--spacing-base);
+        }
+        
+        h3 { 
+            font-size: var(--text-2xl);
+            line-height: 1.3;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        p { 
+            font-size: var(--text-base);
+            line-height: 1.6;
+            margin-bottom: var(--spacing-base);
+        }
+        
+        /* Responsive containers */
+        .responsive-container {
+            width: 100%;
+            max-width: var(--container-2xl);
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: clamp(1rem, 4vw, 2rem);
+            padding-right: clamp(1rem, 4vw, 2rem);
+        }
+        
+        /* Responsive sections */
+        .responsive-section {
+            padding-top: var(--spacing-4xl);
+            padding-bottom: var(--spacing-4xl);
+        }
+        
+        /* Responsive grids */
+        .responsive-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--spacing-xl);
+        }
+        
+        .responsive-grid-3 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--spacing-lg);
+        }
+        
+        @media (min-width: 640px) {
+            .responsive-grid-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .responsive-grid-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .responsive-grid-2 {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--spacing-2xl);
+            }
+            
+            .responsive-grid-3 {
+                grid-template-columns: repeat(3, 1fr);
+                gap: var(--spacing-xl);
+            }
+        }
+        
+        /* Responsive buttons */
+        .responsive-btn {
+            font-size: var(--text-base);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: clamp(0.5rem, 0.4rem + 0.5vw, 0.75rem);
+            min-height: 44px;
+            min-width: 120px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        
+        .responsive-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Responsive images */
+        .responsive-img {
+            width: 100%;
+            height: auto;
+            border-radius: clamp(0.75rem, 0.6rem + 0.75vw, 1.5rem);
         }
         
         /* Mobile-specific optimizations */
@@ -296,18 +406,15 @@
             }
             
             .light-beam {
-                width: 400px;
+                /* Removed light beam for mobile too */
+                display: none;
             }
             
             /* Prevent horizontal scroll on mobile */
             body {
                 overflow-x: hidden;
-            }
-            
-            /* Improve touch targets */
-            .btn-hover {
-                min-height: 44px;
-                min-width: 44px;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
             }
             
             /* Better mobile video controls */
@@ -319,8 +426,48 @@
             
             /* Mobile safe area padding */
             .mobile-safe {
-                padding-left: env(safe-area-inset-left);
-                padding-right: env(safe-area-inset-right);
+                padding-left: max(1rem, env(safe-area-inset-left));
+                padding-right: max(1rem, env(safe-area-inset-right));
+                padding-top: env(safe-area-inset-top);
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+            
+            /* Mobile button adjustments */
+            .responsive-btn {
+                width: 100%;
+                font-size: var(--text-sm);
+                padding: var(--spacing-sm) var(--spacing-base);
+            }
+            
+            /* Mobile grid adjustments */
+            .responsive-grid-2,
+            .responsive-grid-3 {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-base);
+            }
+        }
+        
+        /* Tablet optimizations */
+        @media (min-width: 641px) and (max-width: 1024px) {
+            .responsive-container {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+            
+            .responsive-btn {
+                min-width: 140px;
+            }
+        }
+        
+        /* Desktop optimizations */
+        @media (min-width: 1025px) {
+            .responsive-container {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+            
+            .responsive-btn {
+                min-width: 160px;
             }
         }
         
@@ -355,7 +502,7 @@
 <body class="font-sans">
     <div class="min-h-screen">
         <!-- Hero Section -->
-        <section class="relative overflow-hidden dark-hero">
+        <section class="relative overflow-hidden dark-hero responsive-section mobile-safe">
             <!-- Heavenly Star Field -->
             <div class="star-field"></div>
             
@@ -367,44 +514,44 @@
             <div class="floating-particles" style="left: 30%; animation-delay: 2s;"></div>
             <div class="floating-particles" style="left: 70%; animation-delay: 4s;"></div>
             <div class="floating-particles" style="left: 80%; animation-delay: 6s;"></div>
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 sm:pt-20 sm:pb-16 lg:pt-32 lg:pb-24">
+            
+            <div class="responsive-container">
                 <div class="text-center">
                     <!-- Logo/Icon -->
-                    <div class="flex justify-center mb-6 sm:mb-8">
-                        <div class="w-14 h-14 sm:w-16 sm:h-16 bg-primary-500 rounded-xl flex items-center justify-center animate-float">
-                            <i class="bi bi-stars text-xl sm:text-2xl text-white"></i>
+                    <div class="flex justify-center" style="margin-bottom: var(--spacing-lg);">
+                        <div class="bg-primary-500 rounded-xl flex items-center justify-center animate-float" style="width: clamp(3.5rem, 8vw, 4rem); height: clamp(3.5rem, 8vw, 4rem);">
+                            <i class="bi bi-stars text-white" style="font-size: clamp(1.25rem, 3vw, 1.5rem);"></i>
                         </div>
                     </div>
                     
                     <!-- Headline -->
-                    <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 animate-fade-in px-2">
+                    <h1 class="font-bold text-white animate-fade-in text-center">
                         Divine Devotion
-                        <span class="block text-primary-400 mt-2">for Modern Faith</span>
+                        <span class="block text-primary-400" style="margin-top: var(--spacing-xs);">for Modern Faith</span>
                     </h1>
                     
                     <!-- Subheading -->
-                    <p class="text-lg sm:text-xl text-gray-300 mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed animate-slide-up px-4">
+                    <p class="text-gray-300 max-w-3xl mx-auto leading-relaxed animate-slide-up text-center">
                         Transform your spiritual journey with AI-powered devotions, biblical insights, and faith-based content tailored to your daily walk with God.
                     </p>
                     
-                    <!-- CTA Button -->
-                    <div class="flex flex-col gap-3 sm:flex-row sm:gap-4 justify-center items-center animate-slide-up px-4">
-                        <a href="https://devotion.rindra.org" target="_blank" rel="noopener" class="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-all duration-300 btn-hover shadow-lg inline-flex items-center justify-center gap-2">
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-col sm:flex-row justify-center items-center animate-slide-up" style="gap: var(--spacing-sm); margin-top: var(--spacing-xl);">
+                        <a href="https://devotion.rindra.org" target="_blank" rel="noopener" class="responsive-btn bg-primary-600 hover:bg-primary-700 text-white btn-hover shadow-lg">
                             <i class="bi bi-phone"></i>
                             Launch Mobile App
                         </a>
-                        <a href="#demo" class="w-full sm:w-auto text-primary-400 hover:text-primary-300 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-base sm:text-lg transition-colors duration-300 flex items-center justify-center gap-2">
+                        <a href="#demo" class="responsive-btn text-primary-400 hover:text-primary-300 border border-primary-400/30 hover:border-primary-300 btn-hover">
                             Watch Demo
                             <i class="bi bi-play-circle"></i>
                         </a>
                     </div>
                 </div>
             </div>
-            
         </section>
 
         <!-- Features Section -->
-        <section class="py-16 lg:py-24 dark-hero relative">
+        <section class="dark-hero relative responsive-section mobile-safe">
             <!-- Heavenly Star Field -->
             <div class="star-field"></div>
             
@@ -416,78 +563,78 @@
             <div class="floating-particles" style="left: 85%; animation-delay: 3s;"></div>
             <div class="floating-particles" style="left: 50%; animation-delay: 5s;"></div>
             
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div class="text-center mb-16">
-                    <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">
+            <div class="responsive-container relative z-10">
+                <div class="text-center" style="margin-bottom: var(--spacing-5xl);">
+                    <h2 class="font-bold text-white">
                         Everything you need for spiritual growth
                     </h2>
-                    <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                    <p class="text-gray-300 max-w-2xl mx-auto">
                         Powerful tools to deepen your faith and enhance your spiritual journey
                     </p>
                 </div>
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                <div class="responsive-grid-3">
                     <!-- Feature 1 -->
-                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 sm:p-8 border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50">
-                        <div class="w-12 h-12 bg-primary-500/20 rounded-lg flex items-center justify-center mb-6">
-                            <i class="bi bi-stars text-2xl text-primary-400"></i>
+                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50" style="padding: var(--spacing-lg);">
+                        <div class="bg-primary-500/20 rounded-lg flex items-center justify-center" style="width: clamp(2.5rem, 8vw, 3rem); height: clamp(2.5rem, 8vw, 3rem); margin-bottom: var(--spacing-lg);">
+                            <i class="bi bi-stars text-primary-400" style="font-size: var(--text-xl);"></i>
                         </div>
-                        <h3 class="text-xl font-semibold text-white mb-4">AI-Powered Devotions</h3>
+                        <h3 class="font-semibold text-white">AI-Powered Devotions</h3>
                         <p class="text-gray-300 leading-relaxed">
                             Generate personalized daily devotions that speak to your heart and current life circumstances.
                         </p>
                     </div>
                     
                     <!-- Feature 2 -->
-                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 sm:p-8 border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50">
-                        <div class="w-12 h-12 bg-primary-500/20 rounded-lg flex items-center justify-center mb-6">
-                            <i class="bi bi-book-half text-2xl text-primary-400"></i>
+                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50" style="padding: var(--spacing-lg);">
+                        <div class="bg-primary-500/20 rounded-lg flex items-center justify-center" style="width: clamp(2.5rem, 8vw, 3rem); height: clamp(2.5rem, 8vw, 3rem); margin-bottom: var(--spacing-lg);">
+                            <i class="bi bi-book-half text-primary-400" style="font-size: var(--text-xl);"></i>
                         </div>
-                        <h3 class="text-xl font-semibold text-white mb-4">Biblical Exegesis</h3>
+                        <h3 class="font-semibold text-white">Biblical Exegesis</h3>
                         <p class="text-gray-300 leading-relaxed">
                             Deep scriptural analysis and interpretation to enhance your understanding of God's word.
                         </p>
                     </div>
                     
                     <!-- Feature 3 -->
-                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 sm:p-8 border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50">
-                        <div class="w-12 h-12 bg-primary-500/20 rounded-lg flex items-center justify-center mb-6">
-                            <i class="bi bi-card-image text-2xl text-primary-400"></i>
+                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50" style="padding: var(--spacing-lg);">
+                        <div class="bg-primary-500/20 rounded-lg flex items-center justify-center" style="width: clamp(2.5rem, 8vw, 3rem); height: clamp(2.5rem, 8vw, 3rem); margin-bottom: var(--spacing-lg);">
+                            <i class="bi bi-card-image text-primary-400" style="font-size: var(--text-xl);"></i>
                         </div>
-                        <h3 class="text-xl font-semibold text-white mb-4">Bible Cards</h3>
+                        <h3 class="font-semibold text-white">Bible Cards</h3>
                         <p class="text-gray-300 leading-relaxed">
                             Beautiful, shareable cards featuring scripture verses and inspirational messages.
                         </p>
                     </div>
                     
                     <!-- Feature 4 -->
-                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 sm:p-8 border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50">
-                        <div class="w-12 h-12 bg-primary-500/20 rounded-lg flex items-center justify-center mb-6">
-                            <i class="bi bi-lightbulb text-2xl text-primary-400"></i>
+                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50" style="padding: var(--spacing-lg);">
+                        <div class="bg-primary-500/20 rounded-lg flex items-center justify-center" style="width: clamp(2.5rem, 8vw, 3rem); height: clamp(2.5rem, 8vw, 3rem); margin-bottom: var(--spacing-lg);">
+                            <i class="bi bi-lightbulb text-primary-400" style="font-size: var(--text-xl);"></i>
                         </div>
-                        <h3 class="text-xl font-semibold text-white mb-4">Faith Integration</h3>
+                        <h3 class="font-semibold text-white">Faith Integration</h3>
                         <p class="text-gray-300 leading-relaxed">
                             Connect your faith with learning and daily activities for a more integrated spiritual life.
                         </p>
                     </div>
                     
                     <!-- Feature 5 -->
-                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 sm:p-8 border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50">
-                        <div class="w-12 h-12 bg-primary-500/20 rounded-lg flex items-center justify-center mb-6">
-                            <i class="bi bi-globe text-2xl text-primary-400"></i>
+                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50" style="padding: var(--spacing-lg);">
+                        <div class="bg-primary-500/20 rounded-lg flex items-center justify-center" style="width: clamp(2.5rem, 8vw, 3rem); height: clamp(2.5rem, 8vw, 3rem); margin-bottom: var(--spacing-lg);">
+                            <i class="bi bi-globe text-primary-400" style="font-size: var(--text-xl);"></i>
                         </div>
-                        <h3 class="text-xl font-semibold text-white mb-4">Multi-Language Support</h3>
+                        <h3 class="font-semibold text-white">Multi-Language Support</h3>
                         <p class="text-gray-300 leading-relaxed">
                             Access spiritual content in multiple languages to reach believers worldwide.
                         </p>
                     </div>
                     
                     <!-- Feature 6 -->
-                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 sm:p-8 border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50">
-                        <div class="w-12 h-12 bg-primary-500/20 rounded-lg flex items-center justify-center mb-6">
-                            <i class="bi bi-collection text-2xl text-primary-400"></i>
+                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50" style="padding: var(--spacing-lg);">
+                        <div class="bg-primary-500/20 rounded-lg flex items-center justify-center" style="width: clamp(2.5rem, 8vw, 3rem); height: clamp(2.5rem, 8vw, 3rem); margin-bottom: var(--spacing-lg);">
+                            <i class="bi bi-collection text-primary-400" style="font-size: var(--text-xl);"></i>
                         </div>
-                        <h3 class="text-xl font-semibold text-white mb-4">Save & Organize</h3>
+                        <h3 class="font-semibold text-white">Save & Organize</h3>
                         <p class="text-gray-300 leading-relaxed">
                             Keep your favorite devotions and insights organized for future reference and study.
                         </p>
@@ -497,7 +644,7 @@
         </section>
 
         <!-- Mobile App Section -->
-        <section class="py-16 lg:py-24 dark-hero relative">
+        <section class="dark-hero relative responsive-section mobile-safe">
             <!-- Heavenly Star Field -->
             <div class="star-field"></div>
             
@@ -508,118 +655,118 @@
             <div class="floating-particles" style="left: 12%; animation-delay: 0.5s;"></div>
             <div class="floating-particles" style="left: 88%; animation-delay: 3s;"></div>
             
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div class="text-center mb-16">
-                    <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">
+            <div class="responsive-container relative z-10">
+                <div class="text-center" style="margin-bottom: var(--spacing-5xl);">
+                    <h2 class="font-bold text-white">
                         Take your faith journey anywhere
                     </h2>
-                    <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                    <p class="text-gray-300 max-w-2xl mx-auto">
                         Experience Divine Devotion on your mobile device with our intuitive app
                     </p>
                 </div>
                 
-                <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <div class="responsive-grid-2 items-center">
                     <!-- Mobile Screenshots -->
                     <div class="relative order-2 lg:order-1">
-                        <div class="flex justify-center space-x-2 sm:space-x-4 lg:space-x-6 px-4">
+                        <div class="flex justify-center" style="gap: clamp(0.5rem, 2vw, 1.5rem);">
                             <!-- Phone 1 -->
                             <div class="relative transform rotate-3 hover:rotate-0 transition-transform duration-500">
-                                <div class="w-32 sm:w-40 md:w-48 lg:w-56 bg-gray-900 rounded-2xl sm:rounded-3xl p-1 sm:p-2 shadow-2xl">
-                                    <img src="images/1.png" alt="Divine Devotion Home Screen" class="w-full rounded-xl sm:rounded-2xl">
+                                <div class="bg-gray-900 rounded-2xl shadow-2xl" style="width: clamp(8rem, 25vw, 14rem); padding: clamp(0.25rem, 1vw, 0.5rem);">
+                                    <img src="images/1.png" alt="Divine Devotion Home Screen" class="responsive-img">
                                 </div>
                             </div>
                             
                             <!-- Phone 2 -->
-                            <div class="relative transform -rotate-3 hover:rotate-0 transition-transform duration-500 z-10 -ml-4 sm:-ml-6 lg:-ml-8">
-                                <div class="w-32 sm:w-40 md:w-48 lg:w-56 bg-gray-900 rounded-2xl sm:rounded-3xl p-1 sm:p-2 shadow-2xl">
-                                    <img src="images/2.png" alt="Daily Devotions" class="w-full rounded-xl sm:rounded-2xl">
+                            <div class="relative transform -rotate-3 hover:rotate-0 transition-transform duration-500 z-10" style="margin-left: clamp(-1rem, -4vw, -2rem);">
+                                <div class="bg-gray-900 rounded-2xl shadow-2xl" style="width: clamp(8rem, 25vw, 14rem); padding: clamp(0.25rem, 1vw, 0.5rem);">
+                                    <img src="images/2.png" alt="Daily Devotions" class="responsive-img">
                                 </div>
                             </div>
                             
                             <!-- Phone 3 -->
-                            <div class="relative transform rotate-2 hover:rotate-0 transition-transform duration-500 -ml-4 sm:-ml-6 lg:-ml-8">
-                                <div class="w-32 sm:w-40 md:w-48 lg:w-56 bg-gray-900 rounded-2xl sm:rounded-3xl p-1 sm:p-2 shadow-2xl">
-                                    <img src="images/3.png" alt="Bible Exegesis" class="w-full rounded-xl sm:rounded-2xl">
+                            <div class="relative transform rotate-2 hover:rotate-0 transition-transform duration-500" style="margin-left: clamp(-1rem, -4vw, -2rem);">
+                                <div class="bg-gray-900 rounded-2xl shadow-2xl" style="width: clamp(8rem, 25vw, 14rem); padding: clamp(0.25rem, 1vw, 0.5rem);">
+                                    <img src="images/3.png" alt="Bible Exegesis" class="responsive-img">
                                 </div>
                             </div>
                         </div>
                         
                         <!-- Floating elements around phones -->
                         <div class="absolute top-10 left-10 animate-float" style="animation-delay: 1s;">
-                            <div class="w-3 h-3 bg-primary-400 rounded-full opacity-60"></div>
+                            <div class="bg-primary-400 rounded-full opacity-60" style="width: var(--spacing-sm); height: var(--spacing-sm);"></div>
                         </div>
                         <div class="absolute bottom-20 right-10 animate-float" style="animation-delay: 2s;">
-                            <div class="w-2 h-2 bg-purple-400 rounded-full opacity-60"></div>
+                            <div class="bg-purple-400 rounded-full opacity-60" style="width: var(--spacing-xs); height: var(--spacing-xs);"></div>
                         </div>
                     </div>
                     
                     <!-- Features List -->
-                    <div class="space-y-6 sm:space-y-8 order-1 lg:order-2 px-4">
-                        <div class="flex items-start space-x-3 sm:space-x-4">
+                    <div class="order-1 lg:order-2" style="display: flex; flex-direction: column; gap: var(--spacing-lg);">
+                        <div class="flex items-start" style="gap: var(--spacing-sm);">
                             <div class="flex-shrink-0">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-primary-500/20 rounded-lg flex items-center justify-center">
-                                    <i class="bi bi-phone text-lg sm:text-xl text-primary-400"></i>
+                                <div class="bg-primary-500/20 rounded-lg flex items-center justify-center" style="width: clamp(2.5rem, 8vw, 3rem); height: clamp(2.5rem, 8vw, 3rem);">
+                                    <i class="bi bi-phone text-primary-400" style="font-size: var(--text-lg);"></i>
                                 </div>
                             </div>
                             <div>
-                                <h3 class="text-lg sm:text-xl font-semibold text-white mb-2">Mobile Optimized</h3>
-                                <p class="text-sm sm:text-base text-gray-300 leading-relaxed">
+                                <h3 class="font-semibold text-white">Mobile Optimized</h3>
+                                <p class="text-gray-300 leading-relaxed">
                                     Seamlessly access devotions, exegesis, and Bible cards on your smartphone or tablet anywhere you go.
                                 </p>
                             </div>
                         </div>
                         
-                        <div class="flex items-start space-x-3 sm:space-x-4">
+                        <div class="flex items-start" style="gap: var(--spacing-sm);">
                             <div class="flex-shrink-0">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-primary-500/20 rounded-lg flex items-center justify-center">
-                                    <i class="bi bi-download text-lg sm:text-xl text-primary-400"></i>
+                                <div class="bg-primary-500/20 rounded-lg flex items-center justify-center" style="width: clamp(2.5rem, 8vw, 3rem); height: clamp(2.5rem, 8vw, 3rem);">
+                                    <i class="bi bi-download text-primary-400" style="font-size: var(--text-lg);"></i>
                                 </div>
                             </div>
                             <div>
-                                <h3 class="text-lg sm:text-xl font-semibold text-white mb-2">Offline Access</h3>
-                                <p class="text-sm sm:text-base text-gray-300 leading-relaxed">
+                                <h3 class="font-semibold text-white">Offline Access</h3>
+                                <p class="text-gray-300 leading-relaxed">
                                     Save your favorite devotions and continue your spiritual growth even without internet connection.
                                 </p>
                             </div>
                         </div>
                         
-                        <div class="flex items-start space-x-3 sm:space-x-4">
+                        <div class="flex items-start" style="gap: var(--spacing-sm);">
                             <div class="flex-shrink-0">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-primary-500/20 rounded-lg flex items-center justify-center">
-                                    <i class="bi bi-bell text-lg sm:text-xl text-primary-400"></i>
+                                <div class="bg-primary-500/20 rounded-lg flex items-center justify-center" style="width: clamp(2.5rem, 8vw, 3rem); height: clamp(2.5rem, 8vw, 3rem);">
+                                    <i class="bi bi-bell text-primary-400" style="font-size: var(--text-lg);"></i>
                                 </div>
                             </div>
                             <div>
-                                <h3 class="text-lg sm:text-xl font-semibold text-white mb-2">Daily Reminders</h3>
-                                <p class="text-sm sm:text-base text-gray-300 leading-relaxed">
+                                <h3 class="font-semibold text-white">Daily Reminders</h3>
+                                <p class="text-gray-300 leading-relaxed">
                                     Get gentle notifications to maintain your daily spiritual practice and stay connected with God.
                                 </p>
                             </div>
                         </div>
                         
-                        <div class="flex items-start space-x-3 sm:space-x-4">
+                        <div class="flex items-start" style="gap: var(--spacing-sm);">
                             <div class="flex-shrink-0">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-primary-500/20 rounded-lg flex items-center justify-center">
-                                    <i class="bi bi-globe text-lg sm:text-xl text-primary-400"></i>
+                                <div class="bg-primary-500/20 rounded-lg flex items-center justify-center" style="width: clamp(2.5rem, 8vw, 3rem); height: clamp(2.5rem, 8vw, 3rem);">
+                                    <i class="bi bi-globe text-primary-400" style="font-size: var(--text-lg);"></i>
                                 </div>
                             </div>
                             <div>
-                                <h3 class="text-lg sm:text-xl font-semibold text-white mb-2">Multi-Language Support</h3>
-                                <p class="text-sm sm:text-base text-gray-300 leading-relaxed">
+                                <h3 class="font-semibold text-white">Multi-Language Support</h3>
+                                <p class="text-gray-300 leading-relaxed">
                                     Access content in English, French, and Malagasy to serve believers across different cultures.
                                 </p>
                             </div>
                         </div>
                         
                         <!-- Mobile App Download Buttons -->
-                        <div class="pt-4 sm:pt-6">
-                            <div class="flex flex-col gap-3 sm:flex-row sm:gap-4">
-                                <a href="https://devotion.rindra.org" target="_blank" rel="noopener" class="inline-flex items-center justify-center px-5 sm:px-6 py-2.5 sm:py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-semibold text-sm sm:text-base transition-colors duration-300 btn-hover">
-                                    <i class="bi bi-phone mr-2"></i>
+                        <div style="padding-top: var(--spacing-lg);">
+                            <div class="flex flex-col sm:flex-row" style="gap: var(--spacing-sm);">
+                                <a href="https://devotion.rindra.org" target="_blank" rel="noopener" class="responsive-btn bg-primary-600 hover:bg-primary-700 text-white btn-hover">
+                                    <i class="bi bi-phone"></i>
                                     Launch Mobile App
                                 </a>
-                                <a href="https://devotion.rindra.org" target="_blank" rel="noopener" class="inline-flex items-center justify-center px-5 sm:px-6 py-2.5 sm:py-3 border border-primary-500 text-primary-400 hover:bg-primary-500/10 rounded-lg font-semibold text-sm sm:text-base transition-colors duration-300">
-                                    <i class="bi bi-globe mr-2"></i>
+                                <a href="https://devotion.rindra.org" target="_blank" rel="noopener" class="responsive-btn border border-primary-500 text-primary-400 hover:bg-primary-500/10 btn-hover">
+                                    <i class="bi bi-globe"></i>
                                     Try Web Version
                                 </a>
                             </div>
@@ -630,32 +777,32 @@
         </section>
 
         <!-- Demo Section -->
-        <section id="demo" class="py-16 lg:py-24 dark-dots relative">
+        <section id="demo" style="padding-top: var(--spacing-2xl); padding-bottom: var(--spacing-2xl);" class="dark-dots relative">
             <!-- Floating Particles -->
             <div class="floating-particles" style="left: 25%; animation-delay: 0.5s;"></div>
             <div class="floating-particles" style="left: 75%; animation-delay: 2.5s;"></div>
             
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div class="text-center mb-12 sm:mb-16">
-                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 px-2">
+            <div class="responsive-container relative z-10">
+                <div class="text-center" style="margin-bottom: var(--spacing-xl);">
+                    <h2 style="font-size: var(--text-3xl); font-weight: 700; color: white; margin-bottom: var(--spacing-base);">
                         See it in action
                     </h2>
-                    <p class="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto px-4">
+                    <p style="font-size: var(--text-lg); color: var(--gray-300); max-width: 42rem; margin-left: auto; margin-right: auto;">
                         Experience the power of AI-driven spiritual content creation
                     </p>
                 </div>
                 
                 <!-- Demo Container -->
-                <div class="max-w-4xl mx-auto px-2">
+                <div style="max-width: 56rem; margin-left: auto; margin-right: auto;">
                     <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden border border-slate-700/50">
                         <!-- Demo Header -->
-                        <div class="bg-slate-900/80 px-4 sm:px-6 py-3 sm:py-4 flex items-center gap-2 sm:gap-3">
-                            <div class="flex gap-1.5 sm:gap-2">
-                                <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-red-500 rounded-full"></div>
-                                <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-yellow-500 rounded-full"></div>
-                                <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded-full"></div>
+                        <div class="bg-slate-900/80 flex items-center" style="padding: var(--spacing-sm) var(--spacing-base); gap: var(--spacing-xs);">
+                            <div class="flex" style="gap: var(--spacing-xs);">
+                                <div style="width: var(--spacing-xs); height: var(--spacing-xs); background-color: #ef4444; border-radius: 9999px;"></div>
+                                <div style="width: var(--spacing-xs); height: var(--spacing-xs); background-color: #eab308; border-radius: 9999px;"></div>
+                                <div style="width: var(--spacing-xs); height: var(--spacing-xs); background-color: #22c55e; border-radius: 9999px;"></div>
                             </div>
-                            <div class="text-gray-400 text-xs sm:text-sm">Divine Devotion App</div>
+                            <div style="color: var(--gray-400); font-size: var(--text-sm);">Divine Devotion App</div>
                         </div>
                         
                         <!-- Demo Content -->
@@ -677,42 +824,85 @@
         </section>
 
         <!-- Testimonials Section -->
-        <section class="py-16 lg:py-24 dark-waves relative">
+        <section style="padding-top: var(--spacing-2xl); padding-bottom: var(--spacing-2xl);" class="dark-waves relative">
             <!-- Floating Particles -->
             <div class="floating-particles" style="left: 10%; animation-delay: 1s;"></div>
             <div class="floating-particles" style="left: 60%; animation-delay: 3.5s;"></div>
             <div class="floating-particles" style="left: 90%; animation-delay: 6s;"></div>
             
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div class="text-center mb-16">
-                    <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">
+            <div class="responsive-container relative z-10">
+                <div class="text-center" style="margin-bottom: var(--spacing-xl);">
+                    <h2 style="font-size: var(--text-3xl); font-weight: 700; color: white; margin-bottom: var(--spacing-base);">
                         Trusted by believers worldwide
                     </h2>
-                    <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                    <p style="font-size: var(--text-lg); color: var(--gray-300); max-width: 42rem; margin-left: auto; margin-right: auto;">
                         See how Divine Devotion is transforming spiritual journeys
                     </p>
                 </div>
                 
-                
+                <!-- Testimonial Cards Grid -->
+                <div class="responsive-grid-3" style="gap: var(--spacing-lg);">
+                    <!-- Testimonial 1 -->
+                    <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
+                        <div style="padding: var(--spacing-lg);">
+                            <div class="flex items-center" style="margin-bottom: var(--spacing-base); gap: var(--spacing-sm);">
+                                <div style="width: 3rem; height: 3rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">M</div>
+                                <div>
+                                    <div style="color: white; font-weight: 600; font-size: var(--text-base);">Maria Santos</div>
+                                    <div style="color: var(--gray-400); font-size: var(--text-sm);">Pastor</div>
+                                </div>
+                            </div>
+                            <p style="color: var(--gray-300); font-size: var(--text-base); line-height: 1.6;">"Divine Devotion has revolutionized how I prepare sermons. The AI-powered insights help me discover deeper meanings in Scripture that I can share with my congregation."</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonial 2 -->
+                    <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
+                        <div style="padding: var(--spacing-lg);">
+                            <div class="flex items-center" style="margin-bottom: var(--spacing-base); gap: var(--spacing-sm);">
+                                <div style="width: 3rem; height: 3rem; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">J</div>
+                                <div>
+                                    <div style="color: white; font-weight: 600; font-size: var(--text-base);">James Mitchell</div>
+                                    <div style="color: var(--gray-400); font-size: var(--text-sm);">Bible Study Leader</div>
+                                </div>
+                            </div>
+                            <p style="color: var(--gray-300); font-size: var(--text-base); line-height: 1.6;">"The mobile app is perfect for my daily devotions. I can access personalized content anywhere, and the offline mode is a blessing during my mission trips."</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonial 3 -->
+                    <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
+                        <div style="padding: var(--spacing-lg);">
+                            <div class="flex items-center" style="margin-bottom: var(--spacing-base); gap: var(--spacing-sm);">
+                                <div style="width: 3rem; height: 3rem; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">S</div>
+                                <div>
+                                    <div style="color: white; font-weight: 600; font-size: var(--text-base);">Sarah Johnson</div>
+                                    <div style="color: var(--gray-400); font-size: var(--text-sm);">Youth Minister</div>
+                                </div>
+                            </div>
+                            <p style="color: var(--gray-300); font-size: var(--text-base); line-height: 1.6;">"My youth group loves the interactive features. The AI helps them understand complex Biblical concepts in ways that resonate with their generation."</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- Call-to-Action Section -->
-        <section class="py-12 sm:py-16 lg:py-24 bg-primary-600">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 px-2">
+        <section style="padding-top: var(--spacing-2xl); padding-bottom: var(--spacing-2xl); background: rgba(2, 132, 199, 0.1); backdrop-filter: blur(1px);" class="relative">
+            <div class="responsive-container text-center">
+                <h2 style="font-size: var(--text-3xl); font-weight: 700; color: white; margin-bottom: var(--spacing-base);">
                     Ready to transform your spiritual journey?
                 </h2>
-                <p class="text-lg sm:text-xl text-primary-100 mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-4">
+                <p style="font-size: var(--text-lg); color: rgb(199 210 254); margin-bottom: var(--spacing-xl); max-width: 42rem; margin-left: auto; margin-right: auto; line-height: 1.6;">
                     Join thousands of believers who are deepening their faith with Divine Devotion on mobile and web
                 </p>
                 
-                <div class="flex flex-col gap-3 sm:flex-row sm:gap-4 justify-center items-center px-4">
-                    <a href="https://devotion.rindra.org" target="_blank" rel="noopener" class="w-full sm:w-auto bg-white hover:bg-gray-50 text-primary-600 px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-all duration-300 btn-hover shadow-lg inline-flex items-center justify-center gap-2">
+                <div class="flex flex-col sm:flex-row justify-center items-center" style="gap: var(--spacing-base);">
+                    <a href="https://devotion.rindra.org" target="_blank" rel="noopener" class="responsive-btn bg-white hover:bg-gray-50 text-primary-600 btn-hover shadow-lg">
                         <i class="bi bi-phone"></i>
                         Start Your Journey
                     </a>
-                    <a href="https://rindra.org" target="_blank" rel="noopener" class="w-full sm:w-auto text-white hover:text-primary-100 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-base sm:text-lg transition-colors duration-300 flex items-center justify-center gap-2">
+                    <a href="https://rindra.org" target="_blank" rel="noopener" class="responsive-btn text-white hover:text-primary-100 transition-colors duration-300">
                         Learn More
                         <i class="bi bi-arrow-right"></i>
                     </a>
@@ -721,23 +911,23 @@
         </section>
 
         <!-- Footer -->
-        <footer class="bg-gray-900 text-white py-12">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <footer class="bg-gray-900 text-white" style="padding-top: var(--spacing-xl); padding-bottom: var(--spacing-xl);">
+            <div class="responsive-container">
                 <div class="text-center">
                     <!-- Brand -->
-                    <div class="flex items-center justify-center mb-6">
-                        <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center mr-3">
+                    <div class="flex items-center justify-center" style="margin-bottom: var(--spacing-lg);">
+                        <div class="bg-primary-500 rounded-lg flex items-center justify-center" style="width: 2rem; height: 2rem; margin-right: var(--spacing-sm);">
                             <i class="bi bi-stars text-white"></i>
                         </div>
-                        <span class="text-xl font-bold">Divine Devotion</span>
+                        <span style="font-size: var(--text-xl); font-weight: 700;">Divine Devotion</span>
                     </div>
                     
                     <!-- Copyright -->
-                    <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-                        <div class="text-gray-400 text-sm">
+                    <div class="border-t border-gray-800 flex flex-col md:flex-row justify-between items-center" style="padding-top: var(--spacing-lg);">
+                        <div style="color: var(--gray-400); font-size: var(--text-sm);">
                             © 2025 Mr. Rindra. All rights reserved.
                         </div>
-                        <div class="text-gray-400 text-sm mt-4 md:mt-0">
+                        <div style="color: var(--gray-400); font-size: var(--text-sm); margin-top: var(--spacing-base);" class="md:mt-0">
                             Build for All.
                         </div>
                     </div>
