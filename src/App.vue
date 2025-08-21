@@ -84,24 +84,25 @@
       <!-- Main Content Container -->
       <div class="content-container" ref="contentAreaRef" @scroll="handleContentScroll">
         <div class="content-wrapper">
-          <!-- Generated Content Display -->
-          <div v-if="isLoading || (currentContent.text && !generationError)" class="content-card">
           <!-- Loading State -->
-          <div v-if="isLoading" class="loading-state">
-            <div class="loading-spinner">
-              <div class="spinner"></div>
-            </div>
-            <h3 class="loading-title">{{ $t('content.generating') }}</h3>
-            <div class="loading-skeleton">
-              <div class="skeleton-line skeleton-line-long"></div>
-              <div class="skeleton-line skeleton-line-medium"></div>
-              <div class="skeleton-line skeleton-line-short"></div>
-              <div class="skeleton-line skeleton-line-long"></div>
+          <div v-if="isLoading" class="content-card">
+            <div class="loading-state">
+              <div class="loading-spinner">
+                <div class="spinner"></div>
+              </div>
+              <h3 class="loading-title">{{ $t('content.generating') }}</h3>
+              <div class="loading-skeleton">
+                <div class="skeleton-line skeleton-line-long"></div>
+                <div class="skeleton-line skeleton-line-medium"></div>
+                <div class="skeleton-line skeleton-line-short"></div>
+                <div class="skeleton-line skeleton-line-long"></div>
+              </div>
             </div>
           </div>
           
           <!-- Content Display -->
-          <div v-else-if="currentContent.text && !generationError" class="generated-content">
+          <div v-else-if="currentContent.text && !generationError && !showBibleCardGenerator && !showBibleExegesis" class="content-card">
+            <div class="generated-content">
             <!-- Content Header -->
             <div class="content-header">
               <div class="content-meta">
@@ -146,16 +147,20 @@
                 <span>{{ $t('actions.share') }}</span>
               </button>
             </div>
-          </div>
+            </div>
           </div>
           
           <!-- Specialized Components -->
-          <div v-else-if="showBibleCardGenerator" class="specialized-content">
-            <BibleCardGenerator />
+          <div v-else-if="showBibleCardGenerator" class="content-card">
+            <div class="specialized-content">
+              <BibleCardGenerator />
+            </div>
           </div>
 
-          <div v-else-if="showBibleExegesis" class="specialized-content">
-            <BibleExegesis />
+          <div v-else-if="showBibleExegesis" class="content-card">
+            <div class="specialized-content">
+              <BibleExegesis />
+            </div>
           </div>
           
           <!-- Welcome/Empty State -->
@@ -302,12 +307,28 @@ const contentTypeSelection = computed({
   }
 });
 
-const currentContent = ref<StoredContent>({
+// Separate content storage for each type
+const devotionContent = ref<StoredContent>({
   id: '',
   text: '',
   verses: [],
   topic: '',
   type: 'devotion',
+});
+
+const faithIntegrationContent = ref<StoredContent>({
+  id: '',
+  text: '',
+  verses: [],
+  topic: '',
+  type: 'faithIntegration',
+});
+
+// Computed property for current content based on selected type
+const currentContent = computed(() => {
+  return selectedContentType.value === 'devotion' 
+    ? devotionContent.value 
+    : faithIntegrationContent.value;
 });
 
 const { generateGeminiContent, isLoading, error: generationError } = useGemini(); // Gemini function
@@ -460,11 +481,16 @@ const handleGenerateContent = async () => {
   if (showBibleCardGenerator.value) {
     return;
   }
-    const newId = `content-${Date.now()}`; // Generate ID here
-  currentContent.value = { id: newId, text: '', verses: [], topic: '', type: selectedContentType.value }; // Initialize with selected type and ID
+  
+  const newId = `content-${Date.now()}`; // Generate ID here
+  const contentRef = selectedContentType.value === 'devotion' ? devotionContent : faithIntegrationContent;
+  
+  // Initialize with selected type and ID
+  contentRef.value = { id: newId, text: '', verses: [], topic: '', type: selectedContentType.value };
+  
   try {
     const result = await generateGeminiContent(topicInput.value, selectedContentType.value, locale.value);
-    currentContent.value = { 
+    contentRef.value = { 
       id: newId, // Persist ID
       text: result.text, 
       verses: result.verses || [], 
@@ -505,21 +531,30 @@ const handleDeleteContent = (id?: string) => {
 
   const itemToDelete = savedContent.value.find(item => item.id === id);
 
-  if (itemToDelete && currentContent.value.id === itemToDelete.id) {
-      const defaultType = selectedContentType.value;
-      currentContent.value = { id: `content-${Date.now()}`, text: '', verses: [], topic: '', type: defaultType };
+  if (itemToDelete) {
+    // Clear the appropriate content ref if it matches the deleted item
+    if (itemToDelete.type === 'devotion' && devotionContent.value.id === itemToDelete.id) {
+      devotionContent.value = { id: `content-${Date.now()}`, text: '', verses: [], topic: '', type: 'devotion' };
+    } else if (itemToDelete.type === 'faithIntegration' && faithIntegrationContent.value.id === itemToDelete.id) {
+      faithIntegrationContent.value = { id: `content-${Date.now()}`, text: '', verses: [], topic: '', type: 'faithIntegration' };
+    }
   }
   deleteContent(id); 
 };
 
 
 const viewSavedContent = (content: StoredContent) => { // Renamed from viewSavedDevotion, updated type
-  currentContent.value = { ...content };
-  // Only allow valid content types for selectedContentType
-  if (content.type === 'devotion' || content.type === 'faithIntegration') {
-    selectedContentType.value = content.type;
+  // Store content in the appropriate ref based on its type
+  if (content.type === 'devotion') {
+    devotionContent.value = { ...content };
+    selectedContentType.value = 'devotion';
+  } else if (content.type === 'faithIntegration') {
+    faithIntegrationContent.value = { ...content };
+    selectedContentType.value = 'faithIntegration';
   } else {
-    selectedContentType.value = 'devotion'; // Default fallback
+    // Default fallback
+    devotionContent.value = { ...content };
+    selectedContentType.value = 'devotion';
   }
 };
 
@@ -689,9 +724,11 @@ const closeMenuOnClickOutside = (event: Event) => {
 
 // Handle creating new content
 const handleCreateNew = () => {
-  // Clear current content and create fresh content
+  // Clear content for the selected type and create fresh content
   const newId = `content-${Date.now()}`;
-  currentContent.value = {
+  const contentRef = selectedContentType.value === 'devotion' ? devotionContent : faithIntegrationContent;
+  
+  contentRef.value = {
     id: newId,
     text: '',
     verses: [],
