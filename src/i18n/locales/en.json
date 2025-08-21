@@ -15,10 +15,10 @@
     "noContent": "No content saved yet.",
     "savedContent": "Saved Content"
   },  "contentTypes": {
-    "devotion": "Devotion",
-    "faithAndLearning": "Faith & Learning",
+    "devotion": "Daily Devotion",
+    "faithAndLearning": "Faith and Learning",
     "bibleCards": "Bible Cards",
-    "bibleExegesis": "Bible Exegesis",
+    "bibleExegesis": "Exegesis and Hermeneutics",
     "devotionShort": "Devo",
     "ideaShort": "Idea",
     "devotionDesc": "Generate personalized devotional content and spiritual insights",
@@ -46,7 +46,8 @@
   "welcome": {
     "title": "Welcome to DivineDevotion",
     "subtitle": "Generate personalized devotions and faith-based learning ideas",
-    "instruction": "Choose a content type and enter your topic below to begin"
+    "instruction": "Choose a content type and enter your topic below to begin",
+    "browsePrompts": "Browse Prompt Gallery"
   },  "alerts": {
     "contentSaved": "Content saved successfully!"
   },

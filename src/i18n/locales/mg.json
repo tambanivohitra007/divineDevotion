@@ -51,7 +51,8 @@
   "welcome": {
     "title": "Tongasoa eto amin'ny Divine Dévotion",
     "subtitle": "Mamorona fivavahana manokana sy hevitra fampifangaroana finoana amin'ny AI",
-    "instruction": "Misafidiana ohatra etsy ambany na manoratra lohahevitra ho fanombohana"
+    "instruction": "Misafidiana ohatra etsy ambany na manorata lohahevitra hanombohana",
+    "browsePrompts": "Hijery ny toerana Fanoroana"
   },
   "alerts": {
     "contentSaved": "Voatahiry soa aman-tsara ny votoaty!"

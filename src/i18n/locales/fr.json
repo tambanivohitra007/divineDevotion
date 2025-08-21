@@ -46,7 +46,8 @@
   "welcome": {
     "title": "Bienvenue dans Divine Dévotion",
     "subtitle": "Générez des dévotions personnalisées et des idées d'apprentissage basées sur la foi",
-    "instruction": "Choisissez un type de contenu et entrez votre sujet ci-dessous pour commencer"
+    "instruction": "Choisissez un type de contenu et saisissez votre sujet ci-dessous pour commencer",
+    "browsePrompts": "Parcourir la galerie de suggestions"
   },  "alerts": {
     "contentSaved": "Contenu sauvegardé avec succès !"
   },
