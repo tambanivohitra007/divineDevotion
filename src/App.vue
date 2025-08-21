@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="perplexity-layout">
     <!-- Search-Centric Header -->
-    <header class="main-header" :class="{ 'scrolled': showTopFade }">
+    <header class="main-header" :class="{ 'scrolled': showTopFade, 'header-visible': showTaskbar }">
       <div class="header-container">
         <!-- Logo/Brand -->
         <div class="brand-section">
@@ -16,7 +16,7 @@
         <div class="header-actions">
           <button 
             class="action-btn saved-btn" 
-            @click="toggleSidebar"
+            @click="openSavedContentDialog"
             :title="$t('tooltips.openSidebar')"
           >
             <i class="bi bi-collection"></i>
@@ -38,85 +38,7 @@
       </div>
     </header>
 
-    <!-- Sidebar -->
-    <aside class="sidebar" :class="{ 'sidebar-open': !isSidebarCollapsed, 'sidebar-collapsed': isSidebarCollapsed }">
-      <div class="sidebar-header">
-        <h3 class="sidebar-title" v-show="!isSidebarCollapsed">
-          <i class="bi bi-collection me-2"></i>
-          {{ $t('sidebar.saved') }}
-        </h3>
-        <button class="toggle-btn" @click="toggleSidebar" :title="isSidebarCollapsed ? $t('tooltips.expandSidebar') : $t('tooltips.collapseSidebar')">
-          <i :class="isSidebarCollapsed ? 'bi bi-chevron-left' : 'bi bi-chevron-right'"></i>
-        </button>
-      </div>
-      
-      <!-- Sidebar Search -->
-      <div class="sidebar-search" v-show="!isSidebarCollapsed">
-        <div class="search-input-container">
-          <i class="bi bi-search search-icon"></i>
-          <input
-            type="text"
-            class="search-input"
-            :placeholder="$t('sidebar.searchPlaceholder')"
-            v-model="searchQuery"
-          />
-        </div>
-      </div>
-      
-      <!-- Collapsed Sidebar Icons -->
-      <div class="sidebar-icons" v-show="isSidebarCollapsed">
-        <button class="sidebar-icon-btn" @click="toggleSidebar" :title="$t('sidebar.saved')">
-          <i class="bi bi-collection"></i>
-        </button>
-        <button class="sidebar-icon-btn" @click="toggleTheme" :title="isDarkMode ? $t('navigation.lightMode') : $t('navigation.darkMode')">
-          <i :class="isDarkMode ? 'bi bi-sun' : 'bi bi-moon'"></i>
-        </button>
-      </div>
-      
-      <!-- Saved Content List -->
-      <div class="saved-content-list" v-show="!isSidebarCollapsed">
-        <div v-if="filteredContent.length === 0 && searchQuery" class="empty-state">
-          <i class="bi bi-search empty-icon"></i>
-          <p class="empty-text">{{ $t('sidebar.noMatches') }}</p>
-        </div>
-        <div v-if="filteredContent.length === 0 && !searchQuery && savedContent.length > 0" class="empty-state">
-          <i class="bi bi-collection empty-icon"></i>
-          <p class="empty-text">{{ $t('sidebar.noContent') }}</p>
-        </div>
-        <div
-          v-for="(content) in filteredContent"
-          :key="content.id || content.topic" 
-          class="saved-item"
-          @click="viewSavedContent(content)"
-        >
-          <div class="saved-item-content">
-            <div class="saved-item-header">
-              <h4 class="saved-item-title">
-                {{ content.topic || $t('sidebar.savedContent') }}
-              </h4>
-              <span class="content-type-badge" :class="'badge-' + content.type">
-                {{ content.type === 'devotion' ? $t('contentTypes.devotionShort') : $t('contentTypes.ideaShort') }}
-              </span>
-            </div>
-            <p class="saved-item-excerpt">{{truncateText(content.text, 80)}}</p>
-            <div class="saved-item-meta">
-              <span class="meta-icon">
-                <i :class="content.type === 'devotion' ? 'bi bi-stars' : 'bi bi-lightbulb'"></i>
-              </span>
-              <time class="meta-date">Recently saved</time>
-            </div>
-          </div>
-          <button 
-            class="delete-btn" 
-            @click.stop="handleDeleteContent(content.id)" 
-            v-if="content.id"
-            :title="$t('tooltips.deleteContent')"
-          >
-            <i class="bi bi-trash3"></i>
-          </button>
-        </div>
-      </div>
-    </aside>    <!-- Main Content Area -->
+    <!-- Main Content Area -->
     <main class="main-content">
       <!-- Content Type Selection -->
       <div class="content-type-selector">
@@ -292,6 +214,15 @@
       </div>
     </div>
 
+    <!-- Saved Content Dialog -->
+    <SavedContentDialog 
+      :show="showSavedContentDialog"
+      :saved-content="savedContent"
+      @close="showSavedContentDialog = false"
+      @select-content="viewSavedContent"
+      @delete-content="handleDeleteContent"
+    />
+
     <!-- Search Input Area -->
     <div class="search-area" :class="{ 'search-hidden': !showBottomInput }">
       <div class="search-container">
@@ -344,6 +275,7 @@ import BibleCardGenerator from './components/BibleCardGenerator.vue';
 import BibleExegesis from './components/BibleExegesis.vue';
 import PromptGallery from './components/PromptGallery.vue';
 import LanguageSelector from './components/LanguageSelector.vue';
+import SavedContentDialog from './components/SavedContentDialog.vue';
 import useGemini from './composables/useGemini';
 // Correctly import useContentStorage and StoredContent type
 import useContentStorage, { type StoredContent } from './composables/useDevotions';
@@ -355,6 +287,7 @@ const selectedContentType = ref<'devotion' | 'faithIntegration'>('devotion');
 const showBibleCardGenerator = ref(false);
 const showBibleExegesis = ref(false);
 const showPromptGallery = ref(false);
+const showSavedContentDialog = ref(false);
 const topicInput = ref(''); // Renamed from devotionTopic
 
 // Computed property for dropdown selection that combines selectedContentType and showBibleCardGenerator
@@ -381,7 +314,6 @@ const { generateGeminiContent, isLoading, error: generationError } = useGemini()
 const { savedContent, saveContent, deleteContent, loadContent } = useContentStorage(); // Updated import and usage
 
 const showSaveConfirmation = ref(false);
-const searchQuery = ref('');
 
 const showShareAlert = ref(false);
 const shareAlertMessage = ref('');
@@ -411,14 +343,15 @@ const scrollTimeout = ref<number | null>(null);
 const showHeader = ref(true);
 const headerScrollTimeout = ref<number | null>(null);
 
+// Taskbar visibility state
+const showTaskbar = ref(true);
+
 // Mobile responsiveness
 const isMobile = ref(false);
 const checkMobile = () => {
   isMobile.value = window.innerWidth <= 768;
 };
 
-// Initialize isSidebarCollapsed. On initial load, if it's mobile, it should be collapsed.
-const isSidebarCollapsed = ref(window.innerWidth <= 768);
 const firstVerseText = ref('');
 
 // Initialize isDarkMode from localStorage or default to true (dark mode)
@@ -447,11 +380,8 @@ watchEffect(() => {
 // This ensures the theme is set correctly on initial load based on localStorage or default
 onMounted(() => {
   loadContent(); // Ensure content is loaded on mount
-  // Mobile check and sidebar state
+  // Mobile check
   checkMobile(); // Call once to set initial state for isMobile
-  if (isMobile.value) {
-    isSidebarCollapsed.value = true; // Ensure sidebar is collapsed on mobile initial load
-  }
   window.addEventListener('resize', checkMobile);
     // Add click outside listener for menu
   document.addEventListener('click', closeMenuOnClickOutside);
@@ -520,16 +450,6 @@ watch(() => (currentContent.value.type === 'devotion' && currentContent.value.ve
   }
 }, { immediate: true });
 
-const filteredContent = computed(() => { // Renamed from filteredDevotions
-  if (!searchQuery.value) {
-    return savedContent.value;
-  }
-  return savedContent.value.filter(item =>
-    (item.topic && item.topic.toLowerCase().includes(searchQuery.value.toLowerCase())) ||
-    (item.text && item.text.toLowerCase().includes(searchQuery.value.toLowerCase()))
-    // Optionally, filter by type: || (item.type && item.type.toLowerCase().includes(searchQuery.value.toLowerCase()))
-  );
-});
 
 // Removed getOriginalIndex function as it was unused
 
@@ -600,9 +520,6 @@ const viewSavedContent = (content: StoredContent) => { // Renamed from viewSaved
     selectedContentType.value = content.type;
   } else {
     selectedContentType.value = 'devotion'; // Default fallback
-  }
-  if (isMobile.value && !isSidebarCollapsed.value) {
-    isSidebarCollapsed.value = true;
   }
 };
 
@@ -711,8 +628,9 @@ const truncateText = (text: string, length: number) => {
   return text.substring(0, length) + '...';
 };
 
-const toggleSidebar = () => {
-  isSidebarCollapsed.value = !isSidebarCollapsed.value;
+const openSavedContentDialog = () => {
+  showSavedContentDialog.value = true;
+  showTaskbar.value = true;
 };
 
 // Computed properties for content type button
@@ -888,11 +806,8 @@ watchEffect(() => {
 // Apply the theme when the component is mounted
 // This ensures the theme is set correctly on initial load based on localStorage or default
 onMounted(() => {
-  // Mobile check and sidebar state
+  // Mobile check
   checkMobile(); // Call once to set initial state for isMobile
-  if (isMobile.value) {
-    isSidebarCollapsed.value = true; // Ensure sidebar is collapsed on mobile initial load
-  }
   window.addEventListener('resize', checkMobile);
 
   // Theme initialization
