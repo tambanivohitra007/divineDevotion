@@ -657,12 +657,12 @@ const formatContentText = (text: string) => {
   return result;
 };
 
-const truncateText = (text: string, length: number) => {
-  if (text.length <= length) {
-    return text;
-  }
-  return text.substring(0, length) + '...';
-};
+// const truncateText = (text: string, length: number) => {
+//   if (text.length <= length) {
+//     return text;
+//   }
+//   return text.substring(0, length) + '...';
+// };
 
 const openSavedContentDialog = () => {
   showSavedContentDialog.value = true;
@@ -670,29 +670,29 @@ const openSavedContentDialog = () => {
 };
 
 // Computed properties for content type button
-const currentContentTypeIcon = computed(() => {
-  switch (contentTypeSelection.value) {
-    case 'devotion':
-      return 'bi bi-stars';
-    case 'faithIntegration':
-      return 'bi bi-lightbulb-fill';
-    case 'bibleCard':
-      return 'bi bi-card-image';
-    case 'bibleExegesis':
-      return 'bi bi-book-half';
-    default:
-      return 'bi bi-stars';
-  }
-});
+// const currentContentTypeIcon = computed(() => {
+//   switch (contentTypeSelection.value) {
+//     case 'devotion':
+//       return 'bi bi-stars';
+//     case 'faithIntegration':
+//       return 'bi bi-lightbulb-fill';
+//     case 'bibleCard':
+//       return 'bi bi-card-image';
+//     case 'bibleExegesis':
+//       return 'bi bi-book-half';
+//     default:
+//       return 'bi bi-stars';
+//   }
+// });
 
 // Content type menu methods
-const toggleContentTypeMenu = () => {
-  showContentTypeMenu.value = !showContentTypeMenu.value;
-};
+// const toggleContentTypeMenu = () => {
+//   showContentTypeMenu.value = !showContentTypeMenu.value;
+// };
 
-const closeContentTypeMenu = () => {
-  showContentTypeMenu.value = false;
-};
+// const closeContentTypeMenu = () => {
+//   showContentTypeMenu.value = false;
+// };
 
 const selectContentType = (type: string) => {
   if (type === 'bibleCard') {
@@ -724,30 +724,30 @@ const closeMenuOnClickOutside = (event: Event) => {
 };
 
 // Handle creating new content
-const handleCreateNew = () => {
-  // Clear content for the selected type and create fresh content
-  const newId = `content-${Date.now()}`;
-  const contentRef = selectedContentType.value === 'devotion' ? devotionContent : faithIntegrationContent;
+// const handleCreateNew = () => {
+//   // Clear content for the selected type and create fresh content
+//   const newId = `content-${Date.now()}`;
+//   const contentRef = selectedContentType.value === 'devotion' ? devotionContent : faithIntegrationContent;
   
-  contentRef.value = {
-    id: newId,
-    text: '',
-    verses: [],
-    topic: '',
-    type: selectedContentType.value,
-  };
+//   contentRef.value = {
+//     id: newId,
+//     text: '',
+//     verses: [],
+//     topic: '',
+//     type: selectedContentType.value,
+//   };
   
-  // Clear the input field
-  topicInput.value = '';
-    // Close the content type menu if it's open
-  showContentTypeMenu.value = false;
-    // Focus on the input field for immediate typing
-  if (textareaRef.value && !showBibleCardGenerator.value && !showBibleExegesis.value) {
-    setTimeout(() => {
-      textareaRef.value?.focus();
-    }, 100);
-  }
-};
+//   // Clear the input field
+//   topicInput.value = '';
+//     // Close the content type menu if it's open
+//   showContentTypeMenu.value = false;
+//     // Focus on the input field for immediate typing
+//   if (textareaRef.value && !showBibleCardGenerator.value && !showBibleExegesis.value) {
+//     setTimeout(() => {
+//       textareaRef.value?.focus();
+//     }, 100);
+//   }
+// };
 
 // Handle prompt selection from gallery
 const handlePromptSelection = (text: string, type: 'devotion' | 'faithIntegration') => {

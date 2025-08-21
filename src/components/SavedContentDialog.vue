@@ -71,10 +71,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import type { StoredContent } from '@/composables/useDevotions';
-
-const { t } = useI18n();
+import type { StoredContent } from '../composables/useDevotions';
 
 interface Props {
   show: boolean;
