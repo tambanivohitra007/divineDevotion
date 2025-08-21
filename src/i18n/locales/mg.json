@@ -49,7 +49,7 @@
     "createNew": "Hamorona Vaovao"
   },
   "welcome": {
-    "title": "Tongasoa eto amin'ny Divine Dévotion",
+    "title": "Tongasoa eto amin'ny DivineDevotion",
     "subtitle": "Mamorona fivavahana manokana sy hevitra fampifangaroana finoana amin'ny AI",
     "instruction": "Misafidiana ohatra etsy ambany na manorata lohahevitra hanombohana",
     "browsePrompts": "Hijery ny toerana Fanoroana"
@@ -58,7 +58,7 @@
     "contentSaved": "Voatahiry soa aman-tsara ny votoaty!"
   },
   "placeholders": {
-    "devotionInput": "Ohatra: 'fitadiavana fiadanana amin'ny fahasahiranana', 'fankasitrahana', na 'fitarihana ho amin'ny fanapahan-kevitra sarotra'",
+    "devotionInput": "Ohatra: 'fitadiavana fiadanana amin'ny fahasahiranana', 'fankasitrahana'",
     "faithInput": "Ohatra: 'fampianatra biolojia amin'ny finoana', 'fampidirana etika amin'ny informatika', na 'fomba fijery finoana momba ny tantara'",
     "bibleCardInfo": "Ny famoronana karatra Baiboly dia mampiasa interface manokana",
     "enterTopic": "Ampidiro lohahevitra ho an'ny fivavahanao...",
@@ -106,7 +106,7 @@
       "validating": "Manamarina ny referansa andinintsarito",
       "fetching": "Maka ny lahatsoratr'ny andinintsarito",
       "generating": "Mamorona sary AI prompt",
-      "creating": "Mamorona lamosina tsara",
+      "creating": "Mamorona faritra tsara",
       "finalizing": "Mamita ny famolavolana karatra",
       "ready": "Vonona ny karatra"
     }
@@ -229,13 +229,13 @@
     "placeholder": "ohatra: Jaona 3:16, Salamo 23:1, Romana 8:28",
     "getSuggestions": "Mahazo soso-kevitra andinintsarito AI",
     "suggestedVerses": "Andinintsarito Naroso",
-    "backgroundStyle": "Famaritana Fomba Lamosina",
-    "stylePlaceholder": "Lazao ny lamosina tianao: tany lemana, fiposahan'ny masoandro volamena, tendrombohitra mandry fahizay, loko pastel malefaka, hazavana avy any an-danitra, sns.",
+    "backgroundStyle": "Famaritana ny faritra",
+    "stylePlaceholder": "Lazao ny faritra tianao: tany lemana, fiposahan'ny masoandro volamena, tendrombohitra mandry fahizay, loko pastel malefaka, hazavana avy any an-danitra, sns.",
     "styleHelp": "Mampitantara tsara! Ohatra: \"farihy tendrombohitra mandry fahizay amin'ny fiposahan'ny masoandro miaraka amin'ny zavona malefaka\", \"hazavana avy any an-danitra miditra amin'ny rahona\", \"zaridaina mandry fahizay miaraka amin'ny voninkazo mamony\"",
     "stylePresets": "Fomba Efa Voaomana",
     "aiEnhancement": "Fanatsarana Fomba AI",
-    "customBackground": "Lamosina Manokana (Tsy voatery)",
-    "uploadBackground": "Alefaso ny sary lamosina manokana fa tsy ny famoronana AI",
+    "customBackground": "Faritra Manokana (Tsy voatery)",
+    "uploadBackground": "Alefaso ny sary amin'ny faritra manokana fa tsy ny famoronana AI",
     "aspectRatio": "Fifandanjam-pakan'ny Karatra",
     "generateCard": "Mamorona Karatra Baiboly",
     "generating": "Eo am-pamoronana...",

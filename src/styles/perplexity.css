@@ -717,8 +717,9 @@ body {
   border-radius: var(--radius-xl);
   overflow: hidden;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   transition: all var(--transition-fast);
+  min-height: 56px; /* Minimum height for single line */
 }
 
 .search-input-container:focus-within {
@@ -739,6 +740,8 @@ body {
   min-height: 24px;
   max-height: 120px;
   overflow-y: auto;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .search-input:focus {
@@ -763,6 +766,8 @@ body {
   justify-content: center;
   min-width: 40px;
   height: 40px;
+  flex-shrink: 0; /* Prevent button from shrinking */
+  align-self: flex-end; /* Keep button at bottom when textarea expands */
 }
 
 .search-submit-btn:disabled {
