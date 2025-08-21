@@ -13,7 +13,7 @@ body {
 
 /* Dark theme body background override */
 [data-bs-theme="dark"] body {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+  background: #050500;
   background-attachment: fixed;
 }
 
