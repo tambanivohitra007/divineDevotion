@@ -87,6 +87,7 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
         
+        
         /* Unified background for entire page */
         body {
             background: 
@@ -96,12 +97,196 @@
                 radial-gradient(ellipse at 30% 90%, rgba(14, 165, 233, 0.1) 0%, transparent 70%),
                 linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
             background-attachment: fixed;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
         }
+        
+        /* Horizontal Carousel Container */
+        .carousel-container {
+            display: flex;
+            width: 600vw; /* 6 sections × 100vw each */
+            height: 100vh;
+            transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        
+        /* Individual Carousel Sections */
+        .carousel-section {
+            width: 100vw;
+            height: 100vh;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Content wrapper for each section */
+        .section-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            z-index: 10;
+        }
+        
+        /* Carousel Navigation */
+        .carousel-nav {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .carousel-nav:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.6);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .carousel-nav.prev {
+            left: 20px;
+        }
+        
+        .carousel-nav.next {
+            right: 20px;
+        }
+        
+        .carousel-nav:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        /* Section Indicators */
+        .carousel-indicators {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+        
+        .carousel-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .carousel-indicator.active {
+            background: rgba(59, 130, 246, 0.8);
+            transform: scale(1.2);
+        }
+        
+        .carousel-indicator:hover {
+            background: rgba(59, 130, 246, 0.6);
+        }
+        
+        /* Hero Section Animations */
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 8rem);
+            font-weight: 900;
+            line-height: 0.9;
+            color: white;
+            animation: heroGlow 3s ease-in-out infinite alternate;
+            text-shadow: 0 0 40px rgba(96, 165, 250, 0.3);
+        }
+        
+        .hero-subtitle {
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            font-weight: 600;
+            color: #60a5fa;
+            animation: subtitleFloat 4s ease-in-out infinite alternate;
+            animation-delay: 0.5s;
+        }
+        
+        .hero-description {
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            color: rgba(255, 255, 255, 0.8);
+            animation: fadeInUp 1s ease-out 1s both;
+            max-width: 50rem;
+            margin: 0 auto;
+        }
+        
+        .hero-buttons {
+            animation: fadeInUp 1s ease-out 1.5s both;
+        }
+        
+        @keyframes heroGlow {
+            0% {
+                text-shadow: 0 0 20px rgba(96, 165, 250, 0.3), 0 0 40px rgba(96, 165, 250, 0.2);
+                transform: translateY(0px);
+            }
+            100% {
+                text-shadow: 0 0 30px rgba(168, 85, 247, 0.4), 0 0 60px rgba(168, 85, 247, 0.3);
+                transform: translateY(-5px);
+            }
+        }
+        
+        @keyframes subtitleFloat {
+            0% {
+                transform: translateY(0px) translateX(0px);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-8px) translateX(2px);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0px);
+            }
+        }
+        
+        .hero-icon {
+            animation: iconPulse 3s ease-in-out infinite;
+            background: linear-gradient(135deg, #60a5fa 0%, #a855f7 100%);
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.4);
+        }
+        
+        @keyframes iconPulse {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+                box-shadow: 0 0 20px rgba(96, 165, 250, 0.4);
+            }
+            50% {
+                transform: scale(1.05) rotate(2deg);
+                box-shadow: 0 0 40px rgba(168, 85, 247, 0.6);
+            }
+        }
+        
         
         .dark-hero {
             background: transparent;
             position: relative;
+            z-index: 2;
         }
         
         .dark-hero::before {
@@ -131,6 +316,17 @@
         }
         
         /* Heavenly Star Field */
+        /* Fixed background elements */
+        .background-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
         .star-field {
             position: absolute;
             top: 0;
@@ -236,6 +432,7 @@
         .dark-dots {
             background: transparent;
             position: relative;
+            z-index: 2;
         }
         
         .dark-dots::before {
@@ -246,6 +443,7 @@
         .dark-waves {
             background: transparent;
             position: relative;
+            z-index: 2;
         }
         
         .dark-waves::before {
@@ -325,6 +523,13 @@
             margin-right: auto;
             padding-left: clamp(1rem, 4vw, 2rem);
             padding-right: clamp(1rem, 4vw, 2rem);
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
         
         /* Responsive sections */
@@ -500,68 +705,92 @@
     </style>
 </head>
 <body class="font-sans">
-    <div class="min-h-screen">
-        <!-- Hero Section -->
-        <section class="relative overflow-hidden dark-hero responsive-section mobile-safe">
-            <!-- Heavenly Star Field -->
-            <div class="star-field"></div>
-            
-            <!-- Light Beam Effect -->
-            <div class="light-beam"></div>
-            
-            <!-- Floating Particles -->
-            <div class="floating-particles" style="left: 20%; animation-delay: 0s;"></div>
-            <div class="floating-particles" style="left: 30%; animation-delay: 2s;"></div>
-            <div class="floating-particles" style="left: 70%; animation-delay: 4s;"></div>
-            <div class="floating-particles" style="left: 80%; animation-delay: 6s;"></div>
+    
+    <!-- Carousel Navigation Controls -->
+    <button class="carousel-nav prev" id="prevBtn">
+        <i class="bi bi-chevron-left" style="font-size: 24px;"></i>
+    </button>
+    <button class="carousel-nav next" id="nextBtn">
+        <i class="bi bi-chevron-right" style="font-size: 24px;"></i>
+    </button>
+    
+    <!-- Carousel Indicators -->
+    <div class="carousel-indicators" id="indicators">
+        <div class="carousel-indicator active" data-section="0"></div>
+        <div class="carousel-indicator" data-section="1"></div>
+        <div class="carousel-indicator" data-section="2"></div>
+        <div class="carousel-indicator" data-section="3"></div>
+        <div class="carousel-indicator" data-section="4"></div>
+        <div class="carousel-indicator" data-section="5"></div>
+    </div>
+    
+    <!-- Fixed Background Layer -->
+    <div class="background-layer">
+        <!-- Heavenly Star Field -->
+        <div class="star-field"></div>
+        
+        <!-- Floating Particles -->
+        <div class="floating-particles" style="left: 15%; top: 20%; animation-delay: 0s;"></div>
+        <div class="floating-particles" style="left: 25%; top: 60%; animation-delay: 2s;"></div>
+        <div class="floating-particles" style="left: 45%; top: 30%; animation-delay: 4s;"></div>
+        <div class="floating-particles" style="left: 65%; top: 70%; animation-delay: 6s;"></div>
+        <div class="floating-particles" style="left: 80%; top: 40%; animation-delay: 1s;"></div>
+        <div class="floating-particles" style="left: 90%; top: 80%; animation-delay: 3s;"></div>
+    </div>
+    
+    <div class="carousel-container" id="carouselContainer">
+        <!-- Section 1: Hero -->
+        <div class="carousel-section">
+            <div class="section-content">
+            <section class="responsive-section mobile-safe">
             
             <div class="responsive-container">
                 <div class="text-center">
-                    <!-- Logo/Icon -->
-                    <div class="flex justify-center" style="margin-bottom: var(--spacing-lg);">
-                        <div class="bg-primary-500 rounded-xl flex items-center justify-center animate-float" style="width: clamp(3.5rem, 8vw, 4rem); height: clamp(3.5rem, 8vw, 4rem);">
-                            <i class="bi bi-stars text-white" style="font-size: clamp(1.25rem, 3vw, 1.5rem);"></i>
+                    <!-- Hero Icon -->
+                    <div class="flex justify-center" style="margin-bottom: var(--spacing-2xl);">
+                        <div class="hero-icon rounded-2xl flex items-center justify-center" style="width: clamp(4rem, 10vw, 6rem); height: clamp(4rem, 10vw, 6rem);">
+                            <i class="bi bi-stars text-white" style="font-size: clamp(2rem, 5vw, 3rem);"></i>
                         </div>
                     </div>
                     
-                    <!-- Headline -->
-                    <h1 class="font-bold text-white animate-fade-in text-center">
-                        Divine Devotion
-                        <span class="block text-primary-400" style="margin-top: var(--spacing-xs);">for Modern Faith</span>
+                    <!-- Main Hero Title -->
+                    <h1 class="hero-title text-center" style="margin-bottom: var(--spacing-lg);">
+                        DIVINE
+                        <br>
+                        DEVOTION
                     </h1>
                     
-                    <!-- Subheading -->
-                    <p class="text-gray-300 max-w-3xl mx-auto leading-relaxed animate-slide-up text-center">
-                        Transform your spiritual journey with AI-powered devotions, biblical insights, and faith-based content tailored to your daily walk with God.
+                    <!-- Hero Subtitle -->
+                    <h2 class="hero-subtitle text-center" style="margin-bottom: var(--spacing-2xl);">
+                        AI-Powered Spiritual Growth
+                    </h2>
+                    
+                    <!-- Hero Description -->
+                    <p class="hero-description text-center" style="margin-bottom: var(--spacing-2xl); line-height: 1.7;">
+                        Transform your faith journey with personalized devotions, deep biblical insights, and AI-powered spiritual guidance designed for the modern believer.
                     </p>
                     
-                    <!-- CTA Buttons -->
-                    <div class="flex flex-col sm:flex-row justify-center items-center animate-slide-up" style="gap: var(--spacing-sm); margin-top: var(--spacing-xl);">
-                        <a href="https://devotion.rindra.org" target="_blank" rel="noopener" class="responsive-btn bg-primary-600 hover:bg-primary-700 text-white btn-hover shadow-lg">
-                            <i class="bi bi-phone"></i>
-                            Launch Mobile App
+                    <!-- Hero Action Buttons -->
+                    <div class="hero-buttons flex flex-col sm:flex-row justify-center items-center" style="gap: var(--spacing-lg);">
+                        <a href="https://devotion.rindra.org" target="_blank" rel="noopener" class="responsive-btn bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white btn-hover shadow-2xl" style="padding: 1rem 2.5rem; font-size: 1.2rem; font-weight: 600;">
+                            <i class="bi bi-rocket-takeoff"></i>
+                            Start Your Journey
                         </a>
-                        <a href="#demo" class="responsive-btn text-primary-400 hover:text-primary-300 border border-primary-400/30 hover:border-primary-300 btn-hover">
+                        <a href="#demo" class="responsive-btn text-primary-300 hover:text-white border-2 border-primary-400/50 hover:border-primary-300 hover:bg-primary-500/20 btn-hover" style="padding: 1rem 2.5rem; font-size: 1.2rem; font-weight: 600;">
+                            <i class="bi bi-play-circle-fill"></i>
                             Watch Demo
-                            <i class="bi bi-play-circle"></i>
                         </a>
                     </div>
                 </div>
             </div>
         </section>
-
-        <!-- Features Section -->
-        <section class="dark-hero relative responsive-section mobile-safe">
-            <!-- Heavenly Star Field -->
-            <div class="star-field"></div>
-            
-            <!-- Light Beam Effect -->
-            <div class="light-beam"></div>
-            
-            <!-- Floating Particles -->
-            <div class="floating-particles" style="left: 15%; animation-delay: 1s;"></div>
-            <div class="floating-particles" style="left: 85%; animation-delay: 3s;"></div>
-            <div class="floating-particles" style="left: 50%; animation-delay: 5s;"></div>
+            </div>
+        </div>
+        
+        <!-- Section 2: Features -->
+        <div class="carousel-section">
+            <div class="section-content">
+            <section class="responsive-section mobile-safe">
             
             <div class="responsive-container relative z-10">
                 <div class="text-center" style="margin-bottom: var(--spacing-5xl);">
@@ -575,7 +804,7 @@
                 
                 <div class="responsive-grid-3">
                     <!-- Feature 1 -->
-                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50" style="padding: var(--spacing-lg);">
+                    <div class="rounded-xl border border-slate-700/20 hover:border-primary-500/40 transition-all duration-300" style="padding: var(--spacing-lg);">
                         <div class="bg-primary-500/20 rounded-lg flex items-center justify-center" style="width: clamp(2.5rem, 8vw, 3rem); height: clamp(2.5rem, 8vw, 3rem); margin-bottom: var(--spacing-lg);">
                             <i class="bi bi-stars text-primary-400" style="font-size: var(--text-xl);"></i>
                         </div>
@@ -586,7 +815,7 @@
                     </div>
                     
                     <!-- Feature 2 -->
-                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50" style="padding: var(--spacing-lg);">
+                    <div class="rounded-xl border border-slate-700/20 hover:border-primary-500/40 transition-all duration-300" style="padding: var(--spacing-lg);">
                         <div class="bg-primary-500/20 rounded-lg flex items-center justify-center" style="width: clamp(2.5rem, 8vw, 3rem); height: clamp(2.5rem, 8vw, 3rem); margin-bottom: var(--spacing-lg);">
                             <i class="bi bi-book-half text-primary-400" style="font-size: var(--text-xl);"></i>
                         </div>
@@ -597,7 +826,7 @@
                     </div>
                     
                     <!-- Feature 3 -->
-                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50" style="padding: var(--spacing-lg);">
+                    <div class="rounded-xl border border-slate-700/20 hover:border-primary-500/40 transition-all duration-300" style="padding: var(--spacing-lg);">
                         <div class="bg-primary-500/20 rounded-lg flex items-center justify-center" style="width: clamp(2.5rem, 8vw, 3rem); height: clamp(2.5rem, 8vw, 3rem); margin-bottom: var(--spacing-lg);">
                             <i class="bi bi-card-image text-primary-400" style="font-size: var(--text-xl);"></i>
                         </div>
@@ -608,7 +837,7 @@
                     </div>
                     
                     <!-- Feature 4 -->
-                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50" style="padding: var(--spacing-lg);">
+                    <div class="rounded-xl border border-slate-700/20 hover:border-primary-500/40 transition-all duration-300" style="padding: var(--spacing-lg);">
                         <div class="bg-primary-500/20 rounded-lg flex items-center justify-center" style="width: clamp(2.5rem, 8vw, 3rem); height: clamp(2.5rem, 8vw, 3rem); margin-bottom: var(--spacing-lg);">
                             <i class="bi bi-lightbulb text-primary-400" style="font-size: var(--text-xl);"></i>
                         </div>
@@ -619,7 +848,7 @@
                     </div>
                     
                     <!-- Feature 5 -->
-                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50" style="padding: var(--spacing-lg);">
+                    <div class="rounded-xl border border-slate-700/20 hover:border-primary-500/40 transition-all duration-300" style="padding: var(--spacing-lg);">
                         <div class="bg-primary-500/20 rounded-lg flex items-center justify-center" style="width: clamp(2.5rem, 8vw, 3rem); height: clamp(2.5rem, 8vw, 3rem); margin-bottom: var(--spacing-lg);">
                             <i class="bi bi-globe text-primary-400" style="font-size: var(--text-xl);"></i>
                         </div>
@@ -630,7 +859,7 @@
                     </div>
                     
                     <!-- Feature 6 -->
-                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50" style="padding: var(--spacing-lg);">
+                    <div class="rounded-xl border border-slate-700/20 hover:border-primary-500/40 transition-all duration-300" style="padding: var(--spacing-lg);">
                         <div class="bg-primary-500/20 rounded-lg flex items-center justify-center" style="width: clamp(2.5rem, 8vw, 3rem); height: clamp(2.5rem, 8vw, 3rem); margin-bottom: var(--spacing-lg);">
                             <i class="bi bi-collection text-primary-400" style="font-size: var(--text-xl);"></i>
                         </div>
@@ -642,18 +871,13 @@
                 </div>
             </div>
         </section>
-
-        <!-- Mobile App Section -->
-        <section class="dark-hero relative responsive-section mobile-safe">
-            <!-- Heavenly Star Field -->
-            <div class="star-field"></div>
-            
-            <!-- Light Beam Effect -->
-            <div class="light-beam"></div>
-            
-            <!-- Floating Particles -->
-            <div class="floating-particles" style="left: 12%; animation-delay: 0.5s;"></div>
-            <div class="floating-particles" style="left: 88%; animation-delay: 3s;"></div>
+            </div>
+        </div>
+        
+        <!-- Section 3: Mobile App -->
+        <div class="carousel-section">
+            <div class="section-content">
+            <section class="responsive-section mobile-safe">
             
             <div class="responsive-container relative z-10">
                 <div class="text-center" style="margin-bottom: var(--spacing-5xl);">
@@ -671,21 +895,21 @@
                         <div class="flex justify-center" style="gap: clamp(0.5rem, 2vw, 1.5rem);">
                             <!-- Phone 1 -->
                             <div class="relative transform rotate-3 hover:rotate-0 transition-transform duration-500">
-                                <div class="bg-gray-900 rounded-2xl shadow-2xl" style="width: clamp(8rem, 25vw, 14rem); padding: clamp(0.25rem, 1vw, 0.5rem);">
+                                <div class="rounded-2xl border border-slate-700/20" style="width: clamp(8rem, 25vw, 14rem); padding: clamp(0.25rem, 1vw, 0.5rem);">
                                     <img src="images/1.png" alt="Divine Devotion Home Screen" class="responsive-img">
                                 </div>
                             </div>
                             
                             <!-- Phone 2 -->
                             <div class="relative transform -rotate-3 hover:rotate-0 transition-transform duration-500 z-10" style="margin-left: clamp(-1rem, -4vw, -2rem);">
-                                <div class="bg-gray-900 rounded-2xl shadow-2xl" style="width: clamp(8rem, 25vw, 14rem); padding: clamp(0.25rem, 1vw, 0.5rem);">
+                                <div class="rounded-2xl border border-slate-700/20" style="width: clamp(8rem, 25vw, 14rem); padding: clamp(0.25rem, 1vw, 0.5rem);">
                                     <img src="images/2.png" alt="Daily Devotions" class="responsive-img">
                                 </div>
                             </div>
                             
                             <!-- Phone 3 -->
                             <div class="relative transform rotate-2 hover:rotate-0 transition-transform duration-500" style="margin-left: clamp(-1rem, -4vw, -2rem);">
-                                <div class="bg-gray-900 rounded-2xl shadow-2xl" style="width: clamp(8rem, 25vw, 14rem); padding: clamp(0.25rem, 1vw, 0.5rem);">
+                                <div class="rounded-2xl border border-slate-700/20" style="width: clamp(8rem, 25vw, 14rem); padding: clamp(0.25rem, 1vw, 0.5rem);">
                                     <img src="images/3.png" alt="Bible Exegesis" class="responsive-img">
                                 </div>
                             </div>
@@ -775,12 +999,13 @@
                 </div>
             </div>
         </section>
-
-        <!-- Demo Section -->
-        <section id="demo" style="padding-top: var(--spacing-2xl); padding-bottom: var(--spacing-2xl);" class="dark-dots relative">
-            <!-- Floating Particles -->
-            <div class="floating-particles" style="left: 25%; animation-delay: 0.5s;"></div>
-            <div class="floating-particles" style="left: 75%; animation-delay: 2.5s;"></div>
+            </div>
+        </div>
+        
+        <!-- Section 4: Demo -->
+        <div class="carousel-section">
+            <div class="section-content">
+            <section id="demo" style="padding-top: var(--spacing-2xl); padding-bottom: var(--spacing-2xl);" class="relative">
             
             <div class="responsive-container relative z-10">
                 <div class="text-center" style="margin-bottom: var(--spacing-xl);">
@@ -794,9 +1019,9 @@
                 
                 <!-- Demo Container -->
                 <div style="max-width: 56rem; margin-left: auto; margin-right: auto;">
-                    <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden border border-slate-700/50">
+                    <div class="rounded-xl sm:rounded-2xl overflow-hidden border border-slate-700/20">
                         <!-- Demo Header -->
-                        <div class="bg-slate-900/80 flex items-center" style="padding: var(--spacing-sm) var(--spacing-base); gap: var(--spacing-xs);">
+                        <div class="flex items-center border-b border-slate-700/20" style="padding: var(--spacing-sm) var(--spacing-base); gap: var(--spacing-xs);">
                             <div class="flex" style="gap: var(--spacing-xs);">
                                 <div style="width: var(--spacing-xs); height: var(--spacing-xs); background-color: #ef4444; border-radius: 9999px;"></div>
                                 <div style="width: var(--spacing-xs); height: var(--spacing-xs); background-color: #eab308; border-radius: 9999px;"></div>
@@ -806,7 +1031,7 @@
                         </div>
                         
                         <!-- Demo Content -->
-                        <div class="aspect-video bg-gradient-to-br from-slate-700/50 to-slate-800/50 flex items-center justify-center relative overflow-hidden">
+                        <div class="aspect-video flex items-center justify-center relative overflow-hidden">
                             <video 
                                 class="w-full h-full object-cover absolute inset-0" 
                                 autoplay 
@@ -822,13 +1047,13 @@
                 </div>
             </div>
         </section>
-
-        <!-- Testimonials Section -->
-        <section style="padding-top: var(--spacing-2xl); padding-bottom: var(--spacing-2xl);" class="dark-waves relative">
-            <!-- Floating Particles -->
-            <div class="floating-particles" style="left: 10%; animation-delay: 1s;"></div>
-            <div class="floating-particles" style="left: 60%; animation-delay: 3.5s;"></div>
-            <div class="floating-particles" style="left: 90%; animation-delay: 6s;"></div>
+            </div>
+        </div>
+        
+        <!-- Section 5: Testimonials -->
+        <div class="carousel-section">
+            <div class="section-content">
+            <section style="padding-top: var(--spacing-2xl); padding-bottom: var(--spacing-2xl);" class="relative">
             
             <div class="responsive-container relative z-10">
                 <div class="text-center" style="margin-bottom: var(--spacing-xl);">
@@ -843,7 +1068,7 @@
                 <!-- Testimonial Cards Grid -->
                 <div class="responsive-grid-3" style="gap: var(--spacing-lg);">
                     <!-- Testimonial 1 -->
-                    <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
+                    <div class="rounded-xl border border-slate-700/20 overflow-hidden">
                         <div style="padding: var(--spacing-lg);">
                             <div class="flex items-center" style="margin-bottom: var(--spacing-base); gap: var(--spacing-sm);">
                                 <div style="width: 3rem; height: 3rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">M</div>
@@ -857,7 +1082,7 @@
                     </div>
                     
                     <!-- Testimonial 2 -->
-                    <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
+                    <div class="rounded-xl border border-slate-700/20 overflow-hidden">
                         <div style="padding: var(--spacing-lg);">
                             <div class="flex items-center" style="margin-bottom: var(--spacing-base); gap: var(--spacing-sm);">
                                 <div style="width: 3rem; height: 3rem; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">J</div>
@@ -871,7 +1096,7 @@
                     </div>
                     
                     <!-- Testimonial 3 -->
-                    <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
+                    <div class="rounded-xl border border-slate-700/20 overflow-hidden">
                         <div style="padding: var(--spacing-lg);">
                             <div class="flex items-center" style="margin-bottom: var(--spacing-base); gap: var(--spacing-sm);">
                                 <div style="width: 3rem; height: 3rem; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">S</div>
@@ -886,9 +1111,13 @@
                 </div>
             </div>
         </section>
-
-        <!-- Call-to-Action Section -->
-        <section style="padding-top: var(--spacing-2xl); padding-bottom: var(--spacing-2xl); background: rgba(2, 132, 199, 0.1); backdrop-filter: blur(1px);" class="relative">
+            </div>
+        </div>
+        
+        <!-- Section 6: Call-to-Action -->
+        <div class="carousel-section">
+            <div class="section-content">
+            <section style="padding-top: var(--spacing-2xl); padding-bottom: var(--spacing-2xl);" class="relative">
             <div class="responsive-container text-center">
                 <h2 style="font-size: var(--text-3xl); font-weight: 700; color: white; margin-bottom: var(--spacing-base);">
                     Ready to transform your spiritual journey?
@@ -909,41 +1138,25 @@
                 </div>
             </div>
         </section>
-
-        <!-- Footer -->
-        <footer class="bg-gray-900 text-white" style="padding-top: var(--spacing-xl); padding-bottom: var(--spacing-xl);">
-            <div class="responsive-container">
-                <div class="text-center">
-                    <!-- Brand -->
-                    <div class="flex items-center justify-center" style="margin-bottom: var(--spacing-lg);">
-                        <div class="bg-primary-500 rounded-lg flex items-center justify-center" style="width: 2rem; height: 2rem; margin-right: var(--spacing-sm);">
-                            <i class="bi bi-stars text-white"></i>
-                        </div>
-                        <span style="font-size: var(--text-xl); font-weight: 700;">Divine Devotion</span>
-                    </div>
-                    
-                    <!-- Copyright -->
-                    <div class="border-t border-gray-800 flex flex-col md:flex-row justify-between items-center" style="padding-top: var(--spacing-lg);">
-                        <div style="color: var(--gray-400); font-size: var(--text-sm);">
-                            © 2025 Mr. Rindra. All rights reserved.
-                        </div>
-                        <div style="color: var(--gray-400); font-size: var(--text-sm); margin-top: var(--spacing-base);" class="md:mt-0">
-                            Build for All.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
     </div>
 
     <script>
-        // Add smooth scrolling for anchor links
+        // Updated navigation for carousel - anchor links now navigate to sections
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+                const targetId = this.getAttribute('href').substring(1);
+                const sectionMap = {
+                    'hero': 0,
+                    'features': 1, 
+                    'mobile': 2,
+                    'demo': 3,
+                    'testimonials': 4,
+                    'cta': 5
+                };
+                if (sectionMap[targetId] !== undefined) {
+                    goToSection(sectionMap[targetId]);
+                }
             });
         });
 
@@ -996,6 +1209,98 @@
             document.body.style.overflowX = 'hidden';
         }
 
+        // Carousel Functionality
+        let currentSection = 0;
+        const totalSections = 6;
+        const carouselContainer = document.getElementById('carouselContainer');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const indicators = document.querySelectorAll('.carousel-indicator');
+        
+        function updateCarousel() {
+            const translateX = -currentSection * 100;
+            carouselContainer.style.transform = `translateX(${translateX}vw)`;
+            
+            // Update indicators
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentSection);
+            });
+            
+            // Update navigation buttons
+            prevBtn.disabled = currentSection === 0;
+            nextBtn.disabled = currentSection === totalSections - 1;
+        }
+        
+        function nextSection() {
+            if (currentSection < totalSections - 1) {
+                currentSection++;
+                updateCarousel();
+            }
+        }
+        
+        function prevSection() {
+            if (currentSection > 0) {
+                currentSection--;
+                updateCarousel();
+            }
+        }
+        
+        function goToSection(sectionIndex) {
+            currentSection = sectionIndex;
+            updateCarousel();
+        }
+        
+        // Event listeners
+        nextBtn.addEventListener('click', nextSection);
+        prevBtn.addEventListener('click', prevSection);
+        
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => goToSection(index));
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                prevSection();
+            } else if (e.key === 'ArrowRight') {
+                nextSection();
+            }
+        });
+        
+        // Touch/swipe support
+        let startX = 0;
+        let endX = 0;
+        
+        carouselContainer.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        });
+        
+        carouselContainer.addEventListener('touchend', (e) => {
+            endX = e.changedTouches[0].clientX;
+            const deltaX = startX - endX;
+            
+            if (Math.abs(deltaX) > 50) { // Minimum swipe distance
+                if (deltaX > 0) {
+                    nextSection(); // Swipe left = next section
+                } else {
+                    prevSection(); // Swipe right = previous section
+                }
+            }
+        });
+        
+        // Mouse wheel horizontal scrolling
+        document.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY > 0) {
+                nextSection();
+            } else {
+                prevSection();
+            }
+        }, { passive: false });
+        
+        // Initialize carousel
+        updateCarousel();
+        
         // Create Heavenly Star Field
         function createStarField() {
             const starFields = document.querySelectorAll('.star-field');
