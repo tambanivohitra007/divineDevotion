@@ -241,6 +241,7 @@
                 :placeholder="topicInputPlaceholder"
                 v-model="topicInput"
                 @input="autoResizeTextarea"
+                @keydown="handleKeyDown"
                 ref="textareaRef"
               ></textarea>
               <button
@@ -775,6 +776,22 @@ const autoResizeTextarea = () => {
   if (textareaRef.value) {
     textareaRef.value.style.height = 'auto';
     textareaRef.value.style.height = `${Math.min(textareaRef.value.scrollHeight, 200)}px`;
+  }
+};
+
+// Handle keyboard events for textarea
+const handleKeyDown = (event: KeyboardEvent) => {
+  if (event.key === 'Enter') {
+    if (event.ctrlKey) {
+      // Ctrl+Enter: Allow new line (default behavior)
+      return;
+    } else {
+      // Enter: Generate content
+      event.preventDefault();
+      if (!isLoading.value && topicInput.value.trim()) {
+        handleGenerateContent();
+      }
+    }
   }
 };
 

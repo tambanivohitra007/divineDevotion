@@ -908,13 +908,13 @@ watch(verseReference, validateVerse);
 }
 
 .card-header {
-  background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
+  /* background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary)); */
   color: white;
   border-radius: 15px 15px 0 0 !important;
 }
 
 .btn-gradient-primary {
-  background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
+  /* background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary)); */
   border: none;
   color: white;
   transition: all 0.3s ease;
