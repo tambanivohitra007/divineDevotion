@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divine Devotion - AI-Powered Spiritual Growth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
+        .animate-slide-up { animation: slideUp 0.5s ease-out; }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .dark-hero {
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 50% 10%, rgba(168, 85, 247, 0.08) 0%, transparent 70%),
+                radial-gradient(ellipse at 30% 90%, rgba(14, 165, 233, 0.1) 0%, transparent 70%),
+                linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            background-size: 1200px 1200px, 800px 800px, 600px 600px, 700px 700px, 100% 100%;
+            position: relative;
+        }
+        
+        .dark-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 98px,
+                    rgba(255, 255, 255, 0.02) 100px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 98px,
+                    rgba(255, 255, 255, 0.02) 100px
+                );
+            pointer-events: none;
+        }
+        
+        .light-beam {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 600px;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            transform: translateX(-50%);
+            pointer-events: none;
+        }
+        
+        .floating-particles {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(59, 130, 246, 0.6);
+            border-radius: 50%;
+            animation: float-particles 8s linear infinite;
+        }
+        
+        @keyframes float-particles {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) scale(1); opacity: 0; }
+        }
+        
+        /* Heavenly Star Field */
+        .star-field {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 4s ease-in-out infinite alternate;
+        }
+        
+        .star.small {
+            width: 1px;
+            height: 1px;
+            animation: twinkle 3s ease-in-out infinite alternate, drift-slow 60s linear infinite;
+        }
+        
+        .star.medium {
+            width: 2px;
+            height: 2px;
+            animation: twinkle 2.5s ease-in-out infinite alternate, drift-medium 45s linear infinite;
+        }
+        
+        .star.large {
+            width: 3px;
+            height: 3px;
+            animation: twinkle 2s ease-in-out infinite alternate, drift-fast 30s linear infinite;
+        }
+        
+        .star.bright {
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+            animation: twinkle-bright 1.5s ease-in-out infinite alternate, drift-bright 40s linear infinite;
+        }
+        
+        .star.divine {
+            background: rgba(59, 130, 246, 0.8);
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+            animation: divine-glow 3s ease-in-out infinite alternate, drift-divine 50s linear infinite;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes twinkle-bright {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes divine-glow {
+            0% { opacity: 0.4; }
+            100% { opacity: 0.9; }
+        }
+        
+        @keyframes drift-slow {
+            0% { transform: translateX(-10px) translateY(-5px); }
+            25% { transform: translateX(5px) translateY(-10px); }
+            50% { transform: translateX(10px) translateY(5px); }
+            75% { transform: translateX(-5px) translateY(10px); }
+            100% { transform: translateX(-10px) translateY(-5px); }
+        }
+        
+        @keyframes drift-medium {
+            0% { transform: translateX(-15px) translateY(-8px); }
+            25% { transform: translateX(8px) translateY(-15px); }
+            50% { transform: translateX(15px) translateY(8px); }
+            75% { transform: translateX(-8px) translateY(15px); }
+            100% { transform: translateX(-15px) translateY(-8px); }
+        }
+        
+        @keyframes drift-fast {
+            0% { transform: translateX(-20px) translateY(-10px); }
+            25% { transform: translateX(10px) translateY(-20px); }
+            50% { transform: translateX(20px) translateY(10px); }
+            75% { transform: translateX(-10px) translateY(20px); }
+            100% { transform: translateX(-20px) translateY(-10px); }
+        }
+        
+        @keyframes drift-bright {
+            0% { transform: translateX(-12px) translateY(-6px) scale(1); }
+            25% { transform: translateX(6px) translateY(-12px) scale(1.1); }
+            50% { transform: translateX(12px) translateY(6px) scale(1); }
+            75% { transform: translateX(-6px) translateY(12px) scale(1.1); }
+            100% { transform: translateX(-12px) translateY(-6px) scale(1); }
+        }
+        
+        @keyframes drift-divine {
+            0% { transform: translateX(-18px) translateY(-9px) scale(1); }
+            25% { transform: translateX(9px) translateY(-18px) scale(1.2); }
+            50% { transform: translateX(18px) translateY(9px) scale(1); }
+            75% { transform: translateX(-9px) translateY(18px) scale(1.2); }
+            100% { transform: translateX(-18px) translateY(-9px) scale(1); }
+        }
+        
+        .dark-dots {
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(14, 165, 233, 0.15) 0%, transparent 70%),
+                radial-gradient(circle at 80% 30%, rgba(168, 85, 247, 0.1) 0%, transparent 70%),
+                linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+            position: relative;
+        }
+        
+        .dark-dots::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at center, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            pointer-events: none;
+        }
+        
+        .dark-waves {
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(59, 130, 246, 0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(14, 165, 233, 0.08) 0%, transparent 60%),
+                linear-gradient(125deg, #1e293b 0%, #0f172a 100%);
+            position: relative;
+        }
+        
+        .dark-waves::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 60px,
+                    rgba(255, 255, 255, 0.015) 62px,
+                    rgba(255, 255, 255, 0.015) 64px
+                );
+            pointer-events: none;
+        }
+        
+        /* Mobile-specific optimizations */
+        @media (max-width: 640px) {
+            .floating-particles {
+                width: 3px;
+                height: 3px;
+            }
+            
+            .light-beam {
+                width: 400px;
+            }
+            
+            /* Prevent horizontal scroll on mobile */
+            body {
+                overflow-x: hidden;
+            }
+            
+            /* Improve touch targets */
+            .btn-hover {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            /* Better mobile video controls */
+            video {
+                -webkit-playsinline: true;
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+            }
+            
+            /* Mobile safe area padding */
+            .mobile-safe {
+                padding-left: env(safe-area-inset-left);
+                padding-right: env(safe-area-inset-right);
+            }
+        }
+        
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .btn-hover:hover {
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .btn-hover:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
+        }
+        
+        /* Reduce motion for users who prefer it */
+        @media (prefers-reduced-motion: reduce) {
+            .animate-float,
+            .floating-particles,
+            .animate-fade-in,
+            .animate-slide-up {
+                animation: none;
+            }
+            
+            .btn-hover:hover {
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <div class="min-h-screen">
+        <!-- Hero Section -->
+        <section class="relative overflow-hidden dark-hero">
+            <!-- Heavenly Star Field -->
+            <div class="star-field"></div>
+            
+            <!-- Light Beam Effect -->
+            <div class="light-beam"></div>
+            
+            <!-- Floating Particles -->
+            <div class="floating-particles" style="left: 20%; animation-delay: 0s;"></div>
+            <div class="floating-particles" style="left: 30%; animation-delay: 2s;"></div>
+            <div class="floating-particles" style="left: 70%; animation-delay: 4s;"></div>
+            <div class="floating-particles" style="left: 80%; animation-delay: 6s;"></div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 sm:pt-20 sm:pb-16 lg:pt-32 lg:pb-24">
+                <div class="text-center">
+                    <!-- Logo/Icon -->
+                    <div class="flex justify-center mb-6 sm:mb-8">
+                        <div class="w-14 h-14 sm:w-16 sm:h-16 bg-primary-500 rounded-xl flex items-center justify-center animate-float">
+                            <i class="bi bi-stars text-xl sm:text-2xl text-white"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Headline -->
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 animate-fade-in px-2">
+                        Divine Devotion
+                        <span class="block text-primary-400 mt-2">for Modern Faith</span>
+                    </h1>
+                    
+                    <!-- Subheading -->
+                    <p class="text-lg sm:text-xl text-gray-300 mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed animate-slide-up px-4">
+                        Transform your spiritual journey with AI-powered devotions, biblical insights, and faith-based content tailored to your daily walk with God.
+                    </p>
+                    
+                    <!-- CTA Button -->
+                    <div class="flex flex-col gap-3 sm:flex-row sm:gap-4 justify-center items-center animate-slide-up px-4">
+                        <a href="https://devotion.rindra.org" target="_blank" rel="noopener" class="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-all duration-300 btn-hover shadow-lg inline-flex items-center justify-center gap-2">
+                            <i class="bi bi-phone"></i>
+                            Launch Mobile App
+                        </a>
+                        <a href="#demo" class="w-full sm:w-auto text-primary-400 hover:text-primary-300 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-base sm:text-lg transition-colors duration-300 flex items-center justify-center gap-2">
+                            Watch Demo
+                            <i class="bi bi-play-circle"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-16 lg:py-24 dark-hero relative">
+            <!-- Heavenly Star Field -->
+            <div class="star-field"></div>
+            
+            <!-- Light Beam Effect -->
+            <div class="light-beam"></div>
+            
+            <!-- Floating Particles -->
+            <div class="floating-particles" style="left: 15%; animation-delay: 1s;"></div>
+            <div class="floating-particles" style="left: 85%; animation-delay: 3s;"></div>
+            <div class="floating-particles" style="left: 50%; animation-delay: 5s;"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">
+                        Everything you need for spiritual growth
+                    </h2>
+                    <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                        Powerful tools to deepen your faith and enhance your spiritual journey
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                    <!-- Feature 1 -->
+                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 sm:p-8 border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50">
+                        <div class="w-12 h-12 bg-primary-500/20 rounded-lg flex items-center justify-center mb-6">
+                            <i class="bi bi-stars text-2xl text-primary-400"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-4">AI-Powered Devotions</h3>
+                        <p class="text-gray-300 leading-relaxed">
+                            Generate personalized daily devotions that speak to your heart and current life circumstances.
+                        </p>
+                    </div>
+                    
+                    <!-- Feature 2 -->
+                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 sm:p-8 border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50">
+                        <div class="w-12 h-12 bg-primary-500/20 rounded-lg flex items-center justify-center mb-6">
+                            <i class="bi bi-book-half text-2xl text-primary-400"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-4">Biblical Exegesis</h3>
+                        <p class="text-gray-300 leading-relaxed">
+                            Deep scriptural analysis and interpretation to enhance your understanding of God's word.
+                        </p>
+                    </div>
+                    
+                    <!-- Feature 3 -->
+                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 sm:p-8 border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50">
+                        <div class="w-12 h-12 bg-primary-500/20 rounded-lg flex items-center justify-center mb-6">
+                            <i class="bi bi-card-image text-2xl text-primary-400"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-4">Bible Cards</h3>
+                        <p class="text-gray-300 leading-relaxed">
+                            Beautiful, shareable cards featuring scripture verses and inspirational messages.
+                        </p>
+                    </div>
+                    
+                    <!-- Feature 4 -->
+                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 sm:p-8 border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50">
+                        <div class="w-12 h-12 bg-primary-500/20 rounded-lg flex items-center justify-center mb-6">
+                            <i class="bi bi-lightbulb text-2xl text-primary-400"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-4">Faith Integration</h3>
+                        <p class="text-gray-300 leading-relaxed">
+                            Connect your faith with learning and daily activities for a more integrated spiritual life.
+                        </p>
+                    </div>
+                    
+                    <!-- Feature 5 -->
+                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 sm:p-8 border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50">
+                        <div class="w-12 h-12 bg-primary-500/20 rounded-lg flex items-center justify-center mb-6">
+                            <i class="bi bi-globe text-2xl text-primary-400"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-4">Multi-Language Support</h3>
+                        <p class="text-gray-300 leading-relaxed">
+                            Access spiritual content in multiple languages to reach believers worldwide.
+                        </p>
+                    </div>
+                    
+                    <!-- Feature 6 -->
+                    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 sm:p-8 border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 hover:border-primary-500/50">
+                        <div class="w-12 h-12 bg-primary-500/20 rounded-lg flex items-center justify-center mb-6">
+                            <i class="bi bi-collection text-2xl text-primary-400"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-4">Save & Organize</h3>
+                        <p class="text-gray-300 leading-relaxed">
+                            Keep your favorite devotions and insights organized for future reference and study.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mobile App Section -->
+        <section class="py-16 lg:py-24 dark-hero relative">
+            <!-- Heavenly Star Field -->
+            <div class="star-field"></div>
+            
+            <!-- Light Beam Effect -->
+            <div class="light-beam"></div>
+            
+            <!-- Floating Particles -->
+            <div class="floating-particles" style="left: 12%; animation-delay: 0.5s;"></div>
+            <div class="floating-particles" style="left: 88%; animation-delay: 3s;"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">
+                        Take your faith journey anywhere
+                    </h2>
+                    <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                        Experience Divine Devotion on your mobile device with our intuitive app
+                    </p>
+                </div>
+                
+                <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                    <!-- Mobile Screenshots -->
+                    <div class="relative order-2 lg:order-1">
+                        <div class="flex justify-center space-x-2 sm:space-x-4 lg:space-x-6 px-4">
+                            <!-- Phone 1 -->
+                            <div class="relative transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                                <div class="w-32 sm:w-40 md:w-48 lg:w-56 bg-gray-900 rounded-2xl sm:rounded-3xl p-1 sm:p-2 shadow-2xl">
+                                    <img src="images/1.png" alt="Divine Devotion Home Screen" class="w-full rounded-xl sm:rounded-2xl">
+                                </div>
+                            </div>
+                            
+                            <!-- Phone 2 -->
+                            <div class="relative transform -rotate-3 hover:rotate-0 transition-transform duration-500 z-10 -ml-4 sm:-ml-6 lg:-ml-8">
+                                <div class="w-32 sm:w-40 md:w-48 lg:w-56 bg-gray-900 rounded-2xl sm:rounded-3xl p-1 sm:p-2 shadow-2xl">
+                                    <img src="images/2.png" alt="Daily Devotions" class="w-full rounded-xl sm:rounded-2xl">
+                                </div>
+                            </div>
+                            
+                            <!-- Phone 3 -->
+                            <div class="relative transform rotate-2 hover:rotate-0 transition-transform duration-500 -ml-4 sm:-ml-6 lg:-ml-8">
+                                <div class="w-32 sm:w-40 md:w-48 lg:w-56 bg-gray-900 rounded-2xl sm:rounded-3xl p-1 sm:p-2 shadow-2xl">
+                                    <img src="images/3.png" alt="Bible Exegesis" class="w-full rounded-xl sm:rounded-2xl">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Floating elements around phones -->
+                        <div class="absolute top-10 left-10 animate-float" style="animation-delay: 1s;">
+                            <div class="w-3 h-3 bg-primary-400 rounded-full opacity-60"></div>
+                        </div>
+                        <div class="absolute bottom-20 right-10 animate-float" style="animation-delay: 2s;">
+                            <div class="w-2 h-2 bg-purple-400 rounded-full opacity-60"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Features List -->
+                    <div class="space-y-6 sm:space-y-8 order-1 lg:order-2 px-4">
+                        <div class="flex items-start space-x-3 sm:space-x-4">
+                            <div class="flex-shrink-0">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-primary-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="bi bi-phone text-lg sm:text-xl text-primary-400"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg sm:text-xl font-semibold text-white mb-2">Mobile Optimized</h3>
+                                <p class="text-sm sm:text-base text-gray-300 leading-relaxed">
+                                    Seamlessly access devotions, exegesis, and Bible cards on your smartphone or tablet anywhere you go.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3 sm:space-x-4">
+                            <div class="flex-shrink-0">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-primary-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="bi bi-download text-lg sm:text-xl text-primary-400"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg sm:text-xl font-semibold text-white mb-2">Offline Access</h3>
+                                <p class="text-sm sm:text-base text-gray-300 leading-relaxed">
+                                    Save your favorite devotions and continue your spiritual growth even without internet connection.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3 sm:space-x-4">
+                            <div class="flex-shrink-0">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-primary-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="bi bi-bell text-lg sm:text-xl text-primary-400"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg sm:text-xl font-semibold text-white mb-2">Daily Reminders</h3>
+                                <p class="text-sm sm:text-base text-gray-300 leading-relaxed">
+                                    Get gentle notifications to maintain your daily spiritual practice and stay connected with God.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3 sm:space-x-4">
+                            <div class="flex-shrink-0">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-primary-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="bi bi-globe text-lg sm:text-xl text-primary-400"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg sm:text-xl font-semibold text-white mb-2">Multi-Language Support</h3>
+                                <p class="text-sm sm:text-base text-gray-300 leading-relaxed">
+                                    Access content in English, French, and Malagasy to serve believers across different cultures.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Mobile App Download Buttons -->
+                        <div class="pt-4 sm:pt-6">
+                            <div class="flex flex-col gap-3 sm:flex-row sm:gap-4">
+                                <a href="https://devotion.rindra.org" target="_blank" rel="noopener" class="inline-flex items-center justify-center px-5 sm:px-6 py-2.5 sm:py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-semibold text-sm sm:text-base transition-colors duration-300 btn-hover">
+                                    <i class="bi bi-phone mr-2"></i>
+                                    Launch Mobile App
+                                </a>
+                                <a href="https://devotion.rindra.org" target="_blank" rel="noopener" class="inline-flex items-center justify-center px-5 sm:px-6 py-2.5 sm:py-3 border border-primary-500 text-primary-400 hover:bg-primary-500/10 rounded-lg font-semibold text-sm sm:text-base transition-colors duration-300">
+                                    <i class="bi bi-globe mr-2"></i>
+                                    Try Web Version
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Demo Section -->
+        <section id="demo" class="py-16 lg:py-24 dark-dots relative">
+            <!-- Floating Particles -->
+            <div class="floating-particles" style="left: 25%; animation-delay: 0.5s;"></div>
+            <div class="floating-particles" style="left: 75%; animation-delay: 2.5s;"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center mb-12 sm:mb-16">
+                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 px-2">
+                        See it in action
+                    </h2>
+                    <p class="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto px-4">
+                        Experience the power of AI-driven spiritual content creation
+                    </p>
+                </div>
+                
+                <!-- Demo Container -->
+                <div class="max-w-4xl mx-auto px-2">
+                    <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden border border-slate-700/50">
+                        <!-- Demo Header -->
+                        <div class="bg-slate-900/80 px-4 sm:px-6 py-3 sm:py-4 flex items-center gap-2 sm:gap-3">
+                            <div class="flex gap-1.5 sm:gap-2">
+                                <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-red-500 rounded-full"></div>
+                                <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-yellow-500 rounded-full"></div>
+                                <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded-full"></div>
+                            </div>
+                            <div class="text-gray-400 text-xs sm:text-sm">Divine Devotion App</div>
+                        </div>
+                        
+                        <!-- Demo Content -->
+                        <div class="aspect-video bg-gradient-to-br from-slate-700/50 to-slate-800/50 flex items-center justify-center relative overflow-hidden">
+                            <video 
+                                class="w-full h-full object-cover absolute inset-0" 
+                                autoplay 
+                                muted 
+                                loop 
+                                playsinline
+                                poster="images/1.png">
+                                <source src="images/demo.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>                    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="py-16 lg:py-24 dark-waves relative">
+            <!-- Floating Particles -->
+            <div class="floating-particles" style="left: 10%; animation-delay: 1s;"></div>
+            <div class="floating-particles" style="left: 60%; animation-delay: 3.5s;"></div>
+            <div class="floating-particles" style="left: 90%; animation-delay: 6s;"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">
+                        Trusted by believers worldwide
+                    </h2>
+                    <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                        See how Divine Devotion is transforming spiritual journeys
+                    </p>
+                </div>
+                
+                
+            </div>
+        </section>
+
+        <!-- Call-to-Action Section -->
+        <section class="py-12 sm:py-16 lg:py-24 bg-primary-600">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 px-2">
+                    Ready to transform your spiritual journey?
+                </h2>
+                <p class="text-lg sm:text-xl text-primary-100 mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-4">
+                    Join thousands of believers who are deepening their faith with Divine Devotion on mobile and web
+                </p>
+                
+                <div class="flex flex-col gap-3 sm:flex-row sm:gap-4 justify-center items-center px-4">
+                    <a href="https://devotion.rindra.org" target="_blank" rel="noopener" class="w-full sm:w-auto bg-white hover:bg-gray-50 text-primary-600 px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-all duration-300 btn-hover shadow-lg inline-flex items-center justify-center gap-2">
+                        <i class="bi bi-phone"></i>
+                        Start Your Journey
+                    </a>
+                    <a href="https://rindra.org" target="_blank" rel="noopener" class="w-full sm:w-auto text-white hover:text-primary-100 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-base sm:text-lg transition-colors duration-300 flex items-center justify-center gap-2">
+                        Learn More
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-gray-900 text-white py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <!-- Brand -->
+                    <div class="flex items-center justify-center mb-6">
+                        <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center mr-3">
+                            <i class="bi bi-stars text-white"></i>
+                        </div>
+                        <span class="text-xl font-bold">Divine Devotion</span>
+                    </div>
+                    
+                    <!-- Copyright -->
+                    <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                        <div class="text-gray-400 text-sm">
+                            © 2025 Mr. Rindra. All rights reserved.
+                        </div>
+                        <div class="text-gray-400 text-sm mt-4 md:mt-0">
+                            Build for All.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Add smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add intersection observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.animate-slide-up').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(el);
+        });
+
+        // Mobile-specific enhancements
+        if ('ontouchstart' in window) {
+            // Add touch feedback for buttons
+            document.querySelectorAll('.btn-hover').forEach(btn => {
+                btn.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.98)';
+                });
+                btn.addEventListener('touchend', function() {
+                    this.style.transform = '';
+                });
+            });
+            
+            // Prevent zoom on double tap for specific elements
+            document.querySelectorAll('button, a').forEach(element => {
+                element.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    e.target.click();
+                });
+            });
+        }
+
+        // Prevent horizontal scroll on mobile
+        if (window.innerWidth <= 768) {
+            document.body.style.overflowX = 'hidden';
+        }
+
+        // Create Heavenly Star Field
+        function createStarField() {
+            const starFields = document.querySelectorAll('.star-field');
+            
+            starFields.forEach((starField, sectionIndex) => {
+                // Clear existing stars
+                starField.innerHTML = '';
+                
+                // Create different types of stars
+                const starTypes = [
+                    { className: 'small', count: 40, delay: 0 },
+                    { className: 'medium', count: 25, delay: 0.5 },
+                    { className: 'large', count: 15, delay: 1 },
+                    { className: 'bright', count: 8, delay: 1.5 },
+                    { className: 'divine', count: 5, delay: 2 }
+                ];
+                
+                starTypes.forEach(starType => {
+                    for (let i = 0; i < starType.count; i++) {
+                        const star = document.createElement('div');
+                        star.className = `star ${starType.className}`;
+                        
+                        // Random positioning
+                        const x = Math.random() * 100;
+                        const y = Math.random() * 100;
+                        
+                        star.style.left = x + '%';
+                        star.style.top = y + '%';
+                        
+                        // Add random animation delay to create more natural twinkling
+                        const randomDelay = starType.delay + (Math.random() * 3);
+                        star.style.animationDelay = `${randomDelay}s`;
+                        
+                        // Add slight random animation duration variation
+                        const baseDuration = starType.className === 'small' ? 3 : 
+                                           starType.className === 'medium' ? 2.5 : 
+                                           starType.className === 'large' ? 2 : 
+                                           starType.className === 'bright' ? 1.5 : 3;
+                        const randomDuration = baseDuration + (Math.random() - 0.5) * 0.8;
+                        star.style.setProperty('--twinkle-duration', `${randomDuration}s`);
+                        
+                        starField.appendChild(star);
+                    }
+                });
+                
+                // Add some shooting stars occasionally
+                if (sectionIndex === 0) { // Only in hero section
+                    setTimeout(() => {
+                        createShootingStar(starField);
+                    }, Math.random() * 10000 + 5000); // Random delay between 5-15 seconds
+                }
+            });
+        }
+        
+        // Create shooting star effect
+        function createShootingStar(container) {
+            const shootingStar = document.createElement('div');
+            shootingStar.className = 'shooting-star';
+            shootingStar.style.cssText = `
+                position: absolute;
+                width: 2px;
+                height: 2px;
+                background: linear-gradient(45deg, white, rgba(59, 130, 246, 0.8));
+                border-radius: 50%;
+                top: ${Math.random() * 30}%;
+                left: ${Math.random() * 100}%;
+                animation: shoot 2s ease-out forwards;
+                box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+            `;
+            
+            container.appendChild(shootingStar);
+            
+            // Remove after animation
+            setTimeout(() => {
+                if (shootingStar.parentNode) {
+                    shootingStar.parentNode.removeChild(shootingStar);
+                }
+                
+                // Create another shooting star after some time
+                setTimeout(() => {
+                    createShootingStar(container);
+                }, Math.random() * 20000 + 10000); // Random delay between 10-30 seconds
+            }, 2000);
+        }
+        
+        // Add shooting star animation to CSS dynamically
+        const shootingStarStyle = document.createElement('style');
+        shootingStarStyle.textContent = `
+            @keyframes shoot {
+                0% {
+                    transform: translateX(0px) translateY(0px) scale(0);
+                    opacity: 1;
+                }
+                10% {
+                    transform: translateX(20px) translateY(10px) scale(1);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateX(300px) translateY(150px) scale(0);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(shootingStarStyle);
+        
+        // Initialize star field when page loads
+        document.addEventListener('DOMContentLoaded', createStarField);
+        
+        // Recreate stars on window resize to maintain proper distribution
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(createStarField, 300);
+        });
+    </script>
+</body>
+</html>

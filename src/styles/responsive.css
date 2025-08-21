@@ -332,22 +332,10 @@
   }
 
   .main-content {
-    margin-left: 300px;
     padding: 1.5rem;
     padding-bottom: 180px;
   }
-  #app.sidebar-collapsed .main-content {
-    margin-left: 70px;
-  }  /* Position main toggle button correctly when sidebar is collapsed on medium screens */
-  #app.sidebar-collapsed .sidebar-toggle-btn-main {
-    left: 1rem;
-    z-index: 1001; /* Higher than sidebar z-index to appear on top */
-  }
-
-  #app.sidebar-collapsed .sidebar {
-    width: 70px;
-    padding: 1.5rem 0.75rem;
-  }
+  
   .bottom-input-area {
     left: 300px;
   }  
@@ -355,10 +343,6 @@
     bottom: -200px !important;
     opacity: 0 !important;
     pointer-events: none !important;
-  }
-
-  #app.sidebar-collapsed .bottom-input-area {
-    left: 70px;
   }
 
   .app-title {
@@ -378,7 +362,6 @@
   }
 
   .main-content {
-    margin-left: 400px;
     padding: 3rem;
     padding-bottom: 180px;
   }
@@ -389,27 +372,6 @@
     bottom: -200px !important;
     opacity: 0 !important;
     pointer-events: none !important;
-  }
-
-  #app.sidebar-collapsed .main-content {
-    margin-left: 90px;
-  }/* Position main toggle button correctly when sidebar is collapsed on large screens */
-  #app.sidebar-collapsed .sidebar-toggle-btn-main {
-    left: 1rem;
-    z-index: 1001; /* Higher than sidebar z-index to appear on top */
-  }
-
-  #app.sidebar-collapsed .sidebar {
-    width: 90px;
-  }
-
-  #app.sidebar-collapsed .bottom-input-area {
-    left: 90px;
-  }
-
-  .current-devotion-card {
-    max-width: 1100px;
-    margin-bottom: 4rem;
   }
 
   .input-container {
