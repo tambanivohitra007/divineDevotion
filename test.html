@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divine Devotion - 3-Column A4 Workflow</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .column {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .column h2 {
+            text-align: center;
+            color: #1a237e;
+            border-bottom: 2px solid #3f51b5;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        /* Print-specific styles */
+        @media print {
+            body {
+                background-color: #fff;
+                padding: 0;
+                margin: 0;
+            }
+            .container {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 15px; /* Tighter gap for printing */
+                width: 210mm; /* A4 width */
+                height: 297mm; /* A4 height */
+                box-shadow: none;
+                border: none;
+                padding: 10mm;
+                box-sizing: border-box;
+            }
+            .column {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                padding: 15px;
+            }
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="column">
+            <h2>1. Input & Prompting</h2>
+            <div class="mermaid" id="col1">
+                graph TD
+                    subgraph "User Interface (PWA)"
+                        A[/User Input fa:fa-keyboard/] --> B{Select Content Type};
+                        B -- Devotional --> C[/Enter Topic/];
+                        B -- Faith & Learning --> D[/Enter Topic & Subject/];
+                        B -- Bible Card --> E[/Enter Bible Verse/];
+                        B -- Exegesis --> Z[/Enter Bible Passage/];
+                    end
+                    
+                    subgraph "Prompt Engineering (Hermeneutics)"
+                        F[Sanitize & Validate Input] --> G["fa:fa-shield-alt Construct Doctrinal Guardrails"];
+                        G --> H[Combine with User Input];
+                        H --> I([Final API Payload]);
+                    end
+
+                    C --> F; D --> F; E --> F; Z --> F;
+                    
+                    classDef input fill:#d6e4ff,stroke:#6b95ff,stroke-width:2px;
+                    classDef process fill:#f9f,stroke:#e171e1,stroke-width:2px;
+                    classDef data fill:#fca,stroke:#ff9c4e,stroke-width:2px;
+                    classDef decision fill:#fff,stroke:#333,stroke-width:2px;
+                    class A,C,D,E,Z input;
+                    class F,G,H process;
+                    class I data;
+                    class B decision;
+            </div>
+        </div>
+        <div class="column">
+            <h2>2. AI Processing</h2>
+            <div class="mermaid" id="col2">
+                graph TD
+                    I([Final API Payload]) --> J["fa:fa-cogs Call Gemini API"];
+                    J --> K{AI Model Processing};
+                    K -- Primary: gemini-2.0-flash --> L["fa:fa-book Apply System Prompt"];
+                    K -- Fallback: gemini-1.5-flash --> L;
+                    L --> M["fa:fa-check-double Validate vs Knowledge Base"];
+                    M --> N["fa:fa-pen-fancy Generate within Parameters"];
+                    N --> O["fa:fa-filter Filter Output Language"];
+                    O --> P([Raw Text Response]);
+
+                    classDef ai fill:#ccf,stroke:#9a9aff,stroke-width:2px;
+                    classDef data fill:#fca,stroke:#ff9c4e,stroke-width:2px;
+                    classDef decision fill:#fff,stroke:#333,stroke-width:2px;
+                    class J,L,M,N,O ai;
+                    class I,P data;
+                    class K decision;
+            </div>
+        </div>
+        <div class="column">
+            <h2>3. Output & Actions</h2>
+            <div class="mermaid" id="col3">
+                graph TD
+                    P([Raw Text Response]) --> Q[Parse Raw Response];
+                    Q --> R{Render Content Type};
+                    R -- Devotional/Faith & Learning --> S[[fa:fa-file-alt Display in DevotionDisplay.vue]];
+                    R -- Bible Card --> T["fa:fa-palette Create Themed Background"] --> U[[fa:fa-image Render BibleCard.vue]];
+                    R -- Exegesis --> V[[fa:fa-book-open Display in BibleExegesis.vue]];
+
+                    subgraph "User Actions & Data Management"
+                        W{User Action}
+                        W -- Save --> X[(fa:fa-save Store in LocalStorage)];
+                        W -- Share --> Y["fa:fa-share-alt Share via API / Clipboard"];
+                        W -- Download --> Y2[fa:fa-download Download Card as PNG];
+                    end
+
+                    S --> W; U --> W; V --> W;
+
+                    classDef process fill:#f9f,stroke:#e171e1,stroke-width:2px;
+                    classDef render fill:#d4ffc2,stroke:#86e860,stroke-width:2px;
+                    classDef data fill:#fca,stroke:#ff9c4e,stroke-width:2px;
+                    classDef decision fill:#fff,stroke:#333,stroke-width:2px;
+                    class Q,T,Y,Y2 process;
+                    class S,U,V render;
+                    class P,X data;
+                    class R,W decision;
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+    </script>
+</body>
+</html>
+

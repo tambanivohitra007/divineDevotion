@@ -37,7 +37,7 @@
   line-height: 1.6;
 }
 
-/* Animated Background */
+/* Animated Background - HIBP Inspired */
 body {
   margin: 0;
   min-height: 100vh;
@@ -52,7 +52,7 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: #191a1a;
+  background: var(--bg-primary, #13151f);
   z-index: -2;
 }
 
@@ -62,12 +62,23 @@ body::after {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;  background: 
-    radial-gradient(circle at 20% 50%, rgba(180, 231, 220, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(154, 204, 214, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 40% 80%, rgba(123, 152, 169, 0.3) 0%, transparent 50%);
-  animation: float 20s ease-in-out infinite;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(0, 212, 170, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(0, 212, 170, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 60% 60%, rgba(29, 211, 176, 0.08) 0%, transparent 50%);
+  animation: float 25s ease-in-out infinite;
   z-index: -1;
+}
+
+/* Additional glow effect layer */
+body::after {
+  background: 
+    radial-gradient(ellipse at 30% 40%, rgba(0, 212, 170, 0.2) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 60%, rgba(99, 102, 241, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 80%, rgba(29, 211, 176, 0.12) 0%, transparent 60%);
+  animation: float 25s ease-in-out infinite, pulse 15s ease-in-out infinite alternate;
 }
 
 @keyframes gradientShift {
@@ -76,26 +87,43 @@ body::after {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  33% { transform: translateY(-20px) rotate(1deg); }
-  66% { transform: translateY(-10px) rotate(-1deg); }
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg) scale(1); 
+  }
+  33% { 
+    transform: translateY(-30px) rotate(2deg) scale(1.05); 
+  }
+  66% { 
+    transform: translateY(-15px) rotate(-2deg) scale(0.98); 
+  }
 }
 
-/* Typography */
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 0.8;
+  }
+  50% { 
+    opacity: 1;
+  }
+}
+
+/* Typography - HIBP Inspired */
 h1, h2, h3 {
   font-family: var(--font-display);
   font-weight: 600;
-  background: var(--gradient-divine);
+  background: linear-gradient(135deg, #00d4aa 0%, #1dd3b0 50%, #6366f1 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 1rem;
+  text-shadow: 0 0 30px rgba(0, 212, 170, 0.3);
 }
 
 h1 {
   font-size: clamp(2.5rem, 5vw, 4rem);
   line-height: 1.1;
   font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 /* Glass Morphism Base */
@@ -108,7 +136,7 @@ h1 {
   box-shadow: var(--shadow-glass);
 }
 
-/* Modern Button Styles */
+/* Modern Button Styles - HIBP Inspired */
 button {
   border-radius: 12px;
   border: none;
@@ -129,7 +157,7 @@ button::before {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(0, 212, 170, 0.3), transparent);
   transition: left 0.5s;
 }
 
@@ -139,7 +167,7 @@ button:hover::before {
 
 button:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-divine);
+  box-shadow: 0 0 25px rgba(0, 212, 170, 0.4);
 }
 
 button:active {
@@ -148,9 +176,14 @@ button:active {
 
 /* Primary Button */
 .btn-primary {
-  background: var(--gradient-divine);
+  background: linear-gradient(135deg, #00d4aa 0%, #1dd3b0 100%);
   color: white;
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 15px rgba(0, 212, 170, 0.4);
+  border: 1px solid rgba(0, 212, 170, 0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 25px rgba(0, 212, 170, 0.6);
 }
 
 /* App Container */
@@ -162,15 +195,15 @@ button:active {
   position: relative;
 }
 
-/* Glass Cards */
+/* Glass Cards - HIBP Inspired */
 .card {
-  background: var(--glass-bg-light);
-  backdrop-filter: blur(20px);
+  background: var(--glass-bg);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border-light);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
   border-radius: 24px;
   padding: 2rem;
-  box-shadow: var(--shadow-glass);
+  box-shadow: var(--shadow-card);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -182,19 +215,20 @@ button:active {
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
-  background: var(--gradient-divine);
-  opacity: 0.6;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00d4aa, transparent);
+  opacity: 0.8;
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 20px 60px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 20px 60px rgba(0, 212, 170, 0.3);
+  border-color: rgba(0, 212, 170, 0.4);
 }
 
-/* Links */
+/* Links - HIBP Inspired */
 a {
-  color: var(--divine-blue);
+  color: var(--divine-primary);
   text-decoration: none;
   font-weight: 500;
   position: relative;
@@ -208,8 +242,9 @@ a::after {
   left: 0;
   width: 0;
   height: 2px;
-  background: var(--gradient-divine);
+  background: linear-gradient(90deg, #00d4aa, #1dd3b0);
   transition: width 0.3s ease;
+  box-shadow: 0 0 8px rgba(0, 212, 170, 0.5);
 }
 
 a:hover::after {
@@ -217,8 +252,9 @@ a:hover::after {
 }
 
 a:hover {
-  color: var(--divine-purple);
+  color: var(--divine-secondary);
   transform: translateY(-1px);
+  text-shadow: 0 0 20px rgba(0, 212, 170, 0.3);
 }
 
 /* Dark Theme Adaptations */

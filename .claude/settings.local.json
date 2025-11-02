@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npm run dev:*)",
       "Bash(start D:ProjectsdivineDevotionlanding.html)",
-      "Bash(start landing.html)"
+      "Bash(start landing.html)",
+      "Bash(npm run test:*)"
     ],
     "deny": [],
     "ask": []
