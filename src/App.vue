@@ -11,36 +11,7 @@
           </div>
           <p class="brand-subtitle">{{ $t('app.subtitle') }}</p>
         </div>
-        
-        <!-- Main Action Buttons -->
-        <div class="header-actions">
-          <button 
-            class="action-btn saved-btn" 
-            @click="openSavedContentDialog"
-            :title="$t('tooltips.openSidebar')"
-          >
-            <i class="bi bi-collection"></i>
-            <span class="btn-label">{{ $t('sidebar.saved') }}</span>
-          </button>
-          
-          <button 
-            class="action-btn theme-btn" 
-            @click="toggleTheme" 
-            :title="isDarkMode ? $t('navigation.lightMode') : $t('navigation.darkMode')"
-          >
-            <i :class="isDarkMode ? 'bi bi-sun' : 'bi bi-moon'"></i>
-          </button>
-          
-          <div class="language-selector-container">
-            <LanguageSelector />
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <!-- Main Content Area -->
-    <main class="main-content">
-      <!-- Content Type Selection -->
+        <!-- Content Type Selection -->
       <div class="content-type-selector">
         <div class="content-type-tabs">
           <button
@@ -80,6 +51,34 @@
           </button>
         </div>
       </div>
+        <!-- Main Action Buttons -->
+        <div class="header-actions">
+          <button 
+            class="action-btn saved-btn" 
+            @click="openSavedContentDialog"
+            :title="$t('tooltips.openSidebar')"
+          >
+            <i class="bi bi-collection"></i>
+            <span class="btn-label">{{ $t('sidebar.saved') }}</span>
+          </button>
+          
+          <button 
+            class="action-btn theme-btn" 
+            @click="toggleTheme" 
+            :title="isDarkMode ? $t('navigation.lightMode') : $t('navigation.darkMode')"
+          >
+            <i :class="isDarkMode ? 'bi bi-sun' : 'bi bi-moon'"></i>
+          </button>
+          
+          <div class="language-selector-container">
+            <LanguageSelector />
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">      
 
       <!-- Main Content Container -->
       <div class="content-container" ref="contentAreaRef" @scroll="handleContentScroll">
