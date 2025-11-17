@@ -120,8 +120,8 @@ h1 {
 /* Glass Morphism Base */
 .glass {
   background: var(--glass-bg-light);
-  backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border-light);
   border-radius: 20px;
   box-shadow: var(--shadow-glass);
