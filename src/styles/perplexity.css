@@ -126,20 +126,10 @@ body {
 }
 
 /* ==========================================
-   HEADER COMPONENT
+   HEADER COMPONENT - Hidden (replaced by sidenav)
    ========================================== */
 .main-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: var(--glass-background);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--color-border);
-  transition: all var(--transition-normal);
-  transform: translateY(-100%);
-  opacity: 0;
-  visibility: hidden;
+  display: none;
 }
 
 .main-header.header-visible {
@@ -243,14 +233,31 @@ body {
 
 
 /* ==========================================
-   MAIN CONTENT AREA
+   MAIN CONTENT AREA - Adjusted for Sidenav
    ========================================== */
 .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: 0;
+  min-height: 100vh;
+  margin-left: 5em;
+  transition: margin-left 0.35s cubic-bezier(0.175, 0.685, 0.32, 1);
+  padding: var(--space-2xl);
+}
+
+@media only screen and (max-width: 768px) {
+  .main-content {
+    margin-left: 4em;
+    padding: var(--space-xl);
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  .main-content {
+    margin-left: 3.5em;
+    padding: var(--space-lg);
+  }
 }
 
 

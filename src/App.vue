@@ -1,84 +1,110 @@
 <template>
   <div id="app" class="perplexity-layout">
-    <!-- Search-Centric Header -->
-    <header class="main-header" :class="{ 'scrolled': showTopFade, 'header-visible': showTaskbar }">
-      <div class="header-container">
+    <!-- Sidenav -->
+    <nav id="sidenav" class="sidenav">
+      <ul class="sidenav-items flexbox-col">
         <!-- Logo/Brand -->
-        <div class="brand-section">
-          <div class="logo-container">
-            <i class="bi bi-stars brand-icon"></i>
-            <span class="brand-text">{{ $t('app.title') }}</span>
-          </div>
-          <p class="brand-subtitle">{{ $t('app.subtitle') }}</p>
-        </div>
-        <!-- Content Type Selection -->
-      <div class="content-type-selector">
-        <div class="content-type-tabs">
-          <button
-            class="content-type-tab"
+        <li class="sidenav-logo flexbox-left">
+          <a class="sidenav-item-inner flexbox">
+            <div class="sidenav-logo-icon">
+              <i class="bi bi-stars"></i>
+            </div>
+          </a>
+        </li>
+
+        <!-- Content Type Navigation -->
+        <li class="sidenav-item flexbox-left">
+          <a 
+            class="sidenav-item-inner flexbox-left"
             :class="{ active: contentTypeSelection === 'devotion' }"
             @click="selectContentType('devotion')"
           >
-            <i class="bi bi-stars"></i>
-            <span>{{ $t('contentTypes.devotion') }}</span>
-          </button>
-          
-          <button
-            class="content-type-tab"
+            <div class="sidenav-item-inner-icon-wrapper flexbox">
+              <i class="bi bi-stars"></i>
+            </div>
+            <span class="link-text">{{ $t('contentTypes.devotion') }}</span>
+          </a>
+        </li>
+
+        <li class="sidenav-item flexbox-left">
+          <a 
+            class="sidenav-item-inner flexbox-left"
             :class="{ active: contentTypeSelection === 'faithIntegration' }"
             @click="selectContentType('faithIntegration')"
           >
-            <i class="bi bi-lightbulb"></i>
-            <span>{{ $t('contentTypes.faithAndLearning') }}</span>
-          </button>
-          
-          <button
-            class="content-type-tab"
+            <div class="sidenav-item-inner-icon-wrapper flexbox">
+              <i class="bi bi-lightbulb"></i>
+            </div>
+            <span class="link-text">{{ $t('contentTypes.faithAndLearning') }}</span>
+          </a>
+        </li>
+
+        <li class="sidenav-item flexbox-left">
+          <a 
+            class="sidenav-item-inner flexbox-left"
             :class="{ active: contentTypeSelection === 'bibleCard' }"
             @click="selectContentType('bibleCard')"
           >
-            <i class="bi bi-card-image"></i>
-            <span>{{ $t('contentTypes.bibleCards') }}</span>
-          </button>
-          
-          <button
-            class="content-type-tab"
+            <div class="sidenav-item-inner-icon-wrapper flexbox">
+              <i class="bi bi-card-image"></i>
+            </div>
+            <span class="link-text">{{ $t('contentTypes.bibleCards') }}</span>
+          </a>
+        </li>
+
+        <li class="sidenav-item flexbox-left">
+          <a 
+            class="sidenav-item-inner flexbox-left"
             :class="{ active: contentTypeSelection === 'bibleExegesis' }"
             @click="selectContentType('bibleExegesis')"
           >
-            <i class="bi bi-book-half"></i>
-            <span>{{ $t('contentTypes.bibleExegesis') }}</span>
-          </button>
-        </div>
-      </div>
-        <!-- Main Action Buttons -->
-        <div class="header-actions">
-          <button 
-            class="action-btn saved-btn" 
+            <div class="sidenav-item-inner-icon-wrapper flexbox">
+              <i class="bi bi-book-half"></i>
+            </div>
+            <span class="link-text">{{ $t('contentTypes.bibleExegesis') }}</span>
+          </a>
+        </li>
+
+        <!-- Action Buttons -->
+        <li class="sidenav-item flexbox-left">
+          <a 
+            class="sidenav-item-inner flexbox-left"
             @click="openSavedContentDialog"
-            :title="$t('tooltips.openSidebar')"
           >
-            <i class="bi bi-collection"></i>
-            <span class="btn-label">{{ $t('sidebar.saved') }}</span>
-          </button>
-          
-          <button 
-            class="action-btn theme-btn" 
-            @click="toggleTheme" 
-            :title="isDarkMode ? $t('navigation.lightMode') : $t('navigation.darkMode')"
+            <div class="sidenav-item-inner-icon-wrapper flexbox">
+              <i class="bi bi-collection"></i>
+            </div>
+            <span class="link-text">{{ $t('sidebar.saved') }}</span>
+          </a>
+        </li>
+
+        <li class="sidenav-item flexbox-left">
+          <a 
+            class="sidenav-item-inner flexbox-left"
+            @click="toggleTheme"
           >
-            <i :class="isDarkMode ? 'bi bi-sun' : 'bi bi-moon'"></i>
-          </button>
-          
-          <div class="language-selector-container">
-            <LanguageSelector />
+            <div class="sidenav-item-inner-icon-wrapper flexbox">
+              <i :class="isDarkMode ? 'bi bi-sun' : 'bi bi-moon'"></i>
+            </div>
+            <span class="link-text">{{ isDarkMode ? $t('navigation.lightMode') : $t('navigation.darkMode') }}</span>
+          </a>
+        </li>
+
+        <li class="sidenav-item flexbox-left language-selector-item">
+          <div class="sidenav-item-inner flexbox-left">
+            <div class="sidenav-item-inner-icon-wrapper flexbox">
+              <i class="bi bi-translate"></i>
+            </div>
+            <div class="link-text language-selector-wrapper">
+              <LanguageSelector />
+            </div>
           </div>
-        </div>
-      </div>
-    </header>
+        </li>
+      </ul>
+    </nav>
 
     <!-- Main Content Area -->
-    <main class="main-content">      
+    <main id="main" class="main-content flexbox-col">      
 
       <!-- Main Content Container -->
       <div class="content-container" ref="contentAreaRef" @scroll="handleContentScroll">
@@ -874,6 +900,8 @@ onUnmounted(() => {
 </script>
 
 <style>
+/* Import Sidenav styles */
+@import './styles/sidenav.css';
 /* Import Perplexity-inspired design system */
 @import './styles/perplexity.css';
 /* Import existing styles for components that need them */
