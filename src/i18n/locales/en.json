@@ -29,12 +29,13 @@
     "yourDevotion": "Your Devotion",
     "yourFaithIdea": "Your Faith & Learning Idea",
     "generating": "Generating your content...",
+    "generatingIdea": "Generating your Faith & Learning Idea...",
     "shareTitle": "Devotion",
     "shareTitleIdea": "Faith & Learning Idea",
     "sharePrefix": "A Divine",
     "sharePrefixDevotion": "Devotion",
     "sharePrefixIdea": "Idea",
-    "keyVerses": "Key Verses:"
+    "keyVerses": "Key Verses:"   
   },  "actions": {
     "saveDevotion": "Save Devotion",
     "saveIdea": "Save Idea",

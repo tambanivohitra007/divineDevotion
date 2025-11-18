@@ -109,19 +109,33 @@
       <!-- Main Content Container -->
       <div class="content-container" ref="contentAreaRef" @scroll="handleContentScroll">
         <div class="content-wrapper">
-          <!-- Loading State -->
+          <!-- Loading State with vue-content-loader -->
           <div v-if="isLoading" class="content-card">
             <div class="loading-state">
-              <div class="loading-spinner">
-                <div class="spinner"></div>
-              </div>
-              <h3 class="loading-title">{{ $t('content.generating') }}</h3>
-              <div class="loading-skeleton">
-                <div class="skeleton-line skeleton-line-long"></div>
-                <div class="skeleton-line skeleton-line-medium"></div>
-                <div class="skeleton-line skeleton-line-short"></div>
-                <div class="skeleton-line skeleton-line-long"></div>
-              </div>
+              <ContentLoader
+                :speed="2"
+                :width="400"
+                :height="460"
+                viewBox="0 0 400 460"
+                :primaryColor="isDarkMode ? '#102749' : '#e8f4f8'"
+                :secondaryColor="isDarkMode ? '#62b6cb' : '#4895af'"
+              >
+                <!-- Spinner circle -->
+                <circle cx="200" cy="100" r="40" />
+                
+                <!-- Title -->
+                <rect x="100" y="170" rx="4" ry="4" width="200" height="20" />
+                
+                <!-- Skeleton lines -->
+                <rect x="20" y="220" rx="4" ry="4" width="360" height="15" />
+                <rect x="60" y="250" rx="4" ry="4" width="280" height="15" />
+                <rect x="100" y="280" rx="4" ry="4" width="200" height="15" />
+                <rect x="40" y="310" rx="4" ry="4" width="340" height="15" />
+              </ContentLoader>
+              
+              <h3 class="loading-title">
+                {{ selectedContentType === 'devotion' ? $t('content.generating') : $t('content.generatingIdea') }}
+              </h3>
             </div>
           </div>
           
@@ -311,6 +325,7 @@ import SavedContentDialog from './components/SavedContentDialog.vue';
 import useGemini from './composables/useGemini';
 // Correctly import useContentStorage and StoredContent type
 import useContentStorage, { type StoredContent } from './composables/useDevotions';
+import { ContentLoader } from 'vue-content-loader';
 
 // Initialize i18n
 const { t, locale } = useI18n();
@@ -914,5 +929,55 @@ onUnmounted(() => {
 .logo-png {
   width: 100px; /* Adjust width as needed */
   height: auto; /* Maintain aspect ratio */
+}
+
+/* Loading state enhancements for vue-content-loader */
+.loading-state {
+  padding: var(--space-4xl) var(--space-2xl);
+  text-align: center;
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loading-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: var(--space-xl) 0 0 0;
+  animation: fadeInOut 2s ease-in-out infinite;
+}
+
+.loading-title::after {
+  content: '';
+  animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+  0%, 20% { content: ''; }
+  40% { content: '.'; }
+  60% { content: '..'; }
+  80%, 100% { content: '...'; }
+}
+
+@keyframes fadeInOut {
+  0%, 100% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.6;
+    transform: scale(1.02);
+  }
+}
+
+/* Responsive adjustments for loader */
+@media (max-width: 768px) {
+  .loading-state svg {
+    max-width: 100%;
+    height: auto;
+  }
 }
 </style>
