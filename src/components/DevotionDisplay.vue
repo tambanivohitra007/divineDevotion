@@ -117,7 +117,7 @@ interface ParsedVerse {
 
 // Regex to find Bible verses in text. Handles books like "1 John", "Song of Solomon".
 // Example refs: "John 3:16", "1 John 3:16-18", "Song of Solomon 2:1".
-const createBibleVerseGlobalRegex = () => /\b(\d*\s*[A-Za-z]+(?:(?:\s+)[A-Za-z]+)*\s+\d+:\d+(?:-\d+)?)\b/g;
+const createBibleVerseGlobalRegex = () => /\b(\d*\s*[A-Za-z]+(?:(?:\s+)[A-ZaLz]+)*\s+\d+:\d+(?:-\d+)?)\b/g;
 
 const formattedDevotionText = computed(() => {
   const text = props.devotion.text;
@@ -327,27 +327,42 @@ watch(() => props.devotion, async () => {
 
 .main-devotion-text {
   font-size: 16px;
-  line-height: 1.7;
+  line-height: 1.8;
   color: var(--color-text-primary);
   margin-bottom: var(--space-xl);
 }
 
 .main-devotion-text :deep(p) {
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  text-align: justify;
+  hyphens: auto;
+}
+
+.main-devotion-text :deep(p:first-child) {
+  font-size: 17px;
+  font-weight: 500;
 }
 
 .main-devotion-text :deep(p:last-child) {
   margin-bottom: 0;
 }
 
+.main-devotion-text :deep(strong) {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
 .verses-section {
-  border-top: 1px solid var(--color-border);
+  border-top: 2px solid var(--color-border);
   padding-top: var(--space-xl);
-  margin-top: var(--space-xl);
+  margin-top: var(--space-2xl);
+  background: linear-gradient(135deg, transparent 0%, rgba(72, 149, 175, 0.03) 100%);
+  padding: var(--space-xl);
+  border-radius: var(--radius-md);
 }
 
 .verses-section-title {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--color-text-primary);
   margin-bottom: var(--space-lg);
@@ -358,55 +373,99 @@ watch(() => props.devotion, async () => {
 
 .verses-section-title i {
   color: var(--color-accent);
+  font-size: 20px;
 }
 
 .list-group {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-lg);
 }
 
 .list-group-item {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: var(--space-lg);
+  border-radius: var(--radius-md);
+  padding: var(--space-xl);
   transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.list-group-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #4895af 0%, #62b6cb 100%);
+  transform: scaleY(0);
+  transition: transform var(--transition-fast);
+}
+
+.list-group-item:hover::before {
+  transform: scaleY(1);
 }
 
 .list-group-item:hover {
   background: var(--color-background);
-  border-color: var(--color-border-hover);
-  transform: translateY(-1px);
+  border-color: var(--color-accent);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(72, 149, 175, 0.2);
 }
 
 .verse-link {
   color: var(--color-accent);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 15px;
   display: flex;
   align-items: center;
   gap: var(--space-sm);
   transition: all var(--transition-fast);
+  position: relative;
+}
+
+.verse-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-accent);
+  transition: width var(--transition-fast);
+}
+
+.verse-link:hover::after {
+  width: 100%;
 }
 
 .verse-link:hover {
   color: var(--color-accent-hover);
   text-decoration: none;
+  transform: translateX(2px);
 }
 
 .verse-link i {
-  font-size: 14px;
-  opacity: 0.7;
+  font-size: 16px;
+  opacity: 0.8;
+  transition: all var(--transition-fast);
+}
+
+.verse-link:hover i {
+  opacity: 1;
+  transform: rotate(-45deg);
 }
 
 :deep(.inline-verse-link) {
   color: var(--color-accent);
   text-decoration: none;
-  font-weight: 500;
-  border-bottom: 1px solid transparent;
+  font-weight: 600;
+  border-bottom: 2px solid transparent;
   transition: all var(--transition-fast);
+  padding-bottom: 2px;
 }
 
 :deep(.inline-verse-link:hover) {
@@ -419,40 +478,70 @@ watch(() => props.devotion, async () => {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  padding: var(--space-sm) var(--space-lg);
+  padding: var(--space-md) var(--space-lg);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
   text-decoration: none;
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
 .btn-outline-primary {
   background: transparent;
   color: var(--color-accent);
-  border: 1px solid var(--color-accent);
+  border: 2px solid var(--color-accent);
 }
 
 .btn-outline-primary:hover {
   background: var(--color-accent);
   color: white;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(72, 149, 175, 0.4);
+}
+
+.btn i {
+  transition: transform var(--transition-fast);
+}
+
+.btn:hover i {
+  transform: scale(1.2);
 }
 
 /* Bible Card Component Spacing */
 .mt-3 {
-  margin-top: var(--space-lg);
+  margin-top: var(--space-xl);
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .main-devotion-text {
     font-size: 15px;
+    line-height: 1.7;
   }
   
   .list-group-item {
-    padding: var(--space-md);
+    padding: var(--space-lg);
   }
   
   .verse-link {
@@ -460,7 +549,11 @@ watch(() => props.devotion, async () => {
   }
   
   .verses-section-title {
-    font-size: 15px;
+    font-size: 16px;
+  }
+  
+  .verses-section {
+    padding: var(--space-lg);
   }
 }
 </style>
