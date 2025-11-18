@@ -641,7 +641,9 @@ const formattedContentForDisplay = computed(() => { // Renamed from formattedDev
   if (!currentContent.value.text) return currentContent.value;
   
   let text = currentContent.value.text;
-    // Enhanced text formatting for better readability
+  // Replace double asterisks with <strong> tags for bold text
+  text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  // Enhanced text formatting for better readability
   text = formatContentText(text);
 
   return {
