@@ -105,8 +105,8 @@
 
 .sidenav-item-inner:hover {
   color: #bee9e8;
-  background: rgba(98, 182, 203, 0.15);
-  box-shadow: 0 17px 30px -10px rgba(0, 0, 0, 0.3);
+  /* background: rgba(98, 182, 203, 0.15); */
+  /* box-shadow: 0 17px 30px -10px rgba(0, 0, 0, 0.3); */
 }
 
 .sidenav-item-inner.active {
@@ -244,7 +244,7 @@
 }
 
 [data-bs-theme="dark"] .sidenav-item-inner:hover {
-  background: rgba(98, 182, 203, 0.2);
+  background: rgba(98, 182, 203, 0.05);
 }
 
 /* Light Mode Adjustments */
