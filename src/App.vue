@@ -1,7 +1,24 @@
 <template>
   <div id="app" class="perplexity-layout">
+    <!-- Mobile Hamburger Menu Button -->
+    <button 
+      v-if="isMobile" 
+      class="mobile-menu-toggle" 
+      @click="toggleMobileMenu"
+      :class="{ 'menu-open': showMobileMenu }"
+    >
+      <i :class="showMobileMenu ? 'bi bi-x' : 'bi bi-list'"></i>
+    </button>
+
+    <!-- Mobile Menu Overlay -->
+    <div 
+      v-if="isMobile && showMobileMenu" 
+      class="mobile-menu-overlay"
+      @click="closeMobileMenu"
+    ></div>
+
     <!-- Sidenav -->
-    <nav id="sidenav" class="sidenav">
+    <nav id="sidenav" class="sidenav" :class="{ 'mobile-show': showMobileMenu }">
       <ul class="sidenav-items flexbox-col">
         <!-- Logo/Brand -->
         <li class="sidenav-logo flexbox-left">
@@ -17,7 +34,7 @@
           <a 
             class="sidenav-item-inner flexbox-left"
             :class="{ active: contentTypeSelection === 'devotion' }"
-            @click="selectContentType('devotion')"
+            @click="selectContentType('devotion'); closeMobileMenu()"
           >
             <div class="sidenav-item-inner-icon-wrapper flexbox">
                 <i class="bi bi-fire"></i>
@@ -30,7 +47,7 @@
           <a 
             class="sidenav-item-inner flexbox-left"
             :class="{ active: contentTypeSelection === 'faithIntegration' }"
-            @click="selectContentType('faithIntegration')"
+            @click="selectContentType('faithIntegration'); closeMobileMenu()"
           >
             <div class="sidenav-item-inner-icon-wrapper flexbox">
               <i class="bi bi-lightbulb"></i>
@@ -43,7 +60,7 @@
           <a 
             class="sidenav-item-inner flexbox-left"
             :class="{ active: contentTypeSelection === 'bibleCard' }"
-            @click="selectContentType('bibleCard')"
+            @click="selectContentType('bibleCard'); closeMobileMenu()"
           >
             <div class="sidenav-item-inner-icon-wrapper flexbox">
               <i class="bi bi-card-image"></i>
@@ -56,7 +73,7 @@
           <a 
             class="sidenav-item-inner flexbox-left"
             :class="{ active: contentTypeSelection === 'bibleExegesis' }"
-            @click="selectContentType('bibleExegesis')"
+            @click="selectContentType('bibleExegesis'); closeMobileMenu()"
           >
             <div class="sidenav-item-inner-icon-wrapper flexbox">
               <i class="bi bi-book-half"></i>
@@ -69,7 +86,7 @@
         <li class="sidenav-item flexbox-left">
           <a 
             class="sidenav-item-inner flexbox-left"
-            @click="openSavedContentDialog"
+            @click="openSavedContentDialog(); closeMobileMenu()"
           >
             <div class="sidenav-item-inner-icon-wrapper flexbox">
               <i class="bi bi-collection"></i>
@@ -411,8 +428,26 @@ const showTaskbar = ref(true);
 
 // Mobile responsiveness
 const isMobile = ref(false);
+const showMobileMenu = ref(false);
+
 const checkMobile = () => {
   isMobile.value = window.innerWidth <= 768;
+};
+
+const toggleMobileMenu = () => {
+  showMobileMenu.value = !showMobileMenu.value;
+  if (showMobileMenu.value) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+};
+
+const closeMobileMenu = () => {
+  if (isMobile.value && showMobileMenu.value) {
+    showMobileMenu.value = false;
+    document.body.style.overflow = '';
+  }
 };
 
 const firstVerseText = ref('');
@@ -457,6 +492,7 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('resize', checkMobile);
   document.removeEventListener('click', closeMenuOnClickOutside);
+  document.body.style.overflow = ''; // Clean up
 });
 
 // Computed properties for dynamic UI text
@@ -970,6 +1006,70 @@ onUnmounted(() => {
   50% { 
     opacity: 0.6;
     transform: scale(1.02);
+  }
+}
+
+/* Mobile Menu Toggle Button */
+.mobile-menu-toggle {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  width: 3rem;
+  height: 3rem;
+  background: linear-gradient(135deg, #1d1d1d 0%, #524b27 100%);
+  border: 2px solid rgba(195, 157, 88, 0.5);
+  border-radius: var(--radius-md);
+  color: #d4af6a;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1002;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all var(--transition-fast);
+}
+
+.mobile-menu-toggle:hover {
+  background: linear-gradient(135deg, #6f6a2a 0%, #3d412f 100%);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(195, 157, 88, 0.4);
+}
+
+.mobile-menu-toggle.menu-open {
+  background: linear-gradient(135deg, #c39d58 0%, #d4af6a 100%);
+  color: #1a1a1a;
+  border-color: #d4af6a;
+}
+
+.mobile-menu-toggle i {
+  transition: transform var(--transition-fast);
+}
+
+.mobile-menu-toggle.menu-open i {
+  transform: rotate(90deg);
+}
+
+/* Mobile Menu Overlay */
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.75);
+  z-index: 999;
+  animation: fadeIn var(--transition-fast);
+  backdrop-filter: blur(4px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Hide hamburger on desktop */
+@media only screen and (min-width: 769px) {
+  .mobile-menu-toggle,
+  .mobile-menu-overlay {
+    display: none;
   }
 }
 
