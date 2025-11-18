@@ -143,6 +143,7 @@
 .list-group-item .d-flex {
   align-items: center;
   gap: 0.5rem;
+  padding: 0 15px;
 }
 
 .list-group-item .btn-sm {

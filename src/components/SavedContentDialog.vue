@@ -50,7 +50,7 @@
             <p class="saved-item-excerpt">{{ truncateText(content.text, 80) }}</p>
             <div class="saved-item-meta">
               <span class="meta-icon">
-                <i :class="content.type === 'devotion' ? 'bi bi-stars' : 'bi bi-lightbulb'"></i>
+                <i :class="content.type === 'devotion' ? 'bi bi-fire' : 'bi bi-lightbulb'"></i>
               </span>
               <time class="meta-date">Recently saved</time>
             </div>

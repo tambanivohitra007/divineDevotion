@@ -14,7 +14,7 @@
         <div class="prompt-column">
           <div class="prompt-category">
             <h5 class="category-title">
-              <i class="bi bi-stars me-2"></i>
+              <i class="bi bi-fire me-2"></i>
               Devotional Ideas
             </h5>
             <div class="prompt-list">

@@ -369,7 +369,7 @@ watch(() => props.devotion, async () => {
 .list-group-item {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-sm);
   padding: var(--space-lg);
   transition: all var(--transition-fast);
 }

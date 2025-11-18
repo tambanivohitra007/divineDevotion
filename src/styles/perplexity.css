@@ -74,7 +74,7 @@
 /* Dark Theme Colors - Deep Sea */
 [data-bs-theme="dark"] {
   --color-background: #0d1b2a;
-  --color-surface: #1b4965;
+  --color-surface: #102749;
   --color-surface-elevated: #070f1d;
   --color-border: rgba(91, 214, 255, 0.3);
   --color-border-hover: rgba(72, 149, 175, 0.5);
@@ -614,9 +614,9 @@ body {
   align-items: center;
   gap: var(--space-lg);
   padding: var(--space-xl) var(--space-2xl);
-  background: linear-gradient(135deg, #106fff 0%, #1ab3da 100%);
+  background: linear-gradient(135deg, #ff9710 0%, #b85709 100%);
   color: #ffffff;
-  border: 1px solid rgba(76, 26, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--radius-sm);
   font-size: 16px;
   font-weight: 700;
@@ -627,7 +627,7 @@ body {
 }
 
 .quick-start-btn:hover {
-  background: linear-gradient(135deg, #042049 0%, #1a84da 100%);
+  background: linear-gradient(135deg, #eb8b0e 0%, #9e4c08 50%);
   transform: translateY(-2px);
   /* box-shadow: 0 15px 40px rgba(72, 149, 175, 0.6); */
 }

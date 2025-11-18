@@ -7,7 +7,7 @@
           <!-- Logo/Icon -->
           <div class="flex justify-center mb-8">
             <div class="w-16 h-16 bg-primary-500 rounded-xl flex items-center justify-center animate-float">
-              <i class="bi bi-stars text-2xl text-white"></i>
+              <i class="bi bi-fire text-2xl text-white"></i>
             </div>
           </div>
           
@@ -58,7 +58,7 @@
           <!-- Feature 1 -->
           <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-100 hover:shadow-lg transition-shadow duration-300">
             <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mb-6">
-              <i class="bi bi-stars text-2xl text-primary-600"></i>
+              <i class="bi bi-fire text-2xl text-primary-600"></i>
             </div>
             <h3 class="text-xl font-semibold text-gray-900 mb-4">AI-Powered Devotions</h3>
             <p class="text-gray-600 leading-relaxed">
@@ -164,7 +164,7 @@
               
               <!-- Floating elements -->
               <div class="absolute top-4 right-4 bg-white rounded-lg p-3 shadow-lg animate-float" style="animation-delay: 0.5s;">
-                <i class="bi bi-stars text-primary-600"></i>
+                <i class="bi bi-fire text-primary-600"></i>
               </div>
               <div class="absolute bottom-4 left-4 bg-white rounded-lg p-3 shadow-lg animate-float" style="animation-delay: 1s;">
                 <i class="bi bi-heart-fill text-red-500"></i>
@@ -296,7 +296,7 @@
           <div class="md:col-span-2">
             <div class="flex items-center mb-4">
               <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center mr-3">
-                <i class="bi bi-stars text-white"></i>
+                <i class="bi bi-fire text-white"></i>
               </div>
               <span class="text-xl font-bold">Divine Devotion</span>
             </div>

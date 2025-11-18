@@ -5,7 +5,7 @@
       <ul class="sidenav-items flexbox-col">
         <!-- Logo/Brand -->
         <li class="sidenav-logo flexbox-left">
-          <a class="sidenav-item-inner flexbox">
+          <a class="sidenav-item-inner flexbox logo">
             <div class="sidenav-logo-icon">
               <img src="/icons/logo.png" alt="Divine Devotion Logo" class="logo-image" />
             </div>
@@ -20,7 +20,7 @@
             @click="selectContentType('devotion')"
           >
             <div class="sidenav-item-inner-icon-wrapper flexbox">
-              <i class="bi bi-stars"></i>
+                <i class="bi bi-fire"></i>
             </div>
             <span class="link-text">{{ $t('contentTypes.devotion') }}</span>
           </a>
@@ -132,7 +132,7 @@
             <div class="content-header">
               <div class="content-meta">
                 <div class="content-type-icon">
-                  <i :class="currentContent.type === 'devotion' ? 'bi bi-stars' : 'bi bi-lightbulb'"></i>
+                  <i :class="currentContent.type === 'devotion' ? 'bi bi-fire' : 'bi bi-lightbulb'"></i>
                 </div>
                 <div class="content-info">
                   <h2 class="content-title">
@@ -192,7 +192,8 @@
           <div v-else-if="!isLoading && !currentContent.text && !generationError && !showBibleCardGenerator && !showBibleExegesis" class="welcome-state">
             <div class="welcome-content">
               <div class="welcome-icon">
-                <i class="bi bi-stars"></i>
+                <!-- <i class="bi bi-stkars"></i> -->
+                 <img src="/icons/logo.png" alt="Divine Devotion Logo" class="logo-png"/>
               </div>
               <h2 class="welcome-title">{{ $t('welcome.title') }}</h2>
               <p class="welcome-subtitle">{{ $t('welcome.subtitle') }}</p>
@@ -698,7 +699,7 @@ const openSavedContentDialog = () => {
 // const currentContentTypeIcon = computed(() => {
 //   switch (contentTypeSelection.value) {
 //     case 'devotion':
-//       return 'bi bi-stars';
+//       return 'bi bi-fire';
 //     case 'faithIntegration':
 //       return 'bi bi-lightbulb-fill';
 //     case 'bibleCard':
@@ -706,7 +707,7 @@ const openSavedContentDialog = () => {
 //     case 'bibleExegesis':
 //       return 'bi bi-book-half';
 //     default:
-//       return 'bi bi-stars';
+//       return 'bi bi-fire';
 //   }
 // });
 
@@ -906,4 +907,10 @@ onUnmounted(() => {
 @import './styles/perplexity.css';
 /* Import existing styles for components that need them */
 @import './styles/index.css';
+
+/* Add custom styles for logo */
+.logo-png {
+  width: 100px; /* Adjust width as needed */
+  height: auto; /* Maintain aspect ratio */
+}
 </style>

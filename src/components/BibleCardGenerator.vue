@@ -41,7 +41,7 @@
               </div>              <!-- Verse Suggestions -->
               <div v-if="verseSuggestions.length > 0" class="mb-4">
                 <label class="form-label fw-semibold">
-                  <i class="bi bi-stars me-1"></i>{{ $t('bibleCardGenerator.suggestedVerses') }}
+                  <i class="bi bi-fire me-1"></i>{{ $t('bibleCardGenerator.suggestedVerses') }}
                 </label>
                 <div class="verse-suggestions">
                   <button

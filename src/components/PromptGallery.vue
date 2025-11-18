@@ -9,7 +9,7 @@
       <!-- Devotion Prompts -->
       <div class="prompt-section">
         <h4 class="section-title">
-          <i class="bi bi-stars"></i>
+          <i class="bi bi-fire"></i>
           <span>{{ $t('promptGallery.devotionalIdeas') }}</span>
         </h4>
         <div class="prompt-cards">
