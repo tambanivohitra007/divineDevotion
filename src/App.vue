@@ -7,7 +7,7 @@
         <li class="sidenav-logo flexbox-left">
           <a class="sidenav-item-inner flexbox">
             <div class="sidenav-logo-icon">
-              <i class="bi bi-stars"></i>
+              <img src="/icons/logo.png" alt="Divine Devotion Logo" class="logo-image" />
             </div>
           </a>
         </li>
