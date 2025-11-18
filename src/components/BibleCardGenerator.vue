@@ -1,1138 +1,619 @@
+
 <template>
-  <div class="bible-card-generator">
-    <div class="container-fluid">
-      <div class="row">
-        <!-- Input Panel -->
-        <div class="col-lg-5 col-md-6">
-          <div class="card generator-panel">            <div class="card-header">
-              <h4 class="card-title mb-0">
-                <i class="bi bi-palette me-2"></i>
-                {{ $t('bibleCardGenerator.title') }}
-              </h4>
-            </div>
-            <div class="card-body">
-              <!-- Verse Input Section -->
-              <div class="mb-4">
-                <label for="verseInput" class="form-label fw-semibold">
-                  <i class="bi bi-book me-1"></i>{{ $t('bibleCardGenerator.verseReference') }}
-                </label>
-                <div class="input-group">
-                  <input
-                    id="verseInput"
-                    v-model="verseReference"
-                    type="text"
-                    class="form-control"
-                    :placeholder="$t('bibleCardGenerator.placeholder')"
-                    @input="validateVerse"
-                  />
-                  <button 
-                    @click="suggestVerse" 
-                    class="btn btn-outline-secondary"
-                    :disabled="isSuggestingVerse"
-                    :title="$t('bibleCardGenerator.getSuggestions')"
-                  >
-                    <i v-if="isSuggestingVerse" class="bi bi-arrow-repeat spinner"></i>
-                    <i v-else class="bi bi-lightbulb"></i>
-                  </button>
-                </div>
-                <div v-if="verseValidationMessage" class="form-text" :class="verseValidationClass">
-                  {{ verseValidationMessage }}
-                </div>
-              </div>              <!-- Verse Suggestions -->
-              <div v-if="verseSuggestions.length > 0" class="mb-4">
-                <label class="form-label fw-semibold">
-                  <i class="bi bi-fire me-1"></i>{{ $t('bibleCardGenerator.suggestedVerses') }}
-                </label>
-                <div class="verse-suggestions">
-                  <button
-                    v-for="suggestion in verseSuggestions"
-                    :key="suggestion.reference"
-                    @click="selectSuggestion(suggestion)"
-                    class="btn btn-outline-primary btn-sm me-2 mb-2 suggestion-btn"
-                  >
-                    {{ suggestion.reference }}
-                  </button>
-                </div>
-              </div>
+  <div class="bible-card-generator container-fluid py-4">
+    <div class="row g-4">
+      <!-- Controls -->
+      <div class="col-lg-5">
+        <div class="card p-0 h-100">
+          <div class="card-header d-flex align-items-center justify-content-between">
+            <h5 class="mb-0">
+              <i class="bi bi-palette me-2"></i>
+              {{ $t?.('bibleCardGenerator.title') ?? 'Bible Card Generator' }}
+            </h5>
+            <small class="text-muted">Merriweather • Gemini</small>
+          </div>
 
-              <!-- Style Description -->
-              <div class="mb-4">
-                <label for="styleInput" class="form-label fw-semibold">
-                  <i class="bi bi-brush me-1"></i>{{ $t('bibleCardGenerator.backgroundStyle') }}
-                </label>
-                <textarea
-                  id="styleInput"
-                  v-model="styleDescription"
-                  class="form-control"
-                  rows="3"
-                  :placeholder="$t('bibleCardGenerator.stylePlaceholder')"
-                ></textarea>
-                <div class="form-text">
-                  {{ $t('bibleCardGenerator.styleHelp') }}
-                </div>
-              </div>
-
-              <!-- Style Presets -->
-              <div class="mb-4">
-                <label class="form-label fw-semibold">
-                  <i class="bi bi-grid me-1"></i>{{ $t('bibleCardGenerator.stylePresets') }}
-                </label>
-                <div class="style-presets">
-                  <button
-                    v-for="preset in stylePresets"
-                    :key="preset.name"
-                    @click="applyPreset(preset)"
-                    class="btn btn-outline-info btn-sm me-2 mb-2"
-                    :class="{ active: styleDescription === preset.description }"
-                  >
-                    {{ preset.name }}
-                  </button>
-                </div>                <button @click="refineStyle" class="btn btn-link btn-sm p-0" :disabled="isRefiningStyle">
-                  <i v-if="isRefiningStyle" class="bi bi-arrow-repeat spinner me-1"></i>
-                  <i v-else class="bi bi-magic me-1"></i>
-                  {{ $t('bibleCardGenerator.aiEnhancement') }}
+          <div class="card-body">
+            <!-- Verse input -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">
+                <i class="bi bi-book me-1"></i>
+                {{ $t?.('bibleCardGenerator.verseReference') ?? 'Verse Reference' }}
+              </label>
+              <div class="input-group">
+                <input v-model="verseReference" @input="validateVerse" class="form-control" placeholder="John 3:16" />
+                <button class="btn btn-outline-secondary" @click="suggestVerse" :disabled="isSuggestingVerse" title="Suggestions">
+                  <span v-if="isSuggestingVerse" class="spinner small"></span>
+                  <span v-else class="material-symbol material-symbol-sm">lightbulb</span>
                 </button>
               </div>
+              <div v-if="verseValidationMessage" :class="verseValidationClass" class="form-text mt-1">{{ verseValidationMessage }}</div>
+            </div>
 
-              <!-- Custom Background Upload -->
-              <div class="mb-4">
-                <label class="form-label fw-semibold">
-                  <i class="bi bi-image me-1"></i>{{ $t('bibleCardGenerator.customBackground') }}
-                </label>
-                <input
-                  type="file"
-                  class="form-control"
-                  accept="image/*"
-                  @change="handleCustomBackground"
-                  ref="fileInput"
-                />
-                <div class="form-text">
-                  {{ $t('bibleCardGenerator.uploadBackground') }}
-                </div>
-                <div v-if="customBackground" class="mt-2">
-                  <img :src="customBackground" alt="Custom background preview" class="custom-bg-preview" />
-                  <button @click="removeCustomBackground" class="btn btn-sm btn-outline-danger ms-2">
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </div>
-              </div>              <!-- Aspect Ratio Selection -->
-              <div class="mb-4">
-                <label class="form-label fw-semibold">
-                  <i class="bi bi-aspect-ratio me-1"></i>{{ $t('bibleCardGenerator.aspectRatio') }}
-                </label>
-                <div class="aspect-ratio-buttons">
-                  <button
-                    v-for="ratio in aspectRatios"
-                    :key="ratio.name"
-                    @click="selectedAspectRatio = ratio"
-                    class="btn btn-outline-secondary btn-sm me-2 mb-2"
-                    :class="{ active: selectedAspectRatio.name === ratio.name }"
-                  >
-                    {{ ratio.name }}
-                    <small class="d-block">{{ ratio.dimensions }}</small>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Generation Button -->
-              <div class="d-grid">
-                <button
-                  @click="generateCard"
-                  class="btn btn-gradient-primary btn-lg"
-                  :disabled="!canGenerate || isGenerating"
-                >
-                  <i v-if="isGenerating" class="bi bi-arrow-repeat spinner me-2"></i>
-                  <i v-else class="bi bi-magic me-2"></i>
-                  {{ isGenerating ? $t('bibleCardGenerator.generating') : $t('bibleCardGenerator.generateCard') }}
-                </button>
-              </div>
-
-              <!-- Error Display -->
-              <div v-if="error" class="alert alert-danger mt-3" role="alert">
-                <i class="bi bi-exclamation-triangle me-2"></i>
-                {{ error }}
+            <!-- Suggestion buttons -->
+            <div v-if="verseSuggestions.length" class="mb-3">
+              <label class="form-label fw-semibold">Suggested</label>
+              <div class="d-flex flex-wrap gap-2">
+                <button v-for="s in verseSuggestions" :key="s.reference" class="btn btn-sm btn-outline-primary" @click="selectSuggestion(s)">{{ s.reference }}</button>
               </div>
             </div>
+
+            <!-- Style description -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Style / Mood</label>
+              <textarea v-model="styleDescription" class="form-control" rows="2" placeholder="warm, muted, cinematic"></textarea>
+              <div class="mt-2 d-flex gap-2 align-items-center">
+                <button class="btn btn-sm btn-link p-0" @click="refineStyle" :disabled="isRefiningStyle">
+                  <span v-if="isRefiningStyle" class="spinner small"></span>
+                  <span v-else class="material-symbol material-symbol-sm">magic_button</span>
+                  <span class="ms-1">AI refine</span>
+                </button>
+                <small class="text-muted">or pick a preset</small>
+              </div>
+            </div>
+
+            <!-- Presets -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Presets</label>
+              <div class="d-flex flex-wrap gap-2">
+                <button v-for="p in stylePresets" :key="p.name" class="btn btn-sm" :class="styleDescription === p.description ? 'btn-primary' : 'btn-outline-info'" @click="applyPreset(p)">{{ p.name }}</button>
+              </div>
+            </div>
+
+            <!-- Theme selector -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Theme</label>
+              <div class="d-flex flex-wrap gap-2 align-items-center">
+                <button v-for="t in colorThemes" :key="t.name" class="theme-btn btn btn-sm" :title="t.name" :style="{ background: t.bg }" :class="{ selected: selectedTheme.name === t.name }" @click="selectTheme(t)"></button>
+                <small class="text-muted ms-2">{{ selectedTheme.name }}</small>
+              </div>
+            </div>
+
+            <!-- Custom color picker -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Custom Color</label>
+              <div class="d-flex align-items-center gap-2">
+                <input type="color" v-model="customThemeColor" class="form-control form-control-color" />
+                <button class="btn btn-sm btn-outline-secondary" @click="applyCustomColor">Apply</button>
+                <button class="btn btn-sm btn-link text-muted" @click="resetTheme">Reset</button>
+              </div>
+            </div>
+
+            <!-- Generate button -->
+            <div class="d-grid mt-2">
+              <button class="btn btn-gradient-primary btn-lg" @click="generateCard" :disabled="!canGenerate || isGenerating">
+                <span v-if="isGenerating" class="spinner me-2"></span>
+                <span v-else class="material-symbol material-symbol-sm me-2">auto_awesome</span>
+                <span>{{ isGenerating ? 'Generating...' : 'Generate Card' }}</span>
+              </button>
+            </div>
+
+            <div v-if="error" class="alert alert-danger mt-3 py-2"><strong>Error:</strong> {{ error }}</div>
           </div>
         </div>
+      </div>
 
-        <!-- Preview Panel -->
-        <div class="col-lg-7 col-md-6">
-          <div class="card preview-panel">            <div class="card-header d-flex justify-content-between align-items-center">
-              <h5 class="card-title mb-0">
-                <i class="bi bi-eye me-2"></i>{{ $t('bibleCardGenerator.preview') }}
-              </h5>
-              <div v-if="generatedCard" class="card-actions">
-                <button @click="downloadCard" class="btn btn-default btn-sm me-2">
-                  <i class="bi bi-download me-1"></i>{{ $t('bibleCardGenerator.download') }}
-                </button>
-                <button @click="shareCard" class="btn btn-outline-secondary btn-sm me-2">
-                  <i class="bi bi-share me-1"></i>{{ $t('bibleCardGenerator.share') }}
-                </button>
-                <button @click="regenerateCard" class="btn btn-outline-info btn-sm">
-                  <i class="bi bi-arrow-clockwise me-1"></i>{{ $t('bibleCardGenerator.regenerate') }}
-                </button>
+      <!-- Preview & Actions -->
+      <div class="col-lg-7">
+        <div class="card h-100">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="bi bi-eye me-2"></i>{{ $t?.('bibleCardGenerator.preview') ?? 'Preview' }}</h5>
+            <div v-if="generatedCard" class="d-flex gap-2">
+              <button class="btn btn-default btn-sm" @click="downloadCard">
+                <span class="material-symbol">download</span> Export
+              </button>
+              <button class="btn btn-outline-secondary btn-sm" @click="shareCard">Share</button>
+              <button class="btn btn-outline-info btn-sm" @click="regenerateCard">Regenerate</button>
+            </div>
+          </div>
+
+          <div class="card-body d-flex flex-column align-items-center">
+            <div v-if="isGenerating" class="w-100 text-center py-4">
+              <div class="spinner-border text-primary mb-3" style="width:3rem;height:3rem" role="status"><span class="visually-hidden">Loading...</span></div>
+              <p class="mb-1">{{ generationStage }}</p>
+              <div class="progress" style="height:8px">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" :style="{ width: generationProgress + '%' }"></div>
               </div>
             </div>
-            <div class="card-body">              <!-- Loading State -->
-              <div v-if="isGenerating" class="text-center py-5">
-                <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
-                  <span class="visually-hidden">Generating...</span>
-                </div>
-                <h6>{{ $t('bibleCardGenerator.progress.gemini_info') }}</h6>
-                <div class="generation-status mb-3">
-                  <div v-if="generationProgress <= 20" class="text-muted">
-                    <i class="bi bi-search me-1"></i>{{ $t('bibleCardGenerator.progress.validating') }}
-                  </div>
-                  <div v-else-if="generationProgress <= 40" class="text-muted">
-                    <i class="bi bi-book me-1"></i>{{ $t('bibleCardGenerator.progress.fetching') }}
-                  </div>
-                  <div v-else-if="generationProgress <= 60" class="text-muted">
-                    <i class="bi bi-magic me-1"></i>{{ $t('bibleCardGenerator.progress.generating_prompt') }}
-                  </div>                  <div v-else-if="generationProgress <= 70" class="text-muted">
-                    <i class="bi bi-image me-1"></i>{{ $t('bibleCardGenerator.progress.generating_image') }}
-                  </div>
-                  <div v-else-if="generationProgress <= 90" class="text-muted">
-                    <i class="bi bi-image me-1"></i>{{ $t('bibleCardGenerator.progress.finalizing') }}
-                  </div>
-                  <div v-else class="text-success">
-                    <i class="bi bi-check-circle me-1"></i>{{ $t('bibleCardGenerator.progress.ready') }}
+
+            <div v-else-if="generatedCard" class="w-100">
+              <!-- Preview card (solid background with icons & text) -->
+              <div class="bible-card-preview mx-auto" :style="previewStyle">
+                <div class="card-top">
+                  <div class="verse-label">VERSE</div>
+                  <div class="top-right-icon">
+                    <span class="material-symbol material-symbol-lg">menu_book</span>
                   </div>
                 </div>
-                <div class="progress">
-                  <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                       :style="{ width: generationProgress + '%' }"></div>
-                </div>                <small class="text-muted mt-2 d-block">
-                  {{ $t('bibleCardGenerator.progress.gemini_info') }}
-                </small>
-              </div><!-- Generated Card Display -->
-              <div v-else-if="generatedCard" class="generated-card-container">
-                <div 
-                  class="bible-card-preview" 
-                  :style="{ 
-                    aspectRatio: selectedAspectRatio.ratio,
-                    backgroundImage: generatedCard.backgroundImage,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center'
-                  }"
-                >
-                  <div class="card-overlay">
-                    <div class="card-content">
-                      <blockquote class="verse-text">
-                        "{{ generatedCard.verseText }}"
-                      </blockquote>
-                      <cite class="verse-reference">
-                        {{ generatedCard.verseReference }}
-                      </cite>
-                    </div>
+
+                <div class="card-content">
+                  <blockquote class="verse-text">"{{ generatedCard.verseText }}"</blockquote>
+                  <cite class="verse-reference">{{ generatedCard.verseReference }}</cite>
+                </div>
+
+                <div class="card-bottom">
+                  <div class="bottom-left">
+                    <img :src="iconLogoUrl" alt="Logo" width="40" height="40" />
+                    <div class="brand">GOD FIRST</div>
+                  </div>
+                  <div class="bottom-right">
+                    <span class="material-symbol material-symbol-lg">arrow_forward</span>
                   </div>
                 </div>
-                  <!-- AI Generation Info -->
-                <div v-if="!customBackground && lastGeneratedImagePrompt" class="mt-3">
-                  <div class="ai-prompt-info">
-                    <button 
-                      class="btn btn-link btn-sm p-0 text-muted"
-                      type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#aiPromptCollapse"
-                      aria-expanded="false"
-                      aria-controls="aiPromptCollapse"
-                    >
-                      <i class="bi bi-robot me-1"></i>
-                      {{ $t('bibleCardGenerator.ai_prompt.view') }}
-                      <i class="bi bi-chevron-down ms-1"></i>
-                    </button>
-                    <div class="collapse mt-2" id="aiPromptCollapse">
-                      <div class="card card-body bg-light">
-                        <small class="text-muted mb-1">
-                          <i class="bi bi-magic me-1"></i>{{ $t('bibleCardGenerator.ai_prompt.gemini_created') }}
-                        </small>
-                        <p class="mb-0 small fst-italic">{{ lastGeneratedImagePrompt }}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>              <!-- Placeholder State -->
-              <div v-else class="placeholder-state text-center py-5">
-                <i class="bi bi-image display-1 text-muted mb-3"></i>
-                <h5 class="text-muted">{{ $t('bibleCardGenerator.placeholder_state.title') }}</h5>
-                <p class="text-muted">{{ $t('bibleCardGenerator.placeholder_state.subtitle') }}</p>
               </div>
+
+              <!-- Prompt info -->
+              <div v-if="lastGeneratedImagePrompt" class="mt-3">
+                <small class="text-muted">Prompt (used for inspiration):</small>
+                <p class="fst-italic small mb-0">{{ lastGeneratedImagePrompt }}</p>
+              </div>
+            </div>
+
+            <div v-else class="placeholder-state text-center py-5 w-100">
+              <i class="bi bi-image display-1 text-muted mb-3"></i>
+              <h5 class="text-muted">{{ $t?.('bibleCardGenerator.placeholder_state.title') ?? 'No card yet' }}</h5>
+              <p class="text-muted">{{ $t?.('bibleCardGenerator.placeholder_state.subtitle') ?? 'Enter verse & generate' }}</p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </div> 
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 
+/* -------------------------
+ Types
+------------------------- */
 interface BibleCardData {
   verseText: string;
   verseReference: string;
-  backgroundImage: string;
 }
 
-interface VerseSuggestion {
-  reference: string;
-  theme: string;
-}
-
-interface StylePreset {
-  name: string;
-  description: string;
-}
-
-interface AspectRatio {
-  name: string;
-  ratio: string;
-  dimensions: string;
-  width: number;
-  height: number;
-}
-
+/* -------------------------
+ State
+------------------------- */
 const verseReference = ref('');
 const styleDescription = ref('');
-const customBackground = ref<string | null>(null);
+const generatedCard = ref<BibleCardData | null>(null);
+
+const verseSuggestions = ref<{ reference: string; theme?: string }[]>([]);
+const verseValidationMessage = ref('');
+const generationProgress = ref(0);
+
 const isGenerating = ref(false);
 const isSuggestingVerse = ref(false);
 const isRefiningStyle = ref(false);
 const error = ref<string | null>(null);
-const generatedCard = ref<BibleCardData | null>(null);
-const verseSuggestions = ref<VerseSuggestion[]>([]);
-const verseValidationMessage = ref('');
-const generationProgress = ref(0);
-const fileInput = ref<HTMLInputElement | null>(null);
+
 const lastGeneratedImagePrompt = ref<string | null>(null);
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
 
-// Book name mapping for API compatibility
-const bookNameMap: Record<string, string> = {
-  'psalm': 'psalms',
-  'songofsolomon': 'songofsolomon',
-  'songofsongsofsolomon': 'songofsolomon'
-};
-
-const stylePresets: StylePreset[] = [
-  { name: 'Serene Dawn', description: 'peaceful sunrise over calm waters with soft golden light and gentle mist' },
-  { name: 'Mountain Peace', description: 'majestic mountains with flowing streams and soft morning light' },
-  { name: 'Heavenly Light', description: 'divine rays of light breaking through clouds with ethereal glow' },
-  { name: 'Garden Paradise', description: 'beautiful garden with blooming flowers and gentle sunlight' },
-  { name: 'Ocean Tranquility', description: 'calm ocean waves with peaceful sunset and soft colors' },
-  { name: 'Forest Sanctuary', description: 'peaceful forest path with dappled sunlight through trees' },
-  { name: 'Desert Oasis', description: 'serene desert landscape with palm trees and clear water' },
-  { name: 'Starry Night', description: 'peaceful night sky with gentle stars and soft moonlight' }
+/* -------------------------
+ Fonts, Presets, Themes
+------------------------- */
+const stylePresets = [
+  { name: 'Warm Dawn', description: 'soft sunrise glow, golden rim light, calm atmosphere' },
+  { name: 'Quiet Forest', description: 'misty trees, soft green tones, gentle sunbeams' },
+  { name: 'Ocean Calm', description: 'wide calm sea, pastel sunset, tranquil vibe' }
 ];
 
-const aspectRatios: AspectRatio[] = [
-  { name: 'Landscape', ratio: '16/9', dimensions: '16:9', width: 1600, height: 900 },
-  { name: 'Square', ratio: '1/1', dimensions: '1:1', width: 1080, height: 1080 },
-  { name: 'Portrait', ratio: '9/16', dimensions: '9:16', width: 1080, height: 1920 },
-  { name: 'Classic', ratio: '4/3', dimensions: '4:3', width: 1200, height: 900 },
-  { name: 'Wide', ratio: '21/9', dimensions: '21:9', width: 2560, height: 1097 }
+const colorThemes = [
+  { name: 'Red Devotional', bg: '#9C4F55', text: '#FFFFFF' },
+  { name: 'Midnight Blue', bg: '#1D2A44', text: '#FFFFFF' },
+  { name: 'Olive Green', bg: '#556B2F', text: '#FFFFFF' },
+  { name: 'Royal Purple', bg: '#4A2B63', text: '#FFFFFF' },
+  { name: 'Warm Sand', bg: '#D4C7B0', text: '#3A2E2E' }
 ];
 
-const selectedAspectRatio = ref<AspectRatio>(aspectRatios[0]);
+const selectedTheme = ref(colorThemes[0]);
 
-const canGenerate = computed(() => {
-  return verseReference.value.trim() && (styleDescription.value.trim() || customBackground.value);
+/* custom theme color picker */
+const customThemeColor = ref('#9C4F55');
+
+/* icon/logo URL (logo should be placed in public/icons/logo.png) */
+const iconLogoUrl = '/icons/logo.png';
+
+/* -------------------------
+ Computed
+------------------------- */
+const canGenerate = computed(() => !!verseReference.value.trim());
+const verseValidationClass = computed(() => verseValidationMessage.value.toLowerCase().includes('valid') ? 'text-success' : 'text-warning');
+
+const previewStyle = computed(() => {
+  const bg = selectedTheme.value.bg;
+  const text = selectedTheme.value.text;
+  return {
+    background: bg,
+    color: text
+  } as Record<string,string>;
 });
 
-const verseValidationClass = computed(() => {
-  if (!verseValidationMessage.value) return '';
-  return verseValidationMessage.value.includes('Valid') ? 'text-success' : 'text-warning';
-});
-
-// Book name mapping helper
-const mapBookName = (book: string): string => {
-  const normalizedBook = book.toLowerCase().replace(/\s+/g, '');
-  return bookNameMap[normalizedBook] || normalizedBook;
-};
-
-// Validate verse reference
+/* -------------------------
+ Simple verse validation & fetch (keeps your existing API usage)
+------------------------- */
 const validateVerse = () => {
-  const verse = verseReference.value.trim();
-  if (!verse) {
-    verseValidationMessage.value = '';
-    return;
-  }
-  
-  const match = verse.match(/^(\d*\s*[a-zA-Z\s]+)\s*(\d+):(\d+)(?:-(\d+))?$/);
-  if (match) {
-    verseValidationMessage.value = 'Valid verse reference format';
-  } else {
-    verseValidationMessage.value = 'Please use format: Book Chapter:Verse (e.g., John 3:16)';
-  }
+  const v = verseReference.value.trim();
+  if (!v) { verseValidationMessage.value = ''; return; }
+  const match = v.match(/^(\d*\s*[A-Za-z\s]+)\s+(\d+):(\d+)(?:-(\d+))?$/);
+  verseValidationMessage.value = match ? 'Valid verse reference format' : 'Please use format: Book Chapter:Verse (e.g., John 3:16)';
 };
 
-// Fetch verse text with book name mapping
-const fetchVerseText = async (verseRef: string): Promise<string> => {
+/* fetch verse text (static KJV JSON) */
+const mapBookName = (book: string) => {
+  const b = book.toLowerCase().replace(/\s+/g, '');
+  const map: Record<string,string> = { psalm: 'psalms', psalms: 'psalms', songofsolomon: 'songofsolomon' };
+  return map[b] || b;
+};
+const fetchVerseText = async (verseRef: string) => {
   try {
-    const match = verseRef.match(/^(\d*\s*[a-zA-Z\s]+)\s*(\d+):(\d+)(?:-(\d+))?$/);
+    const match = verseRef.match(/^(\d*\s*[A-Za-z\s]+)\s+(\d+):(\d+)(?:-(\d+))?$/);
     if (!match) return '';
-    
-    const bookName = match[1].trim();
-    const mappedBook = mapBookName(bookName);
-    const chapter = match[2];
-    const verse = match[3];
-    
-    const apiUrl = `https://cdn.jsdelivr.net/gh/wldeh/bible-api/bibles/en-kjv/books/${mappedBook}/chapters/${chapter}/verses/${verse}.json`;
-    const response = await fetch(apiUrl);
-    
-    if (!response.ok) return '';
-    
-    const data = await response.json();
-    return data.text ? data.text.trim() : '';
-  } catch {
+    const book = mapBookName(match[1].trim());
+    const chapter = match[2], verse = match[3];
+    const apiUrl = `https://cdn.jsdelivr.net/gh/wldeh/bible-api/bibles/en-kjv/books/${book}/chapters/${chapter}/verses/${verse}.json`;
+    const resp = await fetch(apiUrl);
+    if (!resp.ok) return '';
+    const json = await resp.json();
+    return (json.text || '').trim();
+  } catch (e) {
+    console.error(e);
     return '';
   }
 };
 
-// Suggest verses using Gemini
+/* -------------------------
+ Gemini helpers (text tasks)
+------------------------- */
 const suggestVerse = async () => {
-  if (!GEMINI_API_KEY) {
-    error.value = 'Gemini API key not configured';
-    return;
-  }
-
+  if (!GEMINI_API_KEY) { error.value = 'Gemini API key not configured'; return; }
   isSuggestingVerse.value = true;
-  error.value = null;
-
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: `Suggest 6 popular and meaningful Bible verses with their themes. Format your response as JSON array with objects containing "reference" and "theme" fields. For example: [{"reference": "John 3:16", "theme": "God's Love"}, {"reference": "Psalm 23:1", "theme": "Trust and Guidance"}]. Include verses about hope, love, strength, peace, faith, and comfort.`
-          }]
-        }],
-        generationConfig: {
-          temperature: 0.7,
-          topK: 40,
-          topP: 0.95,
-        }
-      }),
+    const body = {
+      contents: [{ parts: [{ text: 'Provide 6 Bible verse references (reference and theme) as a JSON array like [{\"reference\":\"John 3:16\",\"theme\":\"Love\"}, ...]' }] }],
+      generationConfig: { temperature: 0.2 }
+    };
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
     });
-
-    if (!response.ok) throw new Error('Failed to get verse suggestions');
-
-    const data = await response.json();
-    const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    
-    if (content) {
+    const data = await res.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (text) {
       try {
-        const suggestions = JSON.parse(content);
-        if (Array.isArray(suggestions)) {
-          verseSuggestions.value = suggestions;
-        }
+        const parsed = JSON.parse(text);
+        if (Array.isArray(parsed)) verseSuggestions.value = parsed;
+        else throw new Error('unexpected');
       } catch {
-        // Fallback suggestions
-        verseSuggestions.value = [
-          { reference: 'John 3:16', theme: 'God\'s Love' },
-          { reference: 'Psalm 23:1', theme: 'Trust' },
-          { reference: 'Romans 8:28', theme: 'God\'s Plan' },
-          { reference: 'Philippians 4:13', theme: 'Strength' },
-          { reference: 'Jeremiah 29:11', theme: 'Hope' },
-          { reference: 'Matthew 11:28', theme: 'Rest' }
-        ];
+        const match = text.match(/\[.*\]/s);
+        if (match) verseSuggestions.value = JSON.parse(match[0]);
+        else verseSuggestions.value = [{ reference: 'John 3:16', theme: 'Love' }, { reference: 'Psalm 23:1', theme: 'Trust' }];
       }
     }
-  } catch (err) {
-    console.error('Error getting verse suggestions:', err);
-    error.value = 'Failed to get verse suggestions';
-  } finally {
-    isSuggestingVerse.value = false;
-  }
+  } catch (e) {
+    console.error(e);
+    verseSuggestions.value = [{ reference: 'John 3:16', theme: 'Love' }, { reference: 'Psalm 23:1', theme: 'Trust' }];
+  } finally { isSuggestingVerse.value = false; }
 };
 
-// Select a suggested verse
-const selectSuggestion = (suggestion: VerseSuggestion) => {
-  verseReference.value = suggestion.reference;
-  validateVerse();
-  verseSuggestions.value = [];
-};
+const selectSuggestion = (s: { reference: string }) => { verseReference.value = s.reference; verseSuggestions.value = []; validateVerse(); };
 
-// Apply style preset
-const applyPreset = (preset: StylePreset) => {
-  styleDescription.value = preset.description;
-};
+const applyPreset = (p: { description: string }) => styleDescription.value = p.description;
 
-// Refine style description with AI
 const refineStyle = async () => {
   if (!GEMINI_API_KEY || !styleDescription.value.trim()) return;
-
   isRefiningStyle.value = true;
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: `Enhance this background description for a Bible verse card to be more detailed and visually descriptive: "${styleDescription.value}". Make it cinematic and spiritually inspiring while keeping it concise (max 100 words). Focus on lighting, colors, atmosphere, and peaceful spiritual elements.`
-          }]
-        }],
-        generationConfig: {
-          temperature: 0.8,
-          topK: 40,
-          topP: 0.95,
-        }
-      }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      const enhanced = data.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (enhanced) {
-        styleDescription.value = enhanced.trim();
-      }
-    }
-  } catch (err) {
-    console.error('Error refining style:', err);
-  } finally {
-    isRefiningStyle.value = false;
-  }
-};
-
-// Handle custom background upload
-const handleCustomBackground = (event: Event) => {
-  const file = (event.target as HTMLInputElement).files?.[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      customBackground.value = e.target?.result as string;
+    const body = {
+      contents: [{ parts: [{ text: `Refine this style into 2-3 evocative sentences for an illustration prompt: "${styleDescription.value}"` }] }],
+      generationConfig: { temperature: 0.6 }
     };
-    reader.readAsDataURL(file);
-  }
-};
-
-// Remove custom background
-const removeCustomBackground = () => {
-  customBackground.value = null;
-  if (fileInput.value) {
-    fileInput.value.value = '';
-  }
-};
-
-// Generate detailed image prompt using Gemini AI
-const generateImagePrompt = async (verseText: string, verseRef: string, styleDescription: string): Promise<string> => {
-  try {
-    const prompt = `Based on this Bible verse: "${verseText}" (${verseRef}) and style description: "${styleDescription}", create a detailed, beautiful image description that would be perfect for a spiritual Bible verse card background. The image should be photorealistic, peaceful, and spiritually inspiring. Include specific details about lighting, colors, composition, and mood. Focus on natural scenes that reflect the verse's meaning and create a serene atmosphere suitable for prayer and reflection.`;
-
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        prompt: prompt, // Text description for the image
-        generationConfig: {
-          numberOfImages: 4, // Generate up to 4 images
-          aspectRatio: "16:9", // Adjust the image ratio
-          safetyFilterLevel: "medium", // Content filtering level
-          personGeneration: "allow" // Enable realistic human generation
-        }
-      }),
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
     });
-
-    if (response.ok) {
-      const data = await response.json();
-      const imagePrompt = data.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (imagePrompt) {
-        return imagePrompt.trim();
-      }
-    }
-    
-    // Fallback to default prompt if API fails
-    return `Beautiful ${styleDescription} scene with peaceful lighting, spiritual atmosphere, perfect for Bible verse card background`;
-  } catch (err) {
-    console.error('Error generating image prompt:', err);
-    return `Beautiful ${styleDescription} scene with peaceful lighting, spiritual atmosphere, perfect for Bible verse card background`;
-  }
+    const data = await res.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (text) styleDescription.value = text.trim();
+  } catch (e) {
+    console.error(e);
+  } finally { isRefiningStyle.value = false; }
 };
 
-// Generate background image using AI (Real Gemini Imagen API implementation)
-const generateBackgroundImage = async (prompt: string): Promise<string> => {
-  try {
-    // --- Call Gemini API for Image Generation (Imagen 3) ---
-    // IMPORTANT: Replace with your actual API key and endpoint setup
-    // This is a conceptual representation. You'll need to handle API key security.
-    const apiKey = GEMINI_API_KEY; // In a real app, DO NOT embed API key here. Use a backend proxy or secure environment variable.
-                           // Canvas will inject the key if it's empty.
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+/* -------------------------
+ Main generate flow (creates the card data)
+------------------------- */
+const generationStage = computed(() => {
+  if (generationProgress.value < 25) return 'Validating...';
+  if (generationProgress.value < 50) return 'Fetching verse...';
+  if (generationProgress.value < 70) return 'Composing...';
+  if (generationProgress.value < 95) return 'Finalizing...';
+  return 'Ready';
+});
 
-    const payload = {
-        instances: [{ "prompt": prompt }],
-        parameters: { "sampleCount": 1 }
-    };
-
-    const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        console.error('API Error:', errorData);
-        throw new Error(`API request failed: ${errorData.error?.message || response.statusText}`);
-    }
-
-    const result = await response.json();
-
-    if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
-        const imageUrl = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
-        console.log('Successfully generated image with Gemini Imagen API');
-        return `url(${imageUrl})`;
-    } else {
-        console.error('Unexpected API response structure:', result);
-        throw new Error('Failed to get image from API response. No predictions found or missing image data.');
-    }
-
-  } catch (error) {
-    console.error('Error generating image:', error);
-    // Fallback to gradient background on error
-    console.log('Falling back to gradient background due to API error');
-    return createStyledBackground(prompt);
-  }
-};
-
-// Create sophisticated gradient background based on AI prompt analysis
-const createStyledBackground = (description: string): string => {
-  const desc = description.toLowerCase();
-  
-  // Enhanced gradient selection based on AI-generated descriptions
-  if (desc.includes('sunrise') || desc.includes('dawn') || desc.includes('golden') || desc.includes('warm light')) {
-    return 'linear-gradient(135deg, #ff9a9e 0%, #fad0c4 30%, #ffd89b 60%, #f093fb 100%)';
-  } else if (desc.includes('mountain') || desc.includes('peaks') || desc.includes('majestic') || desc.includes('rocky')) {
-    return 'linear-gradient(135deg, #667eea 0%, #764ba2 40%, #a8edea 70%, #d3cce3 100%)';
-  } else if (desc.includes('ocean') || desc.includes('water') || desc.includes('sea') || desc.includes('blue') || desc.includes('tranquil')) {
-    return 'linear-gradient(135deg, #74b9ff 0%, #0984e3 30%, #00cec9 60%, #55a3ff 100%)';
-  } else if (desc.includes('garden') || desc.includes('flower') || desc.includes('green') || desc.includes('paradise') || desc.includes('meadow')) {
-    return 'linear-gradient(135deg, #56ab2f 0%, #a8e6cf 40%, #c3f0ca 60%, #ffd3a5 100%)';
-  } else if (desc.includes('heavenly') || desc.includes('divine') || desc.includes('light') || desc.includes('ethereal') || desc.includes('spiritual')) {
-    return 'linear-gradient(135deg, #667eea 0%, #764ba2 20%, #f093fb 40%, #f5576c 60%, #4facfe 80%, #00f2fe 100%)';
-  } else if (desc.includes('forest') || desc.includes('sanctuary') || desc.includes('peaceful') || desc.includes('trees')) {
-    return 'linear-gradient(135deg, #134e5e 0%, #71b280 40%, #a8e6cf 70%, #c3f0ca 100%)';
-  } else if (desc.includes('desert') || desc.includes('oasis') || desc.includes('warm') || desc.includes('sand')) {
-    return 'linear-gradient(135deg, #f093fb 0%, #f5576c 30%, #ffd89b 60%, #ff8a80 100%)';
-  } else if (desc.includes('night') || desc.includes('star') || desc.includes('moon') || desc.includes('dark')) {
-    return 'linear-gradient(135deg, #2c3e50 0%, #3498db 30%, #9b59b6 60%, #667eea 100%)';
-  } else if (desc.includes('cloud') || desc.includes('sky') || desc.includes('heavens')) {
-    return 'linear-gradient(135deg, #74b9ff 0%, #667eea 40%, #764ba2 70%, #f093fb 100%)';
-  } else if (desc.includes('fire') || desc.includes('flame') || desc.includes('burning')) {
-    return 'linear-gradient(135deg, #ff6b6b 0%, #ffa726 30%, #ffcc02 60%, #ff8a65 100%)';
-  } else {
-    // Default divine gradient with more colors
-    return 'linear-gradient(135deg, #667eea 0%, #764ba2 30%, #f093fb 60%, #4facfe 100%)';
-  }
-};
-
-// Generate the Bible card
 const generateCard = async () => {
   if (!canGenerate.value) return;
-
-  isGenerating.value = true;
   error.value = null;
-  generationProgress.value = 0;
+  isGenerating.value = true;
+  generationProgress.value = 5;
 
   try {
-    // Progress: Validating input
-    generationProgress.value = 20;
-    
-    // Get verse text
+    generationProgress.value = 25;
     const verseText = await fetchVerseText(verseReference.value);
-    if (!verseText) {
-      throw new Error('Unable to fetch verse text. Please check the verse reference.');
-    }
-    
-    generationProgress.value = 40;
-      // Generate or use background
-    let backgroundImage: string;
-    if (customBackground.value) {
-      backgroundImage = `url(${customBackground.value})`;
-      lastGeneratedImagePrompt.value = null; // Clear prompt for custom backgrounds
+    if (!verseText) throw new Error('Unable to fetch verse text; check the reference.');
+
+    generationProgress.value = 60;
+
+    // Optional: use AI to help craft a slightly longer verse display or style hint
+    if (styleDescription.value.trim() && GEMINI_API_KEY) {
+      try {
+        const prompt = `Create a concise display sentence (8-30 words) to pair with this verse for a devotional card.
+Verse: "${verseText}" (${verseReference.value})
+Style cues: "${styleDescription.value}"`;
+        const body = { contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.6 } };
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text) lastGeneratedImagePrompt.value = text.trim();
+      } catch (e) {
+        lastGeneratedImagePrompt.value = null;
+      }
     } else {
-      // Generate AI-powered image prompt and background
-      generationProgress.value = 60;
-      const imagePrompt = await generateImagePrompt(verseText, verseReference.value, styleDescription.value);
-      lastGeneratedImagePrompt.value = imagePrompt; // Store the generated prompt
-      generationProgress.value = 70;
-      backgroundImage = await generateBackgroundImage(imagePrompt);
+      lastGeneratedImagePrompt.value = null;
     }
-    
+
     generationProgress.value = 90;
-    
-    // Create card data
-    const cardData: BibleCardData = {
-      verseText,
-      verseReference: verseReference.value,
-      backgroundImage
-    };
-    
+    generatedCard.value = { verseText, verseReference: verseReference.value.trim() };
     generationProgress.value = 100;
-    
-    generatedCard.value = cardData;
-    
-  } catch (err) {
-    console.error('Error generating card:', err);
-    error.value = err instanceof Error ? err.message : 'Failed to generate card';
+  } catch (e: any) {
+    console.error(e);
+    error.value = e?.message || 'Failed to generate card';
   } finally {
     isGenerating.value = false;
-    generationProgress.value = 0;
+    setTimeout(() => (generationProgress.value = 0), 500);
   }
 };
 
-// Regenerate the current card
-const regenerateCard = () => {
-  if (generatedCard.value) {
-    generateCard();
-  }
+const regenerateCard = () => { if (generatedCard.value) generateCard(); };
+
+/* -------------------------
+ Theme selection utilities
+------------------------- */
+const selectTheme = (t: { name: string; bg: string; text: string }) => selectedTheme.value = t;
+const applyCustomColor = () => {
+  selectedTheme.value = {
+    name: 'Custom Color',
+    bg: customThemeColor.value,
+    text: pickTextColorBasedOnBg(customThemeColor.value)
+  };
+};
+const resetTheme = () => selectedTheme.value = colorThemes[0];
+
+const pickTextColorBasedOnBg = (hex: string) => {
+  const c = hex.replace('#','');
+  const r = parseInt(c.substr(0,2),16);
+  const g = parseInt(c.substr(2,2),16);
+  const b = parseInt(c.substr(4,2),16);
+  const brightness = (r*299 + g*587 + b*114)/1000;
+  return brightness > 140 ? '#000000' : '#FFFFFF';
 };
 
-// Download card as image
+/* -------------------------
+ Download: draw card onto canvas (matching preview)
+ - Draw solid background
+ - Render Material Symbols (font glyphs) and logo PNG onto canvas
+ - Wait for fonts to load before drawing icons
+------------------------- */
+
+const waitForFonts = async () => {
+  try {
+    // Ensure Merriweather and Material Symbols are loaded
+    await (document as any).fonts.load("16px 'Merriweather'");
+    await (document as any).fonts.load("16px 'Material Symbols Outlined'");
+    // tiny delay
+    await new Promise((r) => setTimeout(r, 120));
+  } catch (e) { /* ignore */ }
+};
+
+const drawMaterialIcon = (ctx: CanvasRenderingContext2D, glyph: string, x: number, y: number, size: number, color: string) => {
+  ctx.save();
+  ctx.fillStyle = color;
+  ctx.textBaseline = 'top';
+  ctx.font = `${size}px 'Material Symbols Outlined'`;
+  ctx.fillText(glyph, x, y);
+  ctx.restore();
+};
+
+const drawImageFromUrl = (ctx: CanvasRenderingContext2D, url: string, x: number, y: number, w: number, h: number) => {
+  return new Promise<void>((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => { try { ctx.drawImage(img, x, y, w, h); } catch(e){}; resolve(); };
+    img.onerror = () => resolve();
+    img.src = url;
+  });
+};
+
 const downloadCard = async () => {
   if (!generatedCard.value) return;
-  
-  try {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    
-    // Set dimensions based on selected aspect ratio
-    canvas.width = selectedAspectRatio.value.width;
-    canvas.height = selectedAspectRatio.value.height;
-      // Create background
-    if (customBackground.value) {
-      // Draw custom background image
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => {
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        drawTextOnCanvas(ctx, canvas);
-        downloadCanvasAsImage(canvas);
-      };
-      img.src = customBackground.value;
-    } else {
-      // Check if we have an AI-generated image or gradient
-      const bgImage = generatedCard.value.backgroundImage;
-      
-      if (bgImage.startsWith('url(data:image/')) {
-        // Extract the data URL from the CSS url() format
-        const dataUrl = bgImage.match(/url\((.*?)\)/)?.[1];
-        if (dataUrl) {
-          // Draw AI-generated background image
-          const img = new Image();
-          img.crossOrigin = 'anonymous';
-          img.onload = () => {
-            // Draw image to fill canvas while maintaining aspect ratio
-            const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
-            const x = (canvas.width - img.width * scale) / 2;
-            const y = (canvas.height - img.height * scale) / 2;
-            
-            ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
-            drawTextOnCanvas(ctx, canvas);
-            downloadCanvasAsImage(canvas);
-          };
-          img.onerror = () => {
-            // Fallback to gradient if image fails to load
-            console.warn('Failed to load AI image for download, using gradient fallback');
-            drawGradientBackground(ctx, canvas, bgImage);
-            drawTextOnCanvas(ctx, canvas);
-            downloadCanvasAsImage(canvas);
-          };
-          img.src = dataUrl;
-        } else {
-          // Fallback to gradient
-          drawGradientBackground(ctx, canvas, bgImage);
-          drawTextOnCanvas(ctx, canvas);
-          downloadCanvasAsImage(canvas);
-        }
-      } else {
-        // Draw gradient background (legacy)
-        drawGradientBackground(ctx, canvas, bgImage);
-        drawTextOnCanvas(ctx, canvas);
-        downloadCanvasAsImage(canvas);
-      }
-    }
-    
-  } catch (err) {
-    console.error('Error downloading card:', err);
-    error.value = 'Failed to download card';
-  }
-};
+  await waitForFonts();
 
-// Helper function to draw gradient background
-const drawGradientBackground = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, bgImage: string) => {
-  const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-  
-  // Parse gradient colors from CSS gradient
-  if (bgImage.includes('#667eea')) {
-    gradient.addColorStop(0, '#667eea');
-    gradient.addColorStop(0.5, '#764ba2');
-    gradient.addColorStop(1, '#f093fb');
-  } else if (bgImage.includes('#74b9ff')) {
-    gradient.addColorStop(0, '#74b9ff');
-    gradient.addColorStop(1, '#0984e3');
-  } else if (bgImage.includes('#ff9a9e')) {
-    gradient.addColorStop(0, '#ff9a9e');
-    gradient.addColorStop(0.3, '#fad0c4');
-    gradient.addColorStop(0.6, '#ffd89b');
-    gradient.addColorStop(1, '#f093fb');
-  } else {
-    // Default gradient
-    gradient.addColorStop(0, '#667eea');
-    gradient.addColorStop(1, '#764ba2');
-  }
-  
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-};
+  const width = 1600;
+  const height = Math.round(width * 9 / 16);
 
-// Helper function to draw text on canvas
-const drawTextOnCanvas = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
-  if (!generatedCard.value) return;
-  
-  // Add overlay
-  const overlayGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-  overlayGradient.addColorStop(0, 'rgba(0, 0, 0, 0.3)');
-  overlayGradient.addColorStop(0.5, 'rgba(0, 0, 0, 0.1)');
-  overlayGradient.addColorStop(1, 'rgba(0, 0, 0, 0.3)');
-  ctx.fillStyle = overlayGradient;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
-  // Text settings
-  ctx.fillStyle = 'white';
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d')!;
+  const bg = selectedTheme.value.bg;
+  const fg = selectedTheme.value.text;
+
+  // fill background
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,width,height);
+
+  // padding and layout metrics
+  const padding = Math.round(width * 0.06);
+
+  // top-left label "VERSE"
+  ctx.fillStyle = fg;
+  ctx.font = `${Math.round(height * 0.032)}px 'Merriweather', Georgia, serif`;
+  ctx.textBaseline = 'top';
+  ctx.textAlign = 'left';
+  ctx.fillText('VERSE', padding, padding);
+
+  // draw top-right material icon (menu_book)
+  const iconSize = Math.round(height * 0.04);
+  drawMaterialIcon(ctx, 'menu_book', width - padding - iconSize - 4, padding, iconSize, fg);
+
+  // center verse text (wrapped)
+  ctx.fillStyle = fg;
   ctx.textAlign = 'center';
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-  ctx.shadowBlur = 4;
-  ctx.shadowOffsetX = 2;
-  ctx.shadowOffsetY = 2;
-  
-  // Calculate font sizes based on canvas size
-  const baseFontSize = Math.min(canvas.width, canvas.height) / 20;
-  const verseFontSize = baseFontSize;
-  const refFontSize = baseFontSize * 0.7;
-  
-  // Draw verse text
-  ctx.font = `italic ${verseFontSize}px Georgia, serif`;
-  
-  const verseText = `"${generatedCard.value.verseText}"`;
-  const words = verseText.split(' ');
-  const lines: string[] = [];
-  let currentLine = '';
-  const maxWidth = canvas.width * 0.8;
-  
-  for (const word of words) {
-    const testLine = currentLine + word + ' ';
-    const metrics = ctx.measureText(testLine);
-    if (metrics.width > maxWidth && currentLine !== '') {
-      lines.push(currentLine.trim());
-      currentLine = word + ' ';
-    } else {
-      currentLine = testLine;
-    }
-  }
-  lines.push(currentLine.trim());
-  
-  // Center the text vertically
-  const lineHeight = verseFontSize * 1.4;
-  const totalTextHeight = lines.length * lineHeight + refFontSize + 40;
-  const startY = (canvas.height - totalTextHeight) / 2;
-  
-  // Draw verse lines
-  lines.forEach((line, index) => {
-    ctx.fillText(line, canvas.width / 2, startY + (index * lineHeight));
-  });
-  
-  // Draw reference
-  ctx.font = `bold ${refFontSize}px Arial, sans-serif`;
-  ctx.fillText(
-    generatedCard.value.verseReference, 
-    canvas.width / 2, 
-    startY + (lines.length * lineHeight) + 60
-  );
-};
+  const verseFontSize = Math.round(height * 0.045);
+  ctx.font = `italic ${verseFontSize}px 'Merriweather', Georgia, serif`;
+  const verse = `"${generatedCard.value.verseText}"`;
+  const maxWidth = Math.round(width * 0.78);
+  const lines = wrapText(ctx, verse, maxWidth);
+  const lineHeight = Math.round(verseFontSize * 1.2);
+  let startY = Math.round(height * 0.28) - Math.floor(lines.length / 2) * lineHeight;
+  lines.forEach((l, i) => ctx.fillText(l, width / 2, startY + i * lineHeight));
 
-// Helper function to download canvas as image
-const downloadCanvasAsImage = (canvas: HTMLCanvasElement) => {
-  if (!generatedCard.value) return;
-  
+  // reference
+  ctx.font = `700 ${Math.round(height * 0.03)}px 'Merriweather', Georgia, serif`;
+  ctx.fillText(generatedCard.value.verseReference, width / 2, startY + lines.length * lineHeight + Math.round(height * 0.04));
+
+  // bottom-left logo + brand
+  const logoSize = Math.round(height * 0.065);
+  await drawImageFromUrl(ctx, iconLogoUrl, padding, height - padding - logoSize, logoSize, logoSize);
+  ctx.textAlign = 'left';
+  ctx.font = `700 ${Math.round(height * 0.03)}px 'Merriweather', Georgia, serif`;
+  ctx.fillText('GOD FIRST', padding + logoSize + 12, height - padding - 10);
+
+  // bottom-right arrow as material icon
+  drawMaterialIcon(ctx, 'arrow_forward', width - padding - iconSize - 4, height - padding - iconSize - 4, iconSize, fg);
+
+  // export
   const link = document.createElement('a');
-  link.download = `bible-verse-${generatedCard.value.verseReference.replace(/[^a-zA-Z0-9]/g, '-')}-${selectedAspectRatio.value.name.toLowerCase()}.png`;
-  link.href = canvas.toDataURL('image/png', 0.95);
+  link.download = `bible-${generatedCard.value.verseReference.replace(/\W+/g, '-')}.png`;
+  link.href = canvas.toDataURL('image/png');
   link.click();
 };
 
-// Share card
+const wrapText = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number) => {
+  const words = text.split(' ');
+  const lines: string[] = [];
+  let current = '';
+  for (const w of words) {
+    const test = current ? current + ' ' + w : w;
+    if (ctx.measureText(test).width > maxWidth && current) {
+      lines.push(current);
+      current = w;
+    } else current = test;
+  }
+  if (current) lines.push(current);
+  return lines;
+};
+
+/* -------------------------
+ Share (navigator.share fallback)
+------------------------- */
 const shareCard = async () => {
   if (!generatedCard.value) return;
-  
-  const shareData = {
-    title: `Bible Verse: ${generatedCard.value.verseReference}`,
-    text: `"${generatedCard.value.verseText}" - ${generatedCard.value.verseReference}`,
-  };
-  
+  const text = `"${generatedCard.value.verseText}" — ${generatedCard.value.verseReference}`;
   try {
     if (navigator.share) {
-      await navigator.share(shareData);
+      await navigator.share({ title: `Bible Verse: ${generatedCard.value.verseReference}`, text });
     } else {
-      await navigator.clipboard.writeText(`${shareData.text}`);
-      // Could show a toast notification here
+      await navigator.clipboard.writeText(text);
+      alert('Verse copied to clipboard');
     }
-  } catch (err) {
-    console.error('Error sharing card:', err);
+  } catch (e) {
+    console.error(e);
   }
 };
 
-// Initialize with validation
+/* -------------------------
+ Watchers
+------------------------- */
 watch(verseReference, validateVerse);
+
+/* -------------------------
+ Expose simple things for template use
+------------------------- */
 </script>
 
 <style scoped>
-.bible-card-generator {
-  padding: 2rem 0;
-}
+/* Load Merriweather and Material Symbols */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
 
-.generator-panel,
-.preview-panel {
-  height: fit-content;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  border: none;
-  border-radius: 15px;
-}
+/* small helper classes for Material Symbols sizes */
+.material-symbol { font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48; display:inline-block; line-height:1; }
+.material-symbol-sm { font-size:16px; }
+.material-symbol-lg { font-size:36px; }
 
-.card-header {
-  /* background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary)); */
-  color: white;
-  border-radius: 15px 15px 0 0 !important;
-}
+/* base */
+.bible-card-generator { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
 
-.btn-gradient-primary {
-  /* background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary)); */
-  border: none;
-  color: white;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-}
+/* Card & header */
+.card { border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); border: none; }
+.card-header { background: linear-gradient(90deg,var(--bs-primary,#667eea),var(--bs-secondary,#764ba2)); color: white; border-radius: 14px 14px 0 0; padding: .75rem 1rem; }
 
-.btn-gradient-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-  color: white;
-}
+/* Buttons */
+.btn-gradient-primary { background: linear-gradient(135deg,#667eea,#764ba2); border: none; color: white; box-shadow: 0 6px 18px rgba(102,126,234,0.25); }
+.btn-gradient-primary:disabled { opacity: 0.6; }
 
-.btn-gradient-primary:disabled {
-  opacity: 0.6;
-  transform: none;
-}
+/* Theme buttons */
+.theme-btn { width: 36px; height: 36px; border-radius: 8px; border: 2px solid transparent; padding: 0; }
+.theme-btn.selected { outline: 3px solid rgba(255,255,255,0.15); transform: translateY(-2px); }
 
-.verse-suggestions,
-.style-presets,
-.aspect-ratio-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.suggestion-btn,
-.style-presets .btn,
-.aspect-ratio-buttons .btn {
-  transition: all 0.3s ease;
-}
-
-.suggestion-btn:hover,
-.style-presets .btn:hover,
-.aspect-ratio-buttons .btn:hover {
-  transform: translateY(-2px);
-}
-
-.style-presets .btn.active,
-.aspect-ratio-buttons .btn.active {
-  background: var(--bs-primary);
-  color: white;
-  border-color: var(--bs-primary);
-}
-
-.custom-bg-preview {
-  width: 100px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 2px solid var(--bs-border-color);
-}
-
+/* Preview card */
 .bible-card-preview {
   width: 100%;
-  min-height: 300px;
-  border-radius: 20px;
-  position: relative;
+  max-width: 820px;
+  border-radius: 18px;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.card-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.3) 0%,
-    rgba(0, 0, 0, 0.1) 50%,
-    rgba(0, 0, 0, 0.3) 100%
-  );
+  position: relative;
+  padding: 48px 56px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.18);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 420px;
+  margin: 0 auto;
 }
 
-.card-content {
-  text-align: center;
-  color: white;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-}
+/* Top row */
+.card-top { display:flex; justify-content:space-between; align-items:center; }
+/* small label */
+.verse-label { font-family: Merriweather, Georgia, serif; letter-spacing: 4px; color: rgba(255,255,255,0.9); font-size: 14px; font-weight: 300; }
 
-.verse-text {
-  font-size: 1.5rem;
-  font-style: italic;
-  font-weight: 300;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-  font-family: 'Georgia', serif;
-}
+/* content */
+.card-content { display:flex; flex-direction:column; align-items:flex-start; text-align:left; margin-top: 36px; margin-bottom: 36px; }
+.verse-text { font-family: 'Merriweather', Georgia, serif; font-size: 22px; font-style: italic; line-height:1.6; color: inherit; margin:0 0 1rem 0; }
+.verse-reference { font-family: 'Merriweather', Georgia, serif; font-weight:700; font-size: 16px; color: inherit; }
 
-.verse-reference {
-  font-size: 1.1rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.9);
-  font-family: 'Arial', sans-serif;
-}
+/* bottom */
+.card-bottom { display:flex; justify-content:space-between; align-items:center; }
+.bottom-left { display:flex; align-items:center; gap:12px; }
+.brand { font-family: 'Merriweather', Georgia, serif; font-weight:700; letter-spacing:1px; color: inherit; }
 
-.placeholder-state {
-  padding: 4rem 2rem;
-}
+/* small preview image for uploaded backgrounds */
+.custom-bg-preview { width: 96px; height: 64px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(0,0,0,0.06); }
 
-.progress {
-  height: 8px;
-  border-radius: 4px;
-}
+/* placeholder */
+.placeholder-state { padding: 4rem 2rem; }
 
-.generation-status {
-  font-size: 0.95rem;
-  font-weight: 500;
-}
+/* spinner small */
+.spinner { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,0.4); border-top-color: rgba(255,255,255,0.9); border-radius:50%; animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
 
-.generation-status i {
-  width: 16px;
-  text-align: center;
-}
-
-.ai-prompt-info {
-  border-top: 1px solid var(--bs-border-color);
-  padding-top: 1rem;
-}
-
-.ai-prompt-info .btn-link {
-  text-decoration: none;
-  font-size: 0.85rem;
-}
-
-.ai-prompt-info .btn-link:hover {
-  text-decoration: underline;
-}
-
-.ai-prompt-info .card {
-  border: 1px solid var(--bs-border-color);
-  border-radius: 8px;
-  background: rgba(248, 249, 250, 0.8);
-}
-
-.ai-prompt-info .card-body {
-  padding: 1rem;
-}
-
-@media (max-width: 768px) {
-  .verse-text {
-    font-size: 1.2rem;
-  }
-  
-  .verse-reference {
-    font-size: 1rem;
-  }
-  
-  .bible-card-preview {
-    min-height: 250px;
-  }
-  
-  .card-overlay {
-    padding: 1.5rem;
-  }
-}
-
-.spinner {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.card-actions .btn {
-  transition: all 0.3s ease;
-}
-
-.card-actions .btn:hover {
-  transform: translateY(-2px);
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .bible-card-generator {
-    padding: 1rem 0;
-  }
-  
-  .verse-text {
-    font-size: 1.2rem;
-  }
-  
-  .verse-reference {
-    font-size: 1rem;
-  }
-  
-  .card-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .card-actions .btn {
-    width: 100%;
-  }
-}
-
-/* Dark mode adjustments */
-[data-bs-theme="dark"] .generator-panel,
-[data-bs-theme="dark"] .preview-panel {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-[data-bs-theme="dark"] .bible-card-preview {
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+/* responsive tweaks */
+@media (max-width: 992px) {
+  .bible-card-preview { padding: 28px; min-height: 340px; }
+  .verse-text { font-size: 18px; }
 }
 </style>
