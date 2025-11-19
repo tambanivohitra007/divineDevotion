@@ -120,24 +120,29 @@
               <!-- Preview card (solid background with icons & text) -->
               <div class="bible-card-preview mx-auto" :style="previewStyle">
                 <div class="card-top">
-                  <div class="verse-label">VERSE</div>
+                  <div class="verse-label">BIBLE VERSE</div>
                   <div class="top-right-icon">
-                    <span class="material-symbol material-symbol-lg">menu_book</span>
+                    <span class="material-symbol material-symbol-lg">auto_stories</span>
                   </div>
                 </div>
 
                 <div class="card-content">
                   <blockquote class="verse-text">"{{ generatedCard.verseText }}"</blockquote>
-                  <cite class="verse-reference">{{ generatedCard.verseReference }}</cite>
+
+                  <!-- NEW big reference placement -->
+                  <div class="reference-under-verse">
+                    — {{ generatedCard.verseReference }}
+                  </div>
                 </div>
+
 
                 <div class="card-bottom">
                   <div class="bottom-left">
-                    <img :src="iconLogoUrl" alt="Logo" width="40" height="40" />
-                    <div class="brand">GOD FIRST</div>
+                    <img :src="iconLogoUrl" alt="Logo" width="40" height="60" />
+                    <div class="brand">DIVINE DEVOTION</div>
                   </div>
                   <div class="bottom-right">
-                    <span class="material-symbol material-symbol-lg">arrow_forward</span>
+                    <span class="material-symbol material-symbol-lg">location_disabled</span>
                   </div>
                 </div>
               </div>
@@ -248,22 +253,40 @@ const mapBookName = (book: string) => {
   const map: Record<string,string> = { psalm: 'psalms', psalms: 'psalms', songofsolomon: 'songofsolomon' };
   return map[b] || b;
 };
+
 const fetchVerseText = async (verseRef: string) => {
   try {
     const match = verseRef.match(/^(\d*\s*[A-Za-z\s]+)\s+(\d+):(\d+)(?:-(\d+))?$/);
     if (!match) return '';
-    const book = mapBookName(match[1].trim());
-    const chapter = match[2], verse = match[3];
-    const apiUrl = `https://cdn.jsdelivr.net/gh/wldeh/bible-api/bibles/en-kjv/books/${book}/chapters/${chapter}/verses/${verse}.json`;
-    const resp = await fetch(apiUrl);
-    if (!resp.ok) return '';
-    const json = await resp.json();
-    return (json.text || '').trim();
+
+    const rawBook = match[1].trim();
+    const chapter = match[2];
+    const startVerse = parseInt(match[3]);
+    const endVerse = match[4] ? parseInt(match[4]) : startVerse;
+
+    const book = mapBookName(rawBook);
+
+    let combined = '';
+
+    for (let v = startVerse; v <= endVerse; v++) {
+      const url = `https://cdn.jsdelivr.net/gh/wldeh/bible-api/bibles/en-kjv/books/${book}/chapters/${chapter}/verses/${v}.json`;
+
+      const resp = await fetch(url);
+      if (!resp.ok) continue;
+
+      const json = await resp.json();
+      const text = (json.text || '').trim();
+
+      combined += `${text} `;
+    }
+
+    return combined.trim();
   } catch (e) {
     console.error(e);
     return '';
   }
 };
+
 
 /* -------------------------
  Gemini helpers (text tasks)
@@ -349,8 +372,8 @@ const generateCard = async () => {
     if (styleDescription.value.trim() && GEMINI_API_KEY) {
       try {
         const prompt = `Create a concise display sentence (8-30 words) to pair with this verse for a devotional card.
-Verse: "${verseText}" (${verseReference.value})
-Style cues: "${styleDescription.value}"`;
+          Verse: "${verseText}" (${verseReference.value})
+          Style cues: "${styleDescription.value}"`;
         const body = { contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.6 } };
         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
@@ -437,6 +460,7 @@ const drawImageFromUrl = (ctx: CanvasRenderingContext2D, url: string, x: number,
   });
 };
 
+
 const downloadCard = async () => {
   if (!generatedCard.value) return;
   await waitForFonts();
@@ -444,61 +468,193 @@ const downloadCard = async () => {
   const width = 1600;
   const height = Math.round(width * 9 / 16);
 
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext("2d")!;
   const bg = selectedTheme.value.bg;
   const fg = selectedTheme.value.text;
 
-  // fill background
+  // ---- Background ----
   ctx.fillStyle = bg;
-  ctx.fillRect(0,0,width,height);
+  ctx.fillRect(0, 0, width, height);
 
-  // padding and layout metrics
   const padding = Math.round(width * 0.06);
 
-  // top-left label "VERSE"
+  // ---- TOP LABEL ----
   ctx.fillStyle = fg;
-  ctx.font = `${Math.round(height * 0.032)}px 'Merriweather', Georgia, serif`;
-  ctx.textBaseline = 'top';
-  ctx.textAlign = 'left';
-  ctx.fillText('VERSE', padding, padding);
+  ctx.font = `${Math.round(height * 0.032)}px 'Merriweather', serif`;
+  ctx.textAlign = "left";
+  ctx.textBaseline = "top";
+  ctx.fillText("B I B L E   V E R S E", padding, padding);
 
-  // draw top-right material icon (menu_book)
-  const iconSize = Math.round(height * 0.04);
-  drawMaterialIcon(ctx, 'menu_book', width - padding - iconSize - 4, padding, iconSize, fg);
+  // ---- TOP ICON (BOOK) ----
+  const bigIconSize = Math.round(height * 0.085);
+  drawMaterialIcon(
+    ctx,
+    "auto_stories",
+    width - padding - bigIconSize + 8,
+    padding + Math.round(height * 0.04),
+    bigIconSize,
+    fg + "55"
+  );
 
-  // center verse text (wrapped)
+
+  // =====================================================================
+  // SMART LAYOUT (prevents overlap)
+  // =====================================================================
+
+  // 1) Watermark (measure)
+  const refText = generatedCard.value.verseReference.toUpperCase();
+  const wmFontSize = Math.round(height * 0.12);
+  ctx.save();
+  ctx.font = `700 ${wmFontSize}px 'Merriweather', serif`;
+  const wmWidth = Math.ceil(ctx.measureText(refText).width);
+  ctx.restore();
+
+  const wmRightMargin = Math.round(width * 0.02);
+  const reservedRight = wmWidth + wmRightMargin;
+
+  // 2) Reserve bottom space for logo + brand
+  const logoHeight = Math.round(height * 0.065);
+  const reservedBottom = logoHeight + Math.round(height * 0.06);
+
+  // 3) Verse text bounding area
+  const contentLeft = padding;
+  const contentRight = width - padding - reservedRight;
+  const contentWidth = Math.max(220, contentRight - contentLeft);
+
+  // 4) Auto shrink font until fits vertically
+  let verseFontSize = Math.round(height * 0.045);
+  let lines: string[] = [];
+  let lineHeight = 0;
+  const maxBlockHeight = height - reservedBottom - Math.round(height * 0.28);
+
+  while (verseFontSize > Math.round(height * 0.028)) {
+    ctx.font = `italic ${verseFontSize}px 'Merriweather', serif`;
+    lineHeight = Math.round(verseFontSize * 1.25);
+
+    lines = wrapText(ctx, `"${generatedCard.value.verseText}"`, contentWidth);
+
+    const totalHeight = lines.length * lineHeight;
+
+    if (totalHeight < maxBlockHeight) break;
+
+    verseFontSize = Math.floor(verseFontSize * 0.94);
+  }
+
+  // 5) Verse Y starting position
+  const desiredStartY = Math.round(height * 0.33);
+  const maxStartY = height - reservedBottom - (lines.length * lineHeight) - 10;
+  const startY = Math.min(desiredStartY, Math.max(Math.round(height * 0.20), maxStartY));
+
+  // 6) Draw watermark (behind)
+  // ctx.save();
+  // ctx.font = `700 ${wmFontSize}px 'Merriweather', serif`;
+  // ctx.fillStyle = fg + "44"; // softer opacity
+  // ctx.textAlign = "right";
+  // ctx.textBaseline = "middle";
+  // ctx.fillText(refText, width - wmRightMargin, height / 2 + Math.round(height * 0.02));
+  // ctx.restore();
+
+  // 7) Draw verse block
+  // ctx.save();
+  // ctx.fillStyle = fg;
+  // ctx.textAlign = "left";
+  // ctx.font = `italic ${verseFontSize}px 'Merriweather', serif`;
+
+  lines.forEach((l, i) => {
+    ctx.fillText(l, contentLeft, startY + i * lineHeight);
+  });
+
+  ctx.restore();
+
+    // const bigRef = generatedCard.value.verseReference.toUpperCase();
+    const bigRefFont = Math.round(height * 0.11);
+
+    ctx.save();
+    ctx.font = `700 ${bigRefFont}px 'Merriweather', serif`;
+    ctx.fillStyle = fg + "44"; // subtle opacity
+    ctx.textAlign = "right";
+    ctx.textBaseline = "alphabetic";
+
+    // const bigRefY =
+    //   startY + lines.length * lineHeight + Math.round(height * 0.10); // below verse
+
+    // ctx.fillText(bigRef, width - padding, bigRefY);
+    ctx.restore();
+
+
+  // ---- Reference under verse (normal citation) ----
+  ctx.save();
+  ctx.font = `700 ${Math.round(height * 0.032)}px 'Merriweather', serif`;
   ctx.fillStyle = fg;
-  ctx.textAlign = 'center';
-  const verseFontSize = Math.round(height * 0.045);
-  ctx.font = `italic ${verseFontSize}px 'Merriweather', Georgia, serif`;
-  const verse = `"${generatedCard.value.verseText}"`;
-  const maxWidth = Math.round(width * 0.78);
-  const lines = wrapText(ctx, verse, maxWidth);
-  const lineHeight = Math.round(verseFontSize * 1.2);
-  let startY = Math.round(height * 0.28) - Math.floor(lines.length / 2) * lineHeight;
-  lines.forEach((l, i) => ctx.fillText(l, width / 2, startY + i * lineHeight));
+  ctx.textAlign = "right";
+  ctx.textBaseline = "top";
 
-  // reference
-  ctx.font = `700 ${Math.round(height * 0.03)}px 'Merriweather', Georgia, serif`;
-  ctx.fillText(generatedCard.value.verseReference, width / 2, startY + lines.length * lineHeight + Math.round(height * 0.04));
+  // place it just under the verse block
+  const citationY = startY + lines.length * lineHeight + Math.round(height * 0.03);
 
-  // bottom-left logo + brand
-  const logoSize = Math.round(height * 0.065);
-  await drawImageFromUrl(ctx, iconLogoUrl, padding, height - padding - logoSize, logoSize, logoSize);
-  ctx.textAlign = 'left';
-  ctx.font = `700 ${Math.round(height * 0.03)}px 'Merriweather', Georgia, serif`;
-  ctx.fillText('GOD FIRST', padding + logoSize + 12, height - padding - 10);
+  ctx.fillText(
+    "— " + generatedCard.value.verseReference,
+    contentRight,  // align right edge of verse text
+    citationY
+  );
 
-  // bottom-right arrow as material icon
-  drawMaterialIcon(ctx, 'arrow_forward', width - padding - iconSize - 4, height - padding - iconSize - 4, iconSize, fg);
+  ctx.restore();
 
-  // export
-  const link = document.createElement('a');
-  link.download = `bible-${generatedCard.value.verseReference.replace(/\W+/g, '-')}.png`;
-  link.href = canvas.toDataURL('image/png');
+
+  // ---- Logo ----
+  const logoImg = new Image();
+  logoImg.src = iconLogoUrl;
+  logoImg.crossOrigin = "anonymous";
+
+  const logoWidth = await new Promise<number>((resolve) => {
+    logoImg.onload = () => {
+      const aspect = logoImg.width / logoImg.height;
+      const w = logoHeight * aspect;
+
+      ctx.drawImage(
+        logoImg,
+        padding,
+        height - padding - logoHeight,
+        w,
+        logoHeight
+      );
+
+      resolve(w);
+    };
+    logoImg.onerror = () => resolve(logoHeight);
+  });
+
+  // ---- Brand name ----
+  const brandX = padding + logoWidth + 12;
+  const brandY = height - padding - 10;
+
+  ctx.textAlign = "left";
+  ctx.fillStyle = fg;
+  ctx.font = `700 ${Math.round(height * 0.03)}px 'Merriweather', serif`;
+  ctx.fillText("DIVINE DEVOTION", brandX, brandY);
+
+  // ---- Signature ----
+  ctx.font = `${Math.round(height * 0.02)}px 'Merriweather', serif`;
+  ctx.fillStyle = fg + "99";
+  ctx.fillText("rindra.org", brandX, brandY + Math.round(height * 0.03));
+
+  // ---- Bottom-right icon ----
+  drawMaterialIcon(
+    ctx,
+    "location_disabled",
+    width - padding - bigIconSize + 8,
+    height - padding - Math.round(height * 0.06),
+    Math.round(height * 0.045),
+    fg
+  );
+
+  // ---- EXPORT ----
+  const link = document.createElement("a");
+  link.download = `bible-${generatedCard.value.verseReference.replace(/\W+/g, "-")}.png`;
+  link.href = canvas.toDataURL("image/png");
   link.click();
 };
 
@@ -585,6 +741,16 @@ watch(verseReference, validateVerse);
   min-height: 420px;
   margin: 0 auto;
 }
+
+.reference-under-verse {
+  margin-top: 16px;
+  font-family: 'Merriweather', serif;
+  font-size: 20px;
+  font-weight: 700;
+  opacity: 0.85;
+  align-self: flex-end; /* aligns to the right */
+}
+
 
 /* Top row */
 .card-top { display:flex; justify-content:space-between; align-items:center; }
